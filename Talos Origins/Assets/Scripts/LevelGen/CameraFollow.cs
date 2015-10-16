@@ -14,9 +14,7 @@ public class CameraFollow : MonoBehaviour
         if(mTarget != null)
         {
             Vector3 targetPosition = new Vector3(mTarget.transform.position.x, mTarget.transform.position.y, transform.position.z);
-            Vector3 direction = targetPosition - transform.position;
-            Debug.Log(direction);
-            //Debug.Log(direction.normalized);
+            Vector3 direction = targetPosition - transform.position;        
 
             if(direction.magnitude > stepOverThreshold)
             {
@@ -30,4 +28,10 @@ public class CameraFollow : MonoBehaviour
             }
         }
     }
+
+    void StartPos(Vector3 pos)
+    {
+        pos.z = transform.position.z;
+        transform.position = pos;        
+    }       
 }

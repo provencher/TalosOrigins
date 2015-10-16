@@ -21,4 +21,10 @@ public class Player : MonoBehaviour
     {
         rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
     }
+
+    void StartPos(Vector3 pos)
+    {
+        transform.position = pos;
+        GameObject.Find("Main Camera").SendMessage("StartPos", pos);
+    }
 }

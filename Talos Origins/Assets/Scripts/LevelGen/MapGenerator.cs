@@ -5,13 +5,15 @@ using System;
 
 public class MapGenerator : MonoBehaviour
 {
-    
+    [SerializeField]
+    Transform mTalos;
+
     public int width;
     public int height;
 
     public string seed;
     public bool useRandomSeed;
-
+    
     [Range(0, 100)]
     public int randomFillPercent;
 
@@ -23,6 +25,8 @@ public class MapGenerator : MonoBehaviour
 
     [Range(1, 100)]
     public int roomThresholdSize;
+
+    private Room mainRoom;
 
 
     int[,] map;
@@ -72,6 +76,20 @@ public class MapGenerator : MonoBehaviour
 
         MeshGenerator meshGen = GetComponent<MeshGenerator>();
         meshGen.GenerateMesh(borderedMap, 1);
+
+        PlaceTalosInRoom();
+    }
+
+    void PlaceTalosInRoom()
+    {
+        List<Coord> coordsInRoom = mainRoom.tiles;
+        coordsInRoom.Sort();
+
+        Coord center = coordsInRoom[(int)(coordsInRoom.Count / 2)];
+        Vector3 position = CoordToWorldPoint(center);
+
+        Debug.Log("Talos Start Position: " + position.ToString());
+        mTalos.SendMessage("StartPos", position);
     }
 
     void ProcessMap()
@@ -111,6 +129,9 @@ public class MapGenerator : MonoBehaviour
         survivingRooms.Sort();
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessibleFromMainRoom = true;
+
+        //Save the main room information
+        mainRoom = survivingRooms[0];
 
         ConnectClosestRooms(survivingRooms);
     }
@@ -429,15 +450,31 @@ public class MapGenerator : MonoBehaviour
         return wallCount;
     }
 
-    struct Coord
+    class Coord : IComparable<Coord>
     {
         public int tileX;
         public int tileY;
+
+        public Coord()
+        {
+            tileX = 0;
+            tileY = 0;
+        }
 
         public Coord(int x, int y)
         {
             tileX = x;
             tileY = y;
+        }
+
+        public int Value()
+        {
+            return Math.Abs(tileX) + Math.Abs(tileY);
+        }
+
+        public int CompareTo(Coord otherTile)
+        {           
+            return otherTile.Value().CompareTo(Value());
         }
     }
 
