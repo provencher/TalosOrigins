@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player2D : MonoBehaviour
+public class Player : MonoBehaviour
 {
 
     Rigidbody2D rigidbody;
@@ -14,7 +14,7 @@ public class Player2D : MonoBehaviour
 
     void Update()
     {
-        velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * 10;
+        velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * 5;
     }
 
     void FixedUpdate()
