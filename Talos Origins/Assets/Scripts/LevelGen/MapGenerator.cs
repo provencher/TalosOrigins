@@ -6,7 +6,7 @@ using System;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField]
-    Transform mTalos;
+    GameObject mTalos;
 
     public int width;
     public int height;
@@ -26,7 +26,8 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 100)]
     public int roomThresholdSize;
 
-    private Room mainRoom;
+    private Room startRoom, endRoom;
+    private List<Room> allRooms;
 
 
     int[,] map;
@@ -82,15 +83,51 @@ public class MapGenerator : MonoBehaviour
 
     void PlaceTalosInRoom()
     {
-        List<Coord> coordsInRoom = mainRoom.tiles;
-        coordsInRoom.Sort();
+        //Save the main room information
+        //startRoom = survivingRooms[UnityEngine.Random.Range(0, survivingRooms.Count -1)];
+        startRoom = allRooms[0];
+        endRoom = allRooms[allRooms.Count - 1];
 
-        Coord center = coordsInRoom[(int)(coordsInRoom.Count / 2)];
+        List<Coord> coordsInRoom = startRoom.tiles;
+        Coord center = new Coord();
+        bool foundSpot = false;
+
+        foreach (Coord pos in coordsInRoom)
+        {
+            if (CheckIfTalosFits(pos))
+            {
+                center = pos;
+                foundSpot = true;
+                break;
+            }
+        }
+
+        //if spot not found choose random spot
+        if(!foundSpot)
+        {
+            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count/3), coordsInRoom.Count - 1)];
+        }        
+
         Vector3 position = CoordToWorldPoint(center);
 
         Debug.Log("Talos Start Position: " + position.ToString());
         mTalos.SendMessage("StartPos", position);
     }
+
+    // Check if each corner of the sprite fits in the tile
+    bool CheckIfTalosFits(Coord pos)
+    {       
+        return 
+            //Top Left
+            (map[pos.tileX - 1, pos.tileY + 1] == 0)
+            //Top Right
+            && (map[pos.tileX + 1, pos.tileY + 1] == 0)
+            //Lower Left
+            && (map[pos.tileX - 1, pos.tileY - 1] == 0)
+            //Lower Right
+            && (map[pos.tileX + 1, pos.tileY - 1] == 0);
+    }
+
 
     void ProcessMap()
     {
@@ -130,8 +167,12 @@ public class MapGenerator : MonoBehaviour
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessibleFromMainRoom = true;
 
-        //Save the main room information
-        mainRoom = survivingRooms[0];
+        //Save rooms for later
+        allRooms = new List<Room>();
+        foreach(Room r in survivingRooms)
+        {
+            allRooms.Add(r);
+        }
 
         ConnectClosestRooms(survivingRooms);
     }
