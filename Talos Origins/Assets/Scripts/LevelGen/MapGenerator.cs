@@ -18,6 +18,13 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 10)]
     public int hallWayRadius;
 
+    [Range(1,100)]
+    public int wallThresholdSize;
+
+    [Range(1, 100)]
+    public int roomThresholdSize;
+
+
     int[,] map;
 
     void Start()
@@ -70,7 +77,7 @@ public class MapGenerator : MonoBehaviour
     void ProcessMap()
     {
         List<List<Coord>> wallRegions = GetRegions(1);
-        int wallThresholdSize = 50;
+        //int wallThresholdSize = 50;
 
         foreach (List<Coord> wallRegion in wallRegions)
         {
@@ -84,7 +91,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         List<List<Coord>> roomRegions = GetRegions(0);
-        int roomThresholdSize = 50;
+        //int roomThresholdSize = 50;
         List<Room> survivingRooms = new List<Room>();
 
         foreach (List<Coord> roomRegion in roomRegions)
