@@ -8,8 +8,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     GameObject mTalos;
     [SerializeField]
-    GameObject mExit;
-    bool exitInitialized = false;
+    GameObject mExit;    
 
     public int width;
     public int height;
@@ -86,9 +85,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     void PlaceTalosInRoom()
-    {
-        //Save the main room information
-        //startRoom = survivingRooms[UnityEngine.Random.Range(0, survivingRooms.Count -1)];
+    {        
         startRoom = allRooms[0];        
 
         List<Coord> coordsInRoom = startRoom.tiles;
