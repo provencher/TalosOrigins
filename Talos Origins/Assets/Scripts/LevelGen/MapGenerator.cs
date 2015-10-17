@@ -7,6 +7,9 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField]
     GameObject mTalos;
+    [SerializeField]
+    GameObject mExit;
+    bool exitInitialized = false;
 
     public int width;
     public int height;
@@ -33,7 +36,7 @@ public class MapGenerator : MonoBehaviour
     int[,] map;
 
     void Start()
-    {
+    {        
         GenerateMap();
     }
 
@@ -79,14 +82,14 @@ public class MapGenerator : MonoBehaviour
         meshGen.GenerateMesh(borderedMap, 1);
 
         PlaceTalosInRoom();
+        PlaceExitInRoom();
     }
 
     void PlaceTalosInRoom()
     {
         //Save the main room information
         //startRoom = survivingRooms[UnityEngine.Random.Range(0, survivingRooms.Count -1)];
-        startRoom = allRooms[0];
-        endRoom = allRooms[allRooms.Count - 1];
+        startRoom = allRooms[0];        
 
         List<Coord> coordsInRoom = startRoom.tiles;
         Coord center = new Coord();
@@ -113,6 +116,37 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Talos Start Position: " + position.ToString());
         mTalos.SendMessage("StartPos", position);
     }
+
+    void PlaceExitInRoom()
+    {
+        endRoom = allRooms[allRooms.Count - 1];
+
+        List<Coord> coordsInRoom = endRoom.tiles;
+        Coord center = new Coord();
+        bool foundSpot = false;
+
+        foreach (Coord pos in coordsInRoom)
+        {
+            if (CheckIfTalosFits(pos))
+            {
+                center = pos;
+                foundSpot = true;
+                break;
+            }
+        }
+
+        //if spot not found choose random spot
+        if (!foundSpot)
+        {
+            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
+        }
+
+        Vector3 position = CoordToWorldPoint(center);
+
+        Destroy(mExit);
+        mExit = (GameObject)Instantiate(mExit, position, Quaternion.identity);
+    }
+
 
     // Check if each corner of the sprite fits in the tile
     bool CheckIfTalosFits(Coord pos)
