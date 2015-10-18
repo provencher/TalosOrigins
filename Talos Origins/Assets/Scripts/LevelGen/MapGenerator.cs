@@ -64,6 +64,10 @@ public class MapGenerator : MonoBehaviour
 
         width  = startWidth + 3 * currentLevel;
         height = startHeight + 3 * currentLevel;
+
+        // set max values for map size
+        width = Math.Min(1000, width);
+        height = Math.Min(1000, height);
     }
 
 
