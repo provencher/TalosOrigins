@@ -62,8 +62,8 @@ public class MapGenerator : MonoBehaviour
         width = startWidth;
         height = startHeight;
 
-        width  = (int)startWidth  * (1 + currentLevel / 30);
-        height = (int)startHeight * (1 + currentLevel / 30);
+        width  = startWidth + 3 * currentLevel;
+        height = startHeight + 3 * currentLevel;
     }
 
 
