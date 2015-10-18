@@ -12,6 +12,9 @@ public class MapGenerator : MonoBehaviour
 
     public int width;
     public int height;
+    public int currentLevel;
+
+    private int startWidth, startHeight;
 
     public string seed;
     public bool useRandomSeed;
@@ -27,6 +30,7 @@ public class MapGenerator : MonoBehaviour
 
     [Range(1, 100)]
     public int roomThresholdSize;
+   
 
     private Room startRoom, endRoom;
     private List<Room> allRooms;
@@ -35,7 +39,9 @@ public class MapGenerator : MonoBehaviour
     int[,] map;
 
     void Start()
-    {        
+    {
+        startWidth = width;
+        startHeight = height;
         GenerateMap();
     }
 
@@ -47,8 +53,23 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void SetLevelParameters()
+    {
+        if (currentLevel == 0)
+        {
+            currentLevel = 1;
+        }
+        width = startWidth;
+        height = startHeight;
+
+        width  = (int)startWidth  * (1 + currentLevel / 30);
+        height = (int)startHeight * (1 + currentLevel / 30);
+    }
+
+
     void GenerateMap()
     {
+        SetLevelParameters();
         map = new int[width, height];
         RandomFillMap();
 
