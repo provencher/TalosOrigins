@@ -126,7 +126,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Coord pos in coordsInRoom)
         {
-            if (CheckForFit(pos))
+            if (CheckForFit(pos, 1, 1))
             {
                 center = pos;
                 foundSpot = true;
@@ -159,6 +159,7 @@ public class MapGenerator : MonoBehaviour
         Vector3 WorldPos = CoordToWorldPoint(position);
 
         //Add Spacing code to spread enemies out       
+        //Unecessary
         Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
 
         for (int i = 0; i < numEnemies; i++)
@@ -172,14 +173,14 @@ public class MapGenerator : MonoBehaviour
         int numEnemiesToSpawn;
         ClearAllEnemies();
 
-        for (int i = 1; i < allRooms.Count - 1; i++)
+        for (int i = 1; i < allRooms.Count; i++)
         {
             List<Coord> coordsInRoom = allRooms[i].tiles;
             Coord center = new Coord();          
 
             foreach (Coord pos in coordsInRoom)
             {
-                if (CheckForFit(pos))
+                if (CheckForFit(pos, 1, 2))
                 {
                     center = pos;                    
                     break;
@@ -200,7 +201,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Coord pos in coordsInRoom)
         {
-            if (CheckForFit(pos))
+            if (CheckForFit(pos, 1, 1))
             {
                 center = pos;
                 foundSpot = true;
@@ -222,17 +223,17 @@ public class MapGenerator : MonoBehaviour
 
 
     // Check if each corner of the sprite fits in the tile
-    bool CheckForFit(Coord pos)
+    bool CheckForFit(Coord pos, int offSetX, int offSetY)
     {
         return
             //Top Left
-            (map[pos.tileX - 1, pos.tileY + 1] == 0)
+            (map[pos.tileX - offSetX, pos.tileY + offSetY] == 0)
             //Top Right
-            && (map[pos.tileX + 1, pos.tileY + 1] == 0)
+            && (map[pos.tileX + offSetX, pos.tileY + offSetY] == 0)
             //Lower Left
-            && (map[pos.tileX - 1, pos.tileY - 1] == 0)
+            && (map[pos.tileX - offSetX, pos.tileY - offSetY] == 0)
             //Lower Right
-            && (map[pos.tileX + 1, pos.tileY - 1] == 0);
+            && (map[pos.tileX + offSetX, pos.tileY - offSetY] == 0);
     }
 
 
