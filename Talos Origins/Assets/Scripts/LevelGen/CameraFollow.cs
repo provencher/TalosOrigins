@@ -6,14 +6,14 @@ public class CameraFollow : MonoBehaviour
     [SerializeField]
     Transform mTarget;
 
-    float kFollowSpeed = 5f;
-    float stepOverThreshold = 0.05f;
+    float kFollowSpeed = 8f;
+    float stepOverThreshold = 0.15f;
 
-    void FixedUpdate ()
+    void Update ()
     {
         if(mTarget != null)
         {
-            Vector3 targetPosition = new Vector3(mTarget.transform.position.x, mTarget.transform.position.y, transform.position.z);
+            Vector3 targetPosition = new Vector3(mTarget.transform.position.x, mTarget.transform.position.y + 0.75f, transform.position.z);
             Vector3 direction = targetPosition - transform.position;        
 
             if(direction.magnitude > stepOverThreshold)
