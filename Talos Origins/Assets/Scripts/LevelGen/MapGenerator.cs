@@ -8,7 +8,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     GameObject mTalos;
     [SerializeField]
-    GameObject mExit;    
+    GameObject mExit;
+
+    [SerializeField]
+    GameObject tempEnemy;
+
+    List<GameObject> enemies;
 
     public int width;
     public int height;
@@ -18,19 +23,19 @@ public class MapGenerator : MonoBehaviour
 
     public string seed;
     public bool useRandomSeed;
-    
+
     [Range(0, 100)]
     public int randomFillPercent;
 
     [Range(1, 10)]
     public int hallWayRadius;
 
-    [Range(1,100)]
+    [Range(1, 100)]
     public int wallThresholdSize;
 
     [Range(1, 100)]
     public int roomThresholdSize;
-   
+
 
     private Room startRoom, endRoom;
     private List<Room> allRooms;
@@ -40,6 +45,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
+        enemies = new List<GameObject>();
         startWidth = width;
         startHeight = height;
         GenerateMap();
@@ -62,7 +68,7 @@ public class MapGenerator : MonoBehaviour
         width = startWidth;
         height = startHeight;
 
-        width  = startWidth + 3 * currentLevel;
+        width = startWidth + 3 * currentLevel;
         height = startHeight + 3 * currentLevel;
 
         // set max values for map size
@@ -107,11 +113,12 @@ public class MapGenerator : MonoBehaviour
 
         PlaceTalosInRoom();
         PlaceExitInRoom();
+        SpawnAllEnemies();
     }
 
     void PlaceTalosInRoom()
-    {        
-        startRoom = allRooms[0];        
+    {
+        startRoom = allRooms[0];
 
         List<Coord> coordsInRoom = startRoom.tiles;
         Coord center = new Coord();
@@ -119,7 +126,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Coord pos in coordsInRoom)
         {
-            if (CheckIfTalosFits(pos))
+            if (CheckForFit(pos))
             {
                 center = pos;
                 foundSpot = true;
@@ -128,15 +135,59 @@ public class MapGenerator : MonoBehaviour
         }
 
         //if spot not found choose random spot
-        if(!foundSpot)
+        if (!foundSpot)
         {
-            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count/3), coordsInRoom.Count - 1)];
-        }        
+            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
+        }
 
         Vector3 position = CoordToWorldPoint(center);
 
         Debug.Log("Talos Start Position: " + position.ToString());
         mTalos.SendMessage("StartPos", position);
+    }
+
+    void ClearAllEnemies()
+    {
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Destroy(enemies[i]);
+        }
+    }
+
+    void SpawnEnemiesAtPosition(int numEnemies, Coord position)
+    {
+        Vector3 WorldPos = CoordToWorldPoint(position);
+
+        //Add Spacing code to spread enemies out       
+        Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
+
+        for (int i = 0; i < numEnemies; i++)
+        {          
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos+ offSetVector, Quaternion.identity));
+        }
+    }
+
+    void SpawnAllEnemies()
+    {
+        int numEnemiesToSpawn;
+        ClearAllEnemies();
+
+        for (int i = 1; i < allRooms.Count - 1; i++)
+        {
+            List<Coord> coordsInRoom = allRooms[i].tiles;
+            Coord center = new Coord();          
+
+            foreach (Coord pos in coordsInRoom)
+            {
+                if (CheckForFit(pos))
+                {
+                    center = pos;                    
+                    break;
+                }
+            }           
+            numEnemiesToSpawn = UnityEngine.Random.Range(2, 10);
+            SpawnEnemiesAtPosition(numEnemiesToSpawn, center);
+        }
     }
 
     void PlaceExitInRoom()
@@ -149,7 +200,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (Coord pos in coordsInRoom)
         {
-            if (CheckIfTalosFits(pos))
+            if (CheckForFit(pos))
             {
                 center = pos;
                 foundSpot = true;
@@ -171,9 +222,9 @@ public class MapGenerator : MonoBehaviour
 
 
     // Check if each corner of the sprite fits in the tile
-    bool CheckIfTalosFits(Coord pos)
-    {       
-        return 
+    bool CheckForFit(Coord pos)
+    {
+        return
             //Top Left
             (map[pos.tileX - 1, pos.tileY + 1] == 0)
             //Top Right
@@ -225,7 +276,7 @@ public class MapGenerator : MonoBehaviour
 
         //Save rooms for later
         allRooms = new List<Room>();
-        foreach(Room r in survivingRooms)
+        foreach (Room r in survivingRooms)
         {
             allRooms.Add(r);
         }
@@ -570,7 +621,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         public int CompareTo(Coord otherTile)
-        {           
+        {
             return otherTile.Value().CompareTo(Value());
         }
     }
@@ -649,6 +700,5 @@ public class MapGenerator : MonoBehaviour
         {
             return otherRoom.roomSize.CompareTo(roomSize);
         }
-    }
-
+    } 
 }
