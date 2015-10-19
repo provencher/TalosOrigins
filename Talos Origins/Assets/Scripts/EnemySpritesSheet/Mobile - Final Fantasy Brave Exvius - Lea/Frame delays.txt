@@ -1,0 +1,47 @@
+Delay times applicable to every sheets of a specific category unless stated otherwise.
+
+"Atk": 8 Frames
+Delay:
+200ms 67ms 83ms 83ms
+133ms 133ms 133ms 133ms 
+
+"Idle": 4 Frames
+Delay:
+200ms 200ms 200ms 200ms
+
+"Limit_Atk": 25 Frames
+Delay:
+83ms 83ms 100ms 100ms
+100ms 100ms 100ms 133ms
+200ms 83ms 83ms 83ms
+83ms 83ms 133ms 133ms
+133ms 133ms 167ms 167ms
+167ms 167ms 83ms 83ms
+83ms
+
+"Jump/Dying/Dead":
+83ms 83ms 333ms
+
+"Magic_Atk": 4 Frames
+Delay:
+100ms 100ms 100ms 100ms
+
+"Magic_Standby": 4 Frames
+Delay:
+133ms 133ms 133ms 133ms
+
+"Move"/"Jump"/"Dying"/"Dead"
+Delay:
+100ms 100ms 100ms 100ms
+
+"Standby": 4 Frames
+Delay:
+200ms 200ms 200ms 200ms
+
+"Win": 20 Frames
+Delay:
+200ms 200ms 200ms 200ms
+167ms 133ms 67ms 100ms
+133ms 133ms 133ms 133ms
+133ms 133ms 133ms 133ms
+133ms 133ms 133ms 133ms
