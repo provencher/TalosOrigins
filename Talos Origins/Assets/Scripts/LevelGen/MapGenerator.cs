@@ -146,6 +146,8 @@ public class MapGenerator : MonoBehaviour
         mTalos.SendMessage("StartPos", position);
     }
 
+    /// ENEMY PROCESSING
+    ////////////////////////////////////////////////////////////////////////////////////
     void ClearAllEnemies()
     {
         for (int i = 0; i < enemies.Count; i++)
@@ -165,6 +167,8 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < numEnemies; i++)
         {          
             enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos+ offSetVector, Quaternion.identity));
+            enemies[i].SendMessage("UpdateEnemyIndex", i);            
+            enemies[i].SendMessage("UpdateLevel", currentLevel);
         }
     }
 
@@ -190,6 +194,18 @@ public class MapGenerator : MonoBehaviour
             SpawnEnemiesAtPosition(numEnemiesToSpawn, center);
         }
     }
+        
+    void KilledEnemy(int index)
+    {
+        if (index < enemies.Count - 1)
+        {
+            Destroy(enemies[index]);
+            enemies.RemoveAt(index);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////  
+
 
     void PlaceExitInRoom()
     {
@@ -219,7 +235,7 @@ public class MapGenerator : MonoBehaviour
 
         Destroy(mExit);
         mExit = (GameObject)Instantiate(mExit, position, Quaternion.identity);
-    }
+    }    
 
 
     // Check if each corner of the sprite fits in the tile

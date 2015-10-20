@@ -85,6 +85,20 @@ public class Player : MonoBehaviour
     }
     */
 
+    void FixedUpdate()
+    {
+        NotifyEnemiesOfPosition();
+    }
+
+    void NotifyEnemiesOfPosition()
+    {
+        var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            enemy.SendMessage("UpdatePlayerPosition", transform.position);
+        }
+    }
+
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);

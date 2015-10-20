@@ -38,19 +38,10 @@ public class Enemy : MonoBehaviour {
         // Initialize variables
         defaultLayer = LayerMask.NameToLayer("Enemy");
         ignoreLayer = LayerMask.NameToLayer("Ignore");
-
-        if (mCurrentLevel == default(int))
-        {
-            mCurrentLevel = 1;
-        }
-        if (mMoveSpeed == default(float))
-        {
-            mMoveSpeed = 5.0f;
-        }
-        if (exploreDistanceThreshold == default(float))
-        {
-            exploreDistanceThreshold = 5f;
-        }
+        
+        mCurrentLevel = 1; 
+        mMoveSpeed = 5.0f; 
+        exploreDistanceThreshold = 5f;        
 
         lastDirection = Vector2.up;
     }
@@ -381,9 +372,10 @@ public class Enemy : MonoBehaviour {
         mapGenIndex = index;
     }    
     
-    void UpdateLevel()
+    void UpdateLevel(int level)
     {
         // Message Receive function to communicate level and change enemy stats
+        mCurrentLevel = level;
     }
 
     void NotifyOfDeath()
