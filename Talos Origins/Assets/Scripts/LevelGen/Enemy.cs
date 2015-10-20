@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {   
+public class Enemy : MonoBehaviour {
     public enum eClass { flyer, walker, runner };
     public eClass type;
 
     Vector2[] possibleDirections = { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
+    Vector2 lastDirection;
     Vector3 currentPosition;
 
     Animator animController;
@@ -13,14 +14,19 @@ public class Enemy : MonoBehaviour {
 
     public float mMoveSpeed;
     float stepOverThreshold = 0.15f;
+    public float exploreDistanceThreshold;
 
-    public int currentLevel, expGiven;
+    public int mCurrentLevel;
+    int mExpGiven;
 
     LayerMask ignoreLayer, defaultLayer;
 
-    
+    Vector3 playerPosition;
 
-    void Start () {
+    // Retain index of enemy to properly handle destruction
+    int mapGenIndex;
+
+    void Start() {
         //Write Code for Modifying stats based on currentLevel
 
         //Write logic for setting enemy type
@@ -33,21 +39,23 @@ public class Enemy : MonoBehaviour {
         defaultLayer = LayerMask.NameToLayer("Enemy");
         ignoreLayer = LayerMask.NameToLayer("Ignore");
 
-        if (currentLevel == default(int))
+        if (mCurrentLevel == default(int))
         {
-            currentLevel = 1;
+            mCurrentLevel = 1;
         }
-        if (expGiven == default(int))
-        {
-            expGiven = (int)50 * (1 + currentLevel / 2);
-        }
-        if(mMoveSpeed == default(float))
+        if (mMoveSpeed == default(float))
         {
             mMoveSpeed = 5.0f;
         }
+        if (exploreDistanceThreshold == default(float))
+        {
+            exploreDistanceThreshold = 5f;
+        }
+
+        lastDirection = Vector2.up;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         currentPosition = transform.position;
 
@@ -69,15 +77,29 @@ public class Enemy : MonoBehaviour {
                     RunnerUpdate();
                     break;
                 }
-        }        
+        }
     }
 
 
     void FlyerUpdate()
     {
-        
+        Vector3 targetPosition = transform.position;
 
-        
+        if (ExploreCave(playerPosition))
+        {
+            if (!DirectionClear(lastDirection))
+            {
+                lastDirection = ChooseRandomDirection();                               
+            }
+            targetPosition += (Vector3)lastDirection;            
+        }
+        else
+        {
+            //Pursue Player
+            targetPosition += (Vector3)FindDirectionWithTarget(playerPosition);
+        }
+
+        TranslateToTarget(targetPosition);
     }
 
     void WalkerUpdate()
@@ -85,6 +107,17 @@ public class Enemy : MonoBehaviour {
 
     void RunnerUpdate()
     { }
+
+    bool ExploreCave(Vector3 target)
+    {
+        Vector3 distance = target - transform.position;
+
+        if (distance.magnitude > exploreDistanceThreshold)
+        {
+            return true;
+        }
+        return false;
+    }
 
     void TranslateToTarget(Vector3 target)
     {
@@ -105,63 +138,7 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    bool DirectionClear(Vector2 direction)
-    {
-        bool isClear = true;
-        Vector2 StartPosition;
-        Vector2 EndPosition;
-        RaycastHit2D hit = new RaycastHit2D();
-        float increment;
-        float boxSize = GetComponent<BoxCollider2D>().size.x;
-        float scale = transform.localScale.x;
-
-        for (int i = 0; i < 3; i++)
-        {
-            increment = 0;
-            switch (i)
-            {
-                case 1:
-                    {
-                        increment = boxSize * scale / 2;
-                        break;
-                    }
-                case 2:
-                    {
-                        increment = (-1) * boxSize * scale / 2;
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            StartPosition = transform.position;
-
-            if (DirectionIsHorizontal(direction))
-            {
-                StartPosition.y += increment;
-            }
-            else
-            {
-                StartPosition.x += increment;
-            }
-
-            EndPosition = StartPosition + direction * 0.38f;
-
-            //Check if clear
-            hit = Physics2D.Linecast(StartPosition, EndPosition);
-            Debug.DrawLine(StartPosition, EndPosition, Color.red, 2, false);
-
-            isClear = isClear && !(hit.collider != null &&
-               (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy"                
-               ));
-
-        }
-
-        return isClear;
-    }
-
-    Vector2 FindDirectionTowardsTargetPosition(Vector3 target)
+    Vector2 FindDirectionWithTarget(Vector3 target)
     {
         // Vector difference from position to Digger
         Vector3 direction = target - transform.position;
@@ -234,65 +211,89 @@ public class Enemy : MonoBehaviour {
             }
             else
             {
-                int loopCount = 0;
-                while (true)
-                {
-                    loopCount++;
-                    coinFlip = Random.Range(0, 99);
-                    var direct = possibleDirections[coinFlip % possibleDirections.Length];
-                    if (DirectionClear(direct))
-                    {
-                        ret = direct;
-                        break;
-                    }
-                    else if (loopCount > 15)
-                    {
-                        if (dir1Clear && !dir2Clear)
-                        {
-                            ret = dir1;
-                        }
-                        else
-                        {
-                            ret = dir2;
-                        }
-                        break;
-                    }
-                }
+               ret = ChooseRandomDirection();
             }
         }
-
-        /*
-                if (x > y && dir1Clear)
-                {
-                    ret = dir1;
-
-                }
-                else if (y > x && dir2Clear)
-                {
-                    ret = dir2;
-                }
-                else
-                {
-                    if (dir2Clear && !dir1Clear)
-                    {
-                        ret = dir2;
-                    }
-                    else if (dir1Clear && !dir2Clear)
-                    {
-                        ret = dir1;
-                    }
-                    else if (DirectionClear(-1 * dir1))
-                    {
-                        ret = -1 * dir1;
-                    }
-                    else
-                    {
-                        ret = -1 * dir2;
-                    }
-
-                }
-                */
+      
         return ret;
+    }
+
+    Vector2 ChooseRandomDirection()
+    {
+        int loopCount = 0;
+        int randomInt;
+        Vector2 direct;
+        while (true)
+        {
+            loopCount++;
+            randomInt = Random.Range(0, 99);
+            direct = possibleDirections[randomInt % possibleDirections.Length];
+            if (DirectionClear(direct))
+            {
+                return direct;               
+            }
+            else if (loopCount > 10)
+            {
+                return Vector2.zero;
+            }
+        }
+    }
+
+
+    bool DirectionClear(Vector2 direction)
+    {
+        bool isClear = true;
+        Vector2 StartPosition;
+        Vector2 EndPosition;
+        RaycastHit2D hit = new RaycastHit2D();
+        float increment;
+        float boxSize = GetComponent<BoxCollider2D>().size.x;
+        float scale = transform.localScale.x;
+
+        for (int i = 0; i < 3; i++)
+        {
+            increment = 0;
+            switch (i)
+            {
+                case 1:
+                    {
+                        increment = boxSize * scale / 2;
+                        break;
+                    }
+                case 2:
+                    {
+                        increment = (-1) * boxSize * scale / 2;
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            StartPosition = transform.position;
+
+            if (DirectionIsHorizontal(direction))
+            {
+                StartPosition.y += increment;
+            }
+            else
+            {
+                StartPosition.x += increment;
+            }
+
+            EndPosition = StartPosition + direction * 0.38f;
+
+            //Check if clear
+            hit = Physics2D.Linecast(StartPosition, EndPosition);
+            Debug.DrawLine(StartPosition, EndPosition, Color.red, 2, false);
+
+            isClear = isClear && !(hit.collider != null &&
+               (hit.collider.gameObject.tag == "Cave" ||
+               hit.collider.gameObject.tag == "Enemy"
+               ));
+
+        }
+
+        return isClear;
     }
 
 
@@ -341,9 +342,7 @@ public class Enemy : MonoBehaviour {
             }
 
             return ret;
-        }
-
-  
+        }  
 
     void SetCollisionWithPlayer(bool enabled)
     {
@@ -357,11 +356,42 @@ public class Enemy : MonoBehaviour {
             gameObject.tag = "Ignore";
             gameObject.layer = ignoreLayer;
         }
+    }    
+
+    int CalculateEXP(int level)
+    {
+        return (int)50 * (1 + level / 2);
     }
 
-    // Message Receive function to communicate level and change enemy stats
+    // Collision Detection
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        // add code to detect collision with bullet        
+    }
+
+    // MESSAGING FUNCTIONS   
+    ////////////////////////////////////////////////////////////
+    void UpdatePlayerPosition(Vector3 playerPos)
+    {
+        playerPosition = playerPos;
+    }    
+
+    void UpdateEnemyIndex(int index)
+    {
+        mapGenIndex = index;
+    }    
+    
     void UpdateLevel()
     {
+        // Message Receive function to communicate level and change enemy stats
+    }
 
-    }    
+    void NotifyOfDeath()
+    {
+        // Notify Player of kill with experience gained
+        GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
+
+        // Notify Map Generator of index of enemy killed
+        GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
+    }
 }
