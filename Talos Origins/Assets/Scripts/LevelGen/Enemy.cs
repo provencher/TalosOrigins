@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour {
     Rigidbody2D rb;
 
     public float mMoveSpeed;
-    float stepOverThreshold = 0.15f;
+    float stepOverThreshold = 0.05f;
     public float exploreDistanceThreshold;
 
     public int mCurrentLevel;
@@ -25,6 +25,30 @@ public class Enemy : MonoBehaviour {
 
     // Retain index of enemy to properly handle destruction
     int mapGenIndex;
+
+    bool firstLoop = true;
+
+    void Init()
+    {
+        //Write Code for Modifying stats based on currentLevel
+
+        //Write logic for setting enemy type
+        type = eClass.flyer;
+        gameObject.tag = "flyer";
+
+        //Write logic for changing enemy sprite 
+
+        // Initialize variables
+        defaultLayer = LayerMask.NameToLayer("Enemy");
+        ignoreLayer = LayerMask.NameToLayer("Ignore");
+
+        mCurrentLevel = 1;
+        mMoveSpeed = 5.0f;
+        exploreDistanceThreshold = 5f;
+
+        lastDirection = Vector2.right;     
+    }
+
 
     void Start() {
         //Write Code for Modifying stats based on currentLevel
@@ -43,11 +67,17 @@ public class Enemy : MonoBehaviour {
         mMoveSpeed = 5.0f; 
         exploreDistanceThreshold = 5f;        
 
-        lastDirection = Vector2.up;
+        lastDirection = Vector2.right;        
     }
 
     void FixedUpdate()
     {
+        if(firstLoop)
+        {
+            //Init();
+            firstLoop = false;
+        }
+
         currentPosition = transform.position;
 
         // Update according to enemy class
@@ -82,12 +112,15 @@ public class Enemy : MonoBehaviour {
             {
                 lastDirection = ChooseRandomDirection();                               
             }
-            targetPosition += (Vector3)lastDirection;            
+            targetPosition.x += lastDirection.x;
+            targetPosition.y += lastDirection.y;     
         }
         else
         {
             //Pursue Player
-            targetPosition += (Vector3)FindDirectionWithTarget(playerPosition);
+            Vector2 pursuit = FindDirectionWithTarget(playerPosition);
+            targetPosition.x += pursuit.x;
+            targetPosition.y += pursuit.y;
         }
 
         TranslateToTarget(targetPosition);
@@ -225,7 +258,7 @@ public class Enemy : MonoBehaviour {
             }
             else if (loopCount > 10)
             {
-                return Vector2.zero;
+                return -1* lastDirection;
             }
         }
     }

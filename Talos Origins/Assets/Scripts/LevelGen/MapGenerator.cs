@@ -37,6 +37,12 @@ public class MapGenerator : MonoBehaviour
     public int roomThresholdSize;
 
 
+    [Range(10, 20)]
+    public int enemyModifier;
+
+    int numEnemies;
+
+
     private Room startRoom, endRoom;
     private List<Room> allRooms;
 
@@ -48,7 +54,7 @@ public class MapGenerator : MonoBehaviour
         enemies = new List<GameObject>();
         startWidth = width;
         startHeight = height;
-        GenerateMap();
+        GenerateMap();     
     }
 
     void Update()
@@ -73,7 +79,7 @@ public class MapGenerator : MonoBehaviour
 
         // set max values for map size
         width = Math.Min(1000, width);
-        height = Math.Min(1000, height);
+        height = Math.Min(1000, height);       
     }
 
 
@@ -176,22 +182,22 @@ public class MapGenerator : MonoBehaviour
     {
         int numEnemiesToSpawn;
         ClearAllEnemies();
+        Coord tempCoord;
 
-        for (int i = 1; i < allRooms.Count; i++)
+        numEnemies = currentLevel * 10;
+
+        for (int i = 1; i < width; i++)
         {
-            List<Coord> coordsInRoom = allRooms[i].tiles;
-            Coord center = new Coord();          
-
-            foreach (Coord pos in coordsInRoom)
+            for (int j = 1; j < height; j++)
             {
-                if (CheckForFit(pos, 1, 2))
+                tempCoord = new Coord(j, i);
+                if(CheckForFit(tempCoord, 1, 1) && numEnemies > 0)
                 {
-                    center = pos;                    
-                    break;
+                    numEnemiesToSpawn = UnityEngine.Random.Range(1, 1);
+                    SpawnEnemiesAtPosition(numEnemiesToSpawn, tempCoord);
+                    numEnemies -= numEnemiesToSpawn;
                 }
-            }           
-            numEnemiesToSpawn = UnityEngine.Random.Range(2, 10);
-            SpawnEnemiesAtPosition(numEnemiesToSpawn, center);
+            }     
         }
     }
         
@@ -271,8 +277,9 @@ public class MapGenerator : MonoBehaviour
 
         List<List<Coord>> roomRegions = GetRegions(0);
         //int roomThresholdSize = 50;
-        List<Room> survivingRooms = new List<Room>();
+        allRooms = new List<Room>();  
 
+        int roomCount = 0;        
         foreach (List<Coord> roomRegion in roomRegions)
         {
             if (roomRegion.Count < roomThresholdSize)
@@ -284,21 +291,14 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
-                survivingRooms.Add(new Room(roomRegion, map));
+                allRooms.Add(new Room(roomRegion, map));                
             }
         }
-        survivingRooms.Sort();
-        survivingRooms[0].isMainRoom = true;
-        survivingRooms[0].isAccessibleFromMainRoom = true;
+        allRooms.Sort();
+        allRooms[0].isMainRoom = true;
+        allRooms[0].isAccessibleFromMainRoom = true;             
 
-        //Save rooms for later
-        allRooms = new List<Room>();
-        foreach (Room r in survivingRooms)
-        {
-            allRooms.Add(r);
-        }
-
-        ConnectClosestRooms(survivingRooms);
+        ConnectClosestRooms(allRooms);
     }
 
     void ConnectClosestRooms(List<Room> allRooms, bool forceAccessibilityFromMainRoom = false)
