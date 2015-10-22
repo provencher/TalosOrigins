@@ -87,7 +87,7 @@ public class Enemy : MonoBehaviour {
         {
             Vector2 targetDirection = lastDirection;
 
-            int dice6Roll = UnityEngine.Random.Range(1, 6);
+            int dice6Roll = Random.Range(1, 6);
 
             if (!DirectionClear(lastDirection) || dice6Roll%5 == 0)
             {

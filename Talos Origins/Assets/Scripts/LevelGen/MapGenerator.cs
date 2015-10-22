@@ -564,9 +564,8 @@ public class MapGenerator : MonoBehaviour
         if (useRandomSeed)
         {           
             long rng = TimeZoneInfo.GetSystemTimeZones().ToString().GetHashCode() + DateTime.Now.Millisecond;
-            rng = Math.Abs(rng);
-                     
-            //long bin = rng.ToBin
+            rng = Math.Abs(rng);                     
+          
             for(long i = currentLevel; i < UnityEngine.Random.Range(currentLevel + 1, currentLevel + UnityEngine.Random.Range(0, 10)); i++)
             {
                 rng += Math.Abs(i* TimeZoneInfo.GetSystemTimeZones().ToString().GetHashCode() * DateTime.Now.Millisecond);
