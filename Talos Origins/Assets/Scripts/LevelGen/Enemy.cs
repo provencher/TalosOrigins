@@ -55,7 +55,7 @@ public class Enemy : MonoBehaviour {
 
         //Write logic for setting enemy type
         type = eClass.flyer;
-        gameObject.tag = "flyer";
+        gameObject.tag = "Enemy";
 
         //Write logic for changing enemy sprite 
 

@@ -192,7 +192,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 1; j < width; j++)
             {
-                if (i % 5 == 0)
+                if (UnityEngine.Random.Range(1, 10) == UnityEngine.Random.Range(1, 10))
                 {
                     tempCoord = new Coord(j, i);
                     if (CheckForFit(tempCoord, 1, 1) && numEnemies > 0)
@@ -251,8 +251,11 @@ public class MapGenerator : MonoBehaviour
 
     // Check if each corner of the sprite fits in the tile
     bool CheckForFit(Coord pos, int offSetX, int offSetY)
-    {
+    {        
         return
+            //In map Range
+            ((pos.tileX - offSetX) > 0) && ((pos.tileX + offSetX) < width) &&
+            ((pos.tileY - offSetY) > 0) && ((pos.tileY + offSetY) < height) &&
             //Top Left
             (map[pos.tileX - offSetX, pos.tileY + offSetY] == 0)
             //Top Right
