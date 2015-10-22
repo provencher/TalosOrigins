@@ -123,7 +123,7 @@ public class Enemy : MonoBehaviour {
             targetPosition.y += pursuit.y;
         }
 
-        TranslateToTarget(targetPosition);
+        //TranslateToTarget(targetPosition);
     }
 
     void WalkerUpdate()

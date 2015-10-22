@@ -192,10 +192,11 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 1; j < width; j++)
             {
-                if (UnityEngine.Random.Range(1, 10) == UnityEngine.Random.Range(1, 10))
+                tempCoord = new Coord(j, i);                
+
+                if (UnityEngine.Random.Range(0, 30) == 15)
                 {
-                    tempCoord = new Coord(j, i);
-                    if (CheckForFit(tempCoord, 1, 1) && numEnemies > 0)
+                    if (CheckForFit(tempCoord, 1, 1) /*&& numEnemies > 0*/)
                     {
                         numEnemiesToSpawn = UnityEngine.Random.Range(1, 1);
                         SpawnEnemiesAtPosition(numEnemiesToSpawn, tempCoord);
