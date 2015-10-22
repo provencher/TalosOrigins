@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour {
 
     public float mMoveSpeed;
     float stepOverThreshold = 0.05f;
-    public float exploreDistanceThreshold;
+    public float distanceThreshold;
 
     public int mCurrentLevel;
     int mExpGiven;
@@ -27,28 +27,7 @@ public class Enemy : MonoBehaviour {
     int mapGenIndex;
 
     bool firstLoop = true;
-
-    void Init()
-    {
-        //Write Code for Modifying stats based on currentLevel
-
-        //Write logic for setting enemy type
-        type = eClass.flyer;
-        gameObject.tag = "flyer";
-
-        //Write logic for changing enemy sprite 
-
-        // Initialize variables
-        defaultLayer = LayerMask.NameToLayer("Enemy");
-        ignoreLayer = LayerMask.NameToLayer("Ignore");
-
-        mCurrentLevel = 1;
-        mMoveSpeed = 5.0f;
-        exploreDistanceThreshold = 5f;
-
-        lastDirection = Vector2.right;     
-    }
-
+    
 
     void Start() {
         //Write Code for Modifying stats based on currentLevel
@@ -64,20 +43,14 @@ public class Enemy : MonoBehaviour {
         ignoreLayer = LayerMask.NameToLayer("Ignore");
         
         mCurrentLevel = 1; 
-        mMoveSpeed = 5.0f; 
-        exploreDistanceThreshold = 5f;        
+        mMoveSpeed = 3.0f;
+        distanceThreshold = 12f;        
 
         lastDirection = Vector2.right;        
     }
 
     void FixedUpdate()
-    {
-        if(firstLoop)
-        {
-            //Init();
-            firstLoop = false;
-        }
-
+    {       
         currentPosition = transform.position;
 
         // Update according to enemy class
@@ -103,27 +76,30 @@ public class Enemy : MonoBehaviour {
 
 
     void FlyerUpdate()
-    {
-        Vector3 targetPosition = transform.position;
-
-        if (ExploreCave(playerPosition))
+    {        
+        if(firstLoop)
         {
+            FlyerInit();
+            firstLoop = false;
+        }
+
+        if (InTalosRange(playerPosition))
+        {
+            Vector2 targetDirection = lastDirection;
             if (!DirectionClear(lastDirection))
             {
-                lastDirection = ChooseRandomDirection();                               
+                targetDirection = FindDirectionWithTarget(playerPosition);
+                lastDirection = targetDirection;
             }
-            targetPosition.x += lastDirection.x;
-            targetPosition.y += lastDirection.y;     
+            
+            //Pursue Player            
+            TranslateToTarget(transform.position + (Vector3)targetDirection);
         }
-        else
-        {
-            //Pursue Player
-            Vector2 pursuit = FindDirectionWithTarget(playerPosition);
-            targetPosition.x += pursuit.x;
-            targetPosition.y += pursuit.y;
-        }
+    }
 
-        //TranslateToTarget(targetPosition);
+    void FlyerInit()
+    {
+        gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
     }
 
     void WalkerUpdate()
@@ -132,11 +108,11 @@ public class Enemy : MonoBehaviour {
     void RunnerUpdate()
     { }
 
-    bool ExploreCave(Vector3 target)
+    bool InTalosRange(Vector3 target)
     {
         Vector3 distance = target - transform.position;
 
-        if (distance.magnitude > exploreDistanceThreshold)
+        if (distance.magnitude < distanceThreshold)
         {
             return true;
         }
@@ -148,17 +124,22 @@ public class Enemy : MonoBehaviour {
         if (target != null)
         {
             Vector3 direction = target - transform.position;
+            direction.z = 0;
+            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
 
+            /*
             if (direction.magnitude > stepOverThreshold)
             {
                 // If too far, translate at kFollowSpeed
-                transform.Translate(direction.normalized * mMoveSpeed * Time.fixedDeltaTime);
+                transform.Translate(direction.normalized * mMoveSpeed * Time.deltaTime);
             }
             else
             {
+                target.z = 0;
                 // If close enough, just step over
-                transform.position = target;
+                transform.position = target;                
             }
+            */
         }
     }
 
@@ -175,7 +156,7 @@ public class Enemy : MonoBehaviour {
         Vector2 dir1 = NormalizeDirection(new Vector2(direction.x, 0));
         Vector2 dir2 = NormalizeDirection(new Vector2(0, direction.y));
 
-        bool dir1Clear = DirectionClear(dir1);
+        bool dir1Clear = DirectionClear(NormalizeDirection(new Vector2(direction.x, 0)));
         bool dir2Clear = DirectionClear(dir2);
 
         float x = Mathf.Abs(direction.x);
@@ -184,7 +165,7 @@ public class Enemy : MonoBehaviour {
 
         int coinFlip = 0;
 
-        if (dir1Clear && dir1Clear)
+        if(dir1Clear && dir2Clear)
         {
             coinFlip = Random.Range(0, 1);
             if (coinFlip == 0)
@@ -196,24 +177,15 @@ public class Enemy : MonoBehaviour {
                 ret = dir2;
             }
         }
-        else if (x < y && dir1Clear)
-        {
-            ret = dir1;
-
-        }
-        else if (y < x && dir2Clear)
-        {
-            ret = dir2;
-        }
-
-        else if (dir2Clear && !dir1Clear)
-        {
-            ret = dir2;
-        }
         else if (dir1Clear && !dir2Clear)
         {
             ret = dir1;
+
         }
+        else if (dir2Clear && !dir1Clear)
+        {
+            ret = dir2;
+        }            
         else
         {
             dir1 = -1 * dir1;
@@ -221,7 +193,7 @@ public class Enemy : MonoBehaviour {
             dir1Clear = DirectionClear(dir1);
             dir2Clear = DirectionClear(dir2);
 
-            if (dir1Clear && dir1Clear)
+            if (dir1Clear && dir2Clear)
             {
                 coinFlip = Random.Range(0, 1);
                 if (coinFlip == 0)
@@ -233,9 +205,14 @@ public class Enemy : MonoBehaviour {
                     ret = dir2;
                 }
             }
+            else if (dir1Clear && !dir2Clear)
+            {
+                ret = dir1;
+
+            }
             else
             {
-               ret = ChooseRandomDirection();
+                ret = dir2;
             }
         }
       
@@ -271,22 +248,39 @@ public class Enemy : MonoBehaviour {
         Vector2 EndPosition;
         RaycastHit2D hit = new RaycastHit2D();
         float increment;
-        float boxSize = GetComponent<BoxCollider2D>().size.x;
-        float scale = transform.localScale.x;
+        float boxSizeX = GetComponent<BoxCollider2D>().size.x;
+        float scaleX = transform.localScale.x;
+
+        float boxSizeY = GetComponent<BoxCollider2D>().size.x;
+        float scaleY = transform.localScale.x;
+
+        float boxSize, scaleSize;
 
         for (int i = 0; i < 3; i++)
         {
             increment = 0;
+
+            if (DirectionIsHorizontal(direction))
+            {
+                boxSize = boxSizeX;
+                scaleSize = scaleX;
+            }
+            else
+            {
+                boxSize = boxSizeY;
+                scaleSize = scaleY;
+            }
+
             switch (i)
             {
                 case 1:
                     {
-                        increment = boxSize * scale / 2;
+                        increment = boxSize * scaleSize;
                         break;
                     }
                 case 2:
                     {
-                        increment = (-1) * boxSize * scale / 2;
+                        increment = (-1) * boxSize * scaleSize;
                         break;
                     }
                 default:
@@ -294,7 +288,6 @@ public class Enemy : MonoBehaviour {
             }
 
             StartPosition = transform.position;
-
             if (DirectionIsHorizontal(direction))
             {
                 StartPosition.y += increment;
@@ -304,7 +297,7 @@ public class Enemy : MonoBehaviour {
                 StartPosition.x += increment;
             }
 
-            EndPosition = StartPosition + direction * 0.38f;
+            EndPosition = StartPosition + direction * 0.6f;
 
             //Check if clear
             hit = Physics2D.Linecast(StartPosition, EndPosition);
