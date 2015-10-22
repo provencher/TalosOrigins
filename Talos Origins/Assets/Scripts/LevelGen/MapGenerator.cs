@@ -160,6 +160,7 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(enemies[i]);
         }
+        enemies.Clear();
     }
 
     void SpawnEnemiesAtPosition(int numEnemies, Coord position)
@@ -184,18 +185,22 @@ public class MapGenerator : MonoBehaviour
         ClearAllEnemies();
         Coord tempCoord;
 
-        numEnemies = currentLevel * 10;
 
-        for (int i = 1; i < width; i++)
+        numEnemies = currentLevel * 25;
+
+        for (int i = 1; i < height; i++)
         {
-            for (int j = 1; j < height; j++)
+            for (int j = 1; j < width; j++)
             {
-                tempCoord = new Coord(j, i);
-                if(CheckForFit(tempCoord, 1, 1) && numEnemies > 0)
+                if (i % 5 == 0)
                 {
-                    numEnemiesToSpawn = UnityEngine.Random.Range(1, 1);
-                    SpawnEnemiesAtPosition(numEnemiesToSpawn, tempCoord);
-                    numEnemies -= numEnemiesToSpawn;
+                    tempCoord = new Coord(j, i);
+                    if (CheckForFit(tempCoord, 1, 1) && numEnemies > 0)
+                    {
+                        numEnemiesToSpawn = UnityEngine.Random.Range(1, 1);
+                        SpawnEnemiesAtPosition(numEnemiesToSpawn, tempCoord);
+                        numEnemies -= numEnemiesToSpawn;
+                    }
                 }
             }     
         }
@@ -551,10 +556,20 @@ public class MapGenerator : MonoBehaviour
 
     void RandomFillMap()
     {
+        //disable non-random seed
         if (useRandomSeed)
-        {
-            seed = Time.time.ToString();
-        }
+        {           
+            long rng = TimeZoneInfo.GetSystemTimeZones().ToString().GetHashCode() + DateTime.Now.Millisecond;
+            rng = Math.Abs(rng);
+                     
+            //long bin = rng.ToBin
+            for(long i = currentLevel; i < UnityEngine.Random.Range(currentLevel + 1, currentLevel + UnityEngine.Random.Range(0, 10)); i++)
+            {
+                rng += Math.Abs(i* TimeZoneInfo.GetSystemTimeZones().ToString().GetHashCode() * DateTime.Now.Millisecond);
+            }
+            
+            seed = Math.Abs(rng).ToString();
+        }        
 
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
@@ -717,5 +732,5 @@ public class MapGenerator : MonoBehaviour
         {
             return otherRoom.roomSize.CompareTo(roomSize);
         }
-    } 
+    }
 }
