@@ -86,7 +86,10 @@ public class Enemy : MonoBehaviour {
         if (InTalosRange(playerPosition))
         {
             Vector2 targetDirection = lastDirection;
-            if (!DirectionClear(lastDirection))
+
+            int dice6Roll = UnityEngine.Random.Range(1, 6);
+
+            if (!DirectionClear(lastDirection) || dice6Roll%5 == 0)
             {
                 targetDirection = FindDirectionWithTarget(playerPosition);
                 lastDirection = targetDirection;
@@ -144,14 +147,9 @@ public class Enemy : MonoBehaviour {
     }
 
     Vector2 FindDirectionWithTarget(Vector3 target)
-    {
-        // Vector difference from position to Digger
+    {        
         Vector3 direction = target - transform.position;
-
-        Vector2 ret = new Vector2();
-
-        direction.x /= 2;
-        direction.y /= 2;
+        Vector2 ret = new Vector2();   
 
         Vector2 dir1 = NormalizeDirection(new Vector2(direction.x, 0));
         Vector2 dir2 = NormalizeDirection(new Vector2(0, direction.y));
