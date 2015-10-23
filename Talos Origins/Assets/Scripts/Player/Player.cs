@@ -50,6 +50,10 @@ public class Player : MonoBehaviour
     int mTotalExp;
     float mMeleeTimer;
     bool mMeleeTrigger;
+
+    int mHealth;
+
+    Vector2 mShoveDirection;
     /*
     [SerializeField]
     LifeMeter life;
@@ -67,11 +71,10 @@ public class Player : MonoBehaviour
         mFacingDirection = Vector2.right;
         mTotalExp = 0;
         mMeleeTimer = 0;
-
+        mShoveDirection = Vector2.zero;
+        mHealth = 100;
+        mInvincibleTimer = 0;
         /*
-        
-
-
         // Obtain ground check components and store in list
         mGroundCheckList = new List<GroundCheck>();
         GroundCheck[] groundChecksArray = transform.GetComponentsInChildren<GroundCheck>();
@@ -107,9 +110,13 @@ public class Player : MonoBehaviour
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
         CheckGround();
-
-        CheckMove();
+        CheckInvicible();       
+                          
+        TranslateInDirection(CheckMove());
         TriggerMelee();
+        CheckJump();        
+
+        UpdateAnimator();
 
         /*
         bool grounded = CheckGrounded();
@@ -119,19 +126,6 @@ public class Player : MonoBehaviour
         }
         mGrounded = grounded;
         */
-
-
-        if /*(mGrounded &&*/( Input.GetButtonDown("Jump"))
-        {
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
-        }
-        else if (mAllowWallKick && Input.GetButtonDown("Jump"))
-        {
-            mRigidBody2D.velocity = Vector2.zero;
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
-           // mWallKickSound.Play();
-        }
-
 
 
         /*
@@ -149,32 +143,81 @@ public class Player : MonoBehaviour
             }
         }
         */
-        UpdateAnimator();
+
     }
 
-
-    void CheckMove()
+    void CheckJump()
     {
+        if /*(mGrounded &&*/(Input.GetButtonDown("Jump"))
+        {
+            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+        }
+        else if (mAllowWallKick && Input.GetButtonDown("Jump"))
+        {
+            mRigidBody2D.velocity = Vector2.zero;
+            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+            // mWallKickSound.Play();
+        }
+
+    }
+
+    void CheckInvicible()
+    {
+        if (mInvincible)
+        {
+            if (mInvincibleTimer > 0)
+            {
+                mInvincibleTimer -= Time.deltaTime;
+            }
+            else
+            {
+                mInvincibleTimer = 0;
+                mInvincible = false;
+            }
+        }
+    }
+
+    Vector3 CheckMove()
+    {
+        // Get Shoved
+        mRigidBody2D.AddForce(mShoveDirection, ForceMode2D.Impulse);
+        mShoveDirection = Vector2.zero;
+
+
         if (mWeapon.mMelee)
         {
             mMeleeTrigger = true;
             mMeleeTimer = 0;
             mRunning = false;            
-            return;
+            return Vector3.zero;
         }
 
         mRunning = false;
         if (Input.GetButton("Left"))
         {
-            transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            //transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);           
             FaceDirection(Vector2.left);
             mRunning = true;
+            return Vector3.left;
         }
         if (Input.GetButton("Right"))
         {
-            transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
-            FaceDirection(Vector2.right);
+            //transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            FaceDirection(Vector2.right);            
             mRunning = true;
+            return Vector3.right;
+        }
+
+        return Vector3.zero;
+    }
+
+    void TranslateInDirection(Vector3 direction)
+    {
+        if (direction != null)
+        {
+            //Vector3 direction = target - transform.position;
+            direction.z = 0;
+            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
         }
     }
 
@@ -195,13 +238,13 @@ public class Player : MonoBehaviour
     void CheckGround()
     {
         //temp
-        if (mRigidBody2D.velocity.y == 0)
+        if (Mathf.Abs(mRigidBody2D.velocity.y) > 0)
         {
-            mGrounded = true;
+            mGrounded = false;
         }
         else
         {
-            mGrounded = false;
+            mGrounded = true;
         }
     }
 
@@ -325,6 +368,21 @@ public class Player : MonoBehaviour
         mTotalExp += exp;
     }
 
+    void ShovedByEnemy(Vector3 shoveInfo)
+    {
+        if(!mInvincible)
+        {
+            mInvincible = true;
+            mInvincibleTimer = kInvincibilityDuration;
+            mHealth -= (int) shoveInfo.z;
+            mShoveDirection = 6*shoveInfo;
+        }
+        else
+        {
+            mShoveDirection = Vector2.zero;
+        }
+    }
+
     // Camera Update Notification
     void StartPos(Vector3 pos)
     {
@@ -335,24 +393,6 @@ public class Player : MonoBehaviour
     void UpdateCameraVelocity()
     {
         GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
-    }
-
-    /*
-    void OnCollisionEnter2D(Collision2D coll)
-    {    
-
-        if (coll != null && coll.gameObject.tag == "Enemy" && mWeapon.mMelee)
-        {
-            Vector3 enemyPos = coll.gameObject.transform.position;
-
-            if (((mFacingDirection == Vector2.right) && (enemyPos.x > transform.position.x))
-                || ((mFacingDirection == Vector2.left) && (enemyPos.x < transform.position.x))
-                || ((mFacingDirection == Vector2.up) && (enemyPos.y > transform.position.y))
-                || ((mFacingDirection == Vector2.down) && (enemyPos.y < transform.position.y)))
-            {
-                coll.gameObject.SendMessage("KilledBySword");
-            }
-        }
-    }
-    */
+    }   
+       
 }

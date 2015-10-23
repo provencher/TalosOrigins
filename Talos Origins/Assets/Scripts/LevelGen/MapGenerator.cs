@@ -281,8 +281,7 @@ public class MapGenerator : MonoBehaviour
         List<List<Coord>> roomRegions = GetRegions(0);
         //int roomThresholdSize = 50;
         allRooms = new List<Room>();  
-
-        int roomCount = 0;        
+            
         foreach (List<Coord> roomRegion in roomRegions)
         {
             if (roomRegion.Count < roomThresholdSize)
