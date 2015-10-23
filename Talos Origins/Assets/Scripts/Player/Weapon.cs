@@ -16,8 +16,7 @@ public class Weapon : MonoBehaviour {
     GameObject mBulletPrefab;
 
     // Use this for initialization
-    void Start () {
-        mAnimator = transform.parent.GetComponent<Animator>();
+    void Start () {       
         mMelee = false;
         mShoot = false;
         mWeapon = 1;
@@ -28,8 +27,7 @@ public class Weapon : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         UpdateWeapon();
-        CheckFire();
-        UpdateAnimator();
+        CheckFire();       
 	}
     void UpdateWeapon()
     {
@@ -79,11 +77,5 @@ public class Weapon : MonoBehaviour {
             lastShootTime = Time.time;
         }
         
-    }
-
-    void UpdateAnimator()
-    {
-        mAnimator.SetBool("isMelee", mMelee);
-        mAnimator.SetBool("isShoot", mShoot);
-    }
+    }   
 }

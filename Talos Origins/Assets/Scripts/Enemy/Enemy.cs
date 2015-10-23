@@ -151,10 +151,13 @@ public class Enemy : MonoBehaviour {
         Vector3 direction = target - transform.position;
         Vector2 ret = new Vector2();   
 
-        Vector2 dir1 = NormalizeDirection(new Vector2(direction.x, 0));
-        Vector2 dir2 = NormalizeDirection(new Vector2(0, direction.y));
+        Vector2 dir1 = new Vector2(direction.x, 0);
+        Vector2 dir2 = new Vector2(0, direction.y);
 
-        bool dir1Clear = DirectionClear(NormalizeDirection(new Vector2(direction.x, 0)));
+        dir1.Normalize();
+        dir2.Normalize();
+
+        bool dir1Clear = DirectionClear(dir1);
         bool dir2Clear = DirectionClear(dir2);
 
         float x = Mathf.Abs(direction.x);
@@ -322,42 +325,8 @@ public class Enemy : MonoBehaviour {
         {
             return false;
         }
-    }
+    }    
 
-    
-
-    Vector2 NormalizeDirection(Vector2 dir)
-    {
-            Vector2 ret = new Vector2();
-
-            if (dir.x > 0)
-            {
-                ret.x = 1;
-            }
-            else if (dir.x < 0)
-            {
-                ret.x = -1;
-            }
-            else
-            {
-                ret.x = 0;
-            }
-
-            if (dir.y > 0)
-            {
-                ret.y = 1;
-            }
-            else if (dir.y < 0)
-            {
-                ret.y = -1;
-            }
-            else
-            {
-                ret.y = 0;
-            }
-
-            return ret;
-        }  
 
     void SetCollisionWithPlayer(bool enabled)
     {
@@ -400,6 +369,11 @@ public class Enemy : MonoBehaviour {
     {
         // Message Receive function to communicate level and change enemy stats
         mCurrentLevel = level;
+    }
+
+    void KilledBySword()
+    {
+        NotifyOfDeath();
     }
 
     void NotifyOfDeath()

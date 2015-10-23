@@ -159,35 +159,30 @@ public class MapGenerator : MonoBehaviour
     {
         for (int i = 0; i < enemies.Count; i++)
         {
-            Destroy(enemies[i]);
+            Destroy(enemies[i]);           
         }
         enemies.Clear();
     }
 
-    void SpawnEnemiesAtPosition(int numEnemies, Coord position)
+    void SpawnEnemyAtPosition(int index, Coord position)
     {
         Vector3 WorldPos = CoordToWorldPoint(position);
 
         //Add Spacing code to spread enemies out       
         //Unecessary
         Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
-
-        for (int i = 0; i < numEnemies; i++)
-        {          
-            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos+ offSetVector, Quaternion.identity));
-            enemies[i].SendMessage("UpdateEnemyIndex", i);            
-            enemies[i].SendMessage("UpdateLevel", currentLevel);
-        }
+                
+        enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos+ offSetVector, Quaternion.identity));
+        enemies[index].SendMessage("UpdateEnemyIndex", index);            
+        enemies[index].SendMessage("UpdateLevel", currentLevel);
+        
     }
 
     void SpawnAllEnemies()
     {
-        int numEnemiesToSpawn;
         ClearAllEnemies();
         Coord tempCoord;
-
-
-        numEnemies = currentLevel * 25;
+        int enemiesSpawned = 0;
 
         for (int i = 1; i < height; i++)
         {
@@ -197,11 +192,10 @@ public class MapGenerator : MonoBehaviour
 
                 if (UnityEngine.Random.Range(0, 30) == 15)
                 {
-                    if (CheckForFit(tempCoord, 1, 1) /*&& numEnemies > 0*/)
+                    if (CheckForFit(tempCoord, 1, 1))
                     {
-                        numEnemiesToSpawn = UnityEngine.Random.Range(1, 1);
-                        SpawnEnemiesAtPosition(numEnemiesToSpawn, tempCoord);
-                        numEnemies -= numEnemiesToSpawn;
+                        SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
+                        enemiesSpawned++;
                     }
                 }
             }     
@@ -212,8 +206,7 @@ public class MapGenerator : MonoBehaviour
     {
         if (index < enemies.Count - 1)
         {
-            Destroy(enemies[index]);
-            enemies.RemoveAt(index);
+            Destroy(enemies[index]);          
         }
     }
 
