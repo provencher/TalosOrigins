@@ -31,11 +31,12 @@ public class Player : MonoBehaviour
 
     // Wall kicking
     bool mAllowWallKick;
-    Vector2 mFacingDirection;
+    public Vector2 mFacingDirection;
 
     // References to other components and game objects
     Animator mAnimator;
     Rigidbody2D mRigidBody2D;
+    Weapon mWeapon;
 
     // Reference to audio sources
     AudioSource mLandingSound;
@@ -57,6 +58,8 @@ public class Player : MonoBehaviour
         
         mRigidBody2D = GetComponent<Rigidbody2D>();
         mAnimator = GetComponent<Animator>();
+        mWeapon = transform.FindChild("Weapon").GetComponent<Weapon>();
+        mFacingDirection = Vector2.right;
 
         /*
         
@@ -104,20 +107,7 @@ public class Player : MonoBehaviour
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
         CheckGround();
 
-
-        mRunning = false;
-        if (Input.GetButton("Left"))
-        {
-            transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime);
-            //FaceDirection(-Vector2.right);
-            mRunning = true;
-        }
-        if (Input.GetButton("Right"))
-        {
-            transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime);
-            //FaceDirection(Vector2.right);
-            mRunning = true;
-        }
+        CheckMove();
 
         /*
         bool grounded = CheckGrounded();
@@ -160,6 +150,43 @@ public class Player : MonoBehaviour
         UpdateAnimator();
     }
 
+
+    void CheckMove()
+    {
+        if (mWeapon.mMelee)
+        {
+            mRunning = false;
+            return;
+        }
+
+        mRunning = false;
+        if (Input.GetButton("Left"))
+        {
+            transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            FaceDirection(Vector2.left);
+            mRunning = true;
+        }
+        if (Input.GetButton("Right"))
+        {
+            transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            FaceDirection(Vector2.right);
+            mRunning = true;
+        }
+    }
+
+    void FaceDirection(Vector2 faceD)
+    {
+        if (faceD == Vector2.left)
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
+        }
+        if(faceD == Vector2.right)
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        }
+        mFacingDirection = faceD;
+    }
+
     void StartPos(Vector3 pos)
     {
         transform.position = pos;
@@ -181,6 +208,7 @@ public class Player : MonoBehaviour
     void UpdateAnimator()
     {
         mAnimator.SetBool("isGrounded", mGrounded);
+        mAnimator.SetBool("isRunning", mRunning);
 
     }
 
