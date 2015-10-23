@@ -90,13 +90,17 @@ public class Enemy : MonoBehaviour {
         {
             Vector2 targetDirection = lastDirection;
 
-            int dice6Roll = Random.Range(1, 6);
-
-            if (!DirectionClear(lastDirection) || dice6Roll % 5 == 0)
+            int d30Roll = Random.Range(1, 30);
+            if (!DirectionClear(lastDirection) || d30Roll == 5)
             {
-                targetDirection = FindDirectionWithTarget(playerPosition);
-                lastDirection = targetDirection;
+                targetDirection = FindDirectionWithTarget(playerPosition);               
             }
+            else if (d30Roll == 15)
+            {
+                targetDirection = ChooseRandomDirection();
+            }
+            
+            lastDirection = targetDirection;
 
             //Pursue Player            
             TranslateToTarget(transform.position + (Vector3)targetDirection);
@@ -301,7 +305,7 @@ public class Enemy : MonoBehaviour {
 
             isClear = isClear && !(hit.collider != null &&
                (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy"
+               hit.collider.gameObject.tag == "Enemy" 
                ));
 
         }

@@ -50,10 +50,15 @@ public class Player : MonoBehaviour
     int mTotalExp;
     float mMeleeTimer;
     bool mMeleeTrigger;
-
     int mHealth;
+    int mEnemiesKilled;
 
     Vector2 mShoveDirection;
+
+    Vector3 mExitLocation;
+    int mCurrentLevel;
+    
+
     /*
     [SerializeField]
     LifeMeter life;
@@ -102,8 +107,13 @@ public class Player : MonoBehaviour
     {
         NotifyEnemiesOfPosition();
         UpdateCameraVelocity();
+        UpdateUIText();
     }
 
+    void UpdateUIText()
+    {
+
+    }
  
 
     void Update()
@@ -388,6 +398,16 @@ public class Player : MonoBehaviour
     {
         transform.position = pos;
         GameObject.Find("Main Camera").SendMessage("StartPos", pos);
+    }
+
+    void ExitPos(Vector3 pos)
+    {
+        mExitLocation = pos;
+    }
+
+    void CurrentLevel(int level)
+    {
+
     }
 
     void UpdateCameraVelocity()
