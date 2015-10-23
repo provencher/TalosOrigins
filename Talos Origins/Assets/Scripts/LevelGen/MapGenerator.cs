@@ -190,7 +190,7 @@ public class MapGenerator : MonoBehaviour
             {
                 tempCoord = new Coord(j, i);                
 
-                if (UnityEngine.Random.Range(0, 30) == 15)
+                if (UnityEngine.Random.Range(0, 50) == 15)
                 {
                     if (CheckForFit(tempCoord, 1, 1))
                     {

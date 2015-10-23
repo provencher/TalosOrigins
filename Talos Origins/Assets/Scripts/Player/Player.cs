@@ -98,6 +98,7 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         NotifyEnemiesOfPosition();
+        UpdateCameraVelocity();
     }
 
  
@@ -190,11 +191,7 @@ public class Player : MonoBehaviour
         mFacingDirection = faceD;
     }
 
-    void StartPos(Vector3 pos)
-    {
-        transform.position = pos;
-        GameObject.Find("Main Camera").SendMessage("StartPos", pos);
-    }
+   
     void CheckGround()
     {
         //temp
@@ -326,6 +323,18 @@ public class Player : MonoBehaviour
     void KilledEnemy(int exp)
     {
         mTotalExp += exp;
+    }
+
+    // Camera Update Notification
+    void StartPos(Vector3 pos)
+    {
+        transform.position = pos;
+        GameObject.Find("Main Camera").SendMessage("StartPos", pos);
+    }
+
+    void UpdateCameraVelocity()
+    {
+        GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
     }
 
     /*

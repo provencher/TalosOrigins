@@ -148,52 +148,22 @@ public class Enemy : MonoBehaviour {
 
     Vector2 FindDirectionWithTarget(Vector3 target)
     {        
-        Vector3 direction = target - transform.position;
-        Vector2 ret = new Vector2();   
+        Vector3 direction = (target - transform.position).normalized;
+        Vector2 ret = direction; 
 
-        Vector2 dir1 = new Vector2(direction.x, 0);
-        Vector2 dir2 = new Vector2(0, direction.y);
-
-        dir1.Normalize();
-        dir2.Normalize();
-
-        bool dir1Clear = DirectionClear(dir1);
-        bool dir2Clear = DirectionClear(dir2);
-
-        float x = Mathf.Abs(direction.x);
-        float y = Mathf.Abs(direction.y);
-
-
-        int coinFlip = 0;
-
-        if(dir1Clear && dir2Clear)
+        if(!(DirectionClear(ret)))
         {
-            coinFlip = Random.Range(0, 1);
-            if (coinFlip == 0)
-            {
-                ret = dir1;
-            }
-            else
-            {
-                ret = dir2;
-            }
-        }
-        else if (dir1Clear && !dir2Clear)
-        {
-            ret = dir1;
+            Vector2 dir1 = new Vector2(direction.x, 0);
+            Vector2 dir2 = new Vector2(0, direction.y);
 
-        }
-        else if (dir2Clear && !dir1Clear)
-        {
-            ret = dir2;
-        }            
-        else
-        {
-            dir1 = -1 * dir1;
-            dir2 = -1 * dir2;
-            dir1Clear = DirectionClear(dir1);
-            dir2Clear = DirectionClear(dir2);
+            bool dir1Clear = DirectionClear(dir1);
+            bool dir2Clear = DirectionClear(dir2);
 
+            float x = Mathf.Abs(direction.x);
+            float y = Mathf.Abs(direction.y);
+
+
+            int coinFlip = 0;
             if (dir1Clear && dir2Clear)
             {
                 coinFlip = Random.Range(0, 1);
@@ -211,11 +181,40 @@ public class Enemy : MonoBehaviour {
                 ret = dir1;
 
             }
-            else
+            else if (dir2Clear && !dir1Clear)
             {
                 ret = dir2;
             }
-        }
+            else
+            {
+                dir1 = -1 * dir1;
+                dir2 = -1 * dir2;
+                dir1Clear = DirectionClear(dir1);
+                dir2Clear = DirectionClear(dir2);
+
+                if (dir1Clear && dir2Clear)
+                {
+                    coinFlip = Random.Range(0, 1);
+                    if (coinFlip == 0)
+                    {
+                        ret = dir1;
+                    }
+                    else
+                    {
+                        ret = dir2;
+                    }
+                }
+                else if (dir1Clear && !dir2Clear)
+                {
+                    ret = dir1;
+
+                }
+                else
+                {
+                    ret = dir2;
+                }
+            }
+        }       
       
         return ret;
     }
