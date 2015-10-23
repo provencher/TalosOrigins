@@ -120,6 +120,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        CheckDead();
         NotifyEnemiesOfPosition();
         UpdateCameraVelocity();
         UpdateUIText();
@@ -140,6 +141,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
+       
         CheckGround();
         CheckInvicible();       
                           
@@ -148,7 +150,6 @@ public class Player : MonoBehaviour
         CheckJump();        
 
         UpdateAnimator();
-
         /*
         bool grounded = CheckGrounded();
         if (!mGrounded && grounded)

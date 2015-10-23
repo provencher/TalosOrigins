@@ -164,6 +164,7 @@ public class MapGenerator : MonoBehaviour
     void NextLevel()
     {
         currentLevel++;
+        ClearExit();
         GenerateMap();
     }
 
@@ -200,6 +201,7 @@ public class MapGenerator : MonoBehaviour
 
     void SpawnAllEnemies()
     {
+
         ClearAllEnemies();
         Coord tempCoord;
         int enemiesSpawned = 0;
@@ -232,6 +234,10 @@ public class MapGenerator : MonoBehaviour
 
     ////////////////////////////////////////////////////////////////////////////////////  
 
+    void ClearExit()
+    {
+        Destroy(mExit);
+    }
 
     void PlaceExitInRoom()
     {
@@ -257,9 +263,8 @@ public class MapGenerator : MonoBehaviour
             center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
         }
 
-        Vector3 position = CoordToWorldPoint(center);
-
-        Destroy(mExit);
+        Vector3 position = CoordToWorldPoint(center);                
+        
         mExit = (GameObject)Instantiate(mExit, position, Quaternion.identity);
     }    
 
