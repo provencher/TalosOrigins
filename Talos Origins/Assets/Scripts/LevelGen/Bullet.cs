@@ -21,8 +21,9 @@ public class Bullet : MonoBehaviour {
 	void Update () {
 	    
 	}
-    public void SetDirection( Vector2 dic)
+    public void SetDirection( Vector3 dic)
     {
-        mRigidbody2D.velocity = (mSpeed * dic);
+        mRigidbody2D.velocity = (mSpeed * new Vector2(dic.x, dic.y));
+        transform.rotation = Quaternion.FromToRotation(Vector3.right, dic);
     }
 }

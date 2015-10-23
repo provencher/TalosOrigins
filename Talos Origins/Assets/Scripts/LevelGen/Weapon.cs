@@ -68,8 +68,10 @@ public class Weapon : MonoBehaviour {
     {
         if (Time.time - lastShootTime > ShootInterval)
         {
-            GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, transform.position+mTalos.mFacingDirection.x*Vector3.right * 0.4f, transform.rotation);
-            Vector2 mBulletDirection = new Vector2((Input.mousePosition - mBullet.transform.position).x, (Input.mousePosition - mBullet.transform.position).y);
+            GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, transform.position+mTalos.mFacingDirection.x*Vector3.right * 0.4f, Quaternion.identity);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mBulletDirection = mousePosition-mBullet.transform.position;
+            mBulletDirection.z = 0;
             mBulletDirection.Normalize();
             mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection);
             lastShootTime = Time.time;
