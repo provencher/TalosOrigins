@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {   
@@ -50,6 +51,17 @@ public class Player : MonoBehaviour
     int mTotalExp;
     float mMeleeTimer;
     bool mMeleeTrigger;
+    int mHealth;
+    int mEnemiesKilled;
+
+    Vector2 mShoveDirection;
+
+    Vector3 mExitLocation;
+    int mCurrentLevel;
+    int mEnemiesRemaining;
+
+    Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;    
+
     /*
     [SerializeField]
     LifeMeter life;
@@ -67,11 +79,22 @@ public class Player : MonoBehaviour
         mFacingDirection = Vector2.right;
         mTotalExp = 0;
         mMeleeTimer = 0;
+        mShoveDirection = Vector2.zero;
+        mHealth = 100;
+        mInvincibleTimer = 0;
+
+
+        // UI Text
+        exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
+        enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
+        curLevel = GameObject.Find("CurrentLevel").GetComponent<Text>();
+        talosHealth = GameObject.Find("TalosHealth").GetComponent<Text>();
+        experience = GameObject.Find("Experience").GetComponent<Text>();
+        actionPts = GameObject.Find("ActionPoints").GetComponent<Text>();
+        invicibleTime = GameObject.Find("Invicible").GetComponent<Text>();
+
 
         /*
-        
-
-
         // Obtain ground check components and store in list
         mGroundCheckList = new List<GroundCheck>();
         GroundCheck[] groundChecksArray = transform.GetComponentsInChildren<GroundCheck>();
@@ -97,19 +120,36 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        CheckDead();
         NotifyEnemiesOfPosition();
+        UpdateCameraVelocity();
+        UpdateUIText();
     }
 
+    void UpdateUIText()
+    {
+        exitDistance.text = "Distance From Exit: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
+        enemiesLeft.text = "Enemies Remaining: " + mEnemiesRemaining.ToString();
+        curLevel.text = "Current Level: " + mCurrentLevel.ToString();
+        talosHealth.text = "Health: " + mHealth.ToString();
+        experience.text = "Exp: " + mTotalExp.ToString();
+        actionPts.text = "Action Points: INF";
+        invicibleTime.text = "Invincible Timer: " + (Mathf.CeilToInt(mInvincibleTimer)).ToString();
+    }
  
 
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
+       
         CheckGround();
-
-        CheckMove();
+        CheckInvicible();       
+                          
+        TranslateInDirection(CheckMove());
         TriggerMelee();
+        CheckJump();        
 
+        UpdateAnimator();
         /*
         bool grounded = CheckGrounded();
         if (!mGrounded && grounded)
@@ -118,19 +158,6 @@ public class Player : MonoBehaviour
         }
         mGrounded = grounded;
         */
-
-
-        if /*(mGrounded &&*/( Input.GetButtonDown("Jump"))
-        {
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
-        }
-        else if (mAllowWallKick && Input.GetButtonDown("Jump"))
-        {
-            mRigidBody2D.velocity = Vector2.zero;
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
-           // mWallKickSound.Play();
-        }
-
 
 
         /*
@@ -148,32 +175,89 @@ public class Player : MonoBehaviour
             }
         }
         */
-        UpdateAnimator();
+
     }
 
-
-    void CheckMove()
+    void CheckDead()
     {
+        if(mHealth <= 0)
+        {
+            GameObject.Find("MapGenerator").SendMessage("ResetGame");            
+        }
+    }
+
+    void CheckJump()
+    {
+        if /*(mGrounded &&*/(Input.GetButtonDown("Jump"))
+        {
+            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+        }
+        else if (mAllowWallKick && Input.GetButtonDown("Jump"))
+        {
+            mRigidBody2D.velocity = Vector2.zero;
+            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+            // mWallKickSound.Play();
+        }
+
+    }
+
+    void CheckInvicible()
+    {
+        if (mInvincible)
+        {
+            if (mInvincibleTimer > 0)
+            {
+                mInvincibleTimer -= Time.deltaTime;
+            }
+            else
+            {
+                mInvincibleTimer = 0;
+                mInvincible = false;
+            }
+        }
+    }
+
+    Vector3 CheckMove()
+    {
+        // Get Shoved
+        mRigidBody2D.AddForce(mShoveDirection, ForceMode2D.Impulse);
+        mShoveDirection = Vector2.zero;
+
+
         if (mWeapon.mMelee)
         {
             mMeleeTrigger = true;
             mMeleeTimer = 0;
             mRunning = false;            
-            return;
+            return Vector3.zero;
         }
 
         mRunning = false;
         if (Input.GetButton("Left"))
         {
-            transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            //transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);           
             FaceDirection(Vector2.left);
             mRunning = true;
+            return Vector3.left;
         }
         if (Input.GetButton("Right"))
         {
-            transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
-            FaceDirection(Vector2.right);
+            //transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+            FaceDirection(Vector2.right);            
             mRunning = true;
+            return Vector3.right;
+        }
+
+        return Vector3.zero;
+    }
+
+    void TranslateInDirection(Vector3 direction)
+    {
+        if (direction != null)
+        {
+            //Vector3 direction = target - transform.position;
+            direction.z = 0;
+            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
         }
     }
 
@@ -190,21 +274,17 @@ public class Player : MonoBehaviour
         mFacingDirection = faceD;
     }
 
-    void StartPos(Vector3 pos)
-    {
-        transform.position = pos;
-        GameObject.Find("Main Camera").SendMessage("StartPos", pos);
-    }
+   
     void CheckGround()
     {
         //temp
-        if (mRigidBody2D.velocity.y == 0)
+        if (Mathf.Abs(mRigidBody2D.velocity.y) > 0)
         {
-            mGrounded = true;
+            mGrounded = false;
         }
         else
         {
-            mGrounded = false;
+            mGrounded = true;
         }
     }
 
@@ -309,6 +389,7 @@ public class Player : MonoBehaviour
         return null;
     }
 
+  
 
 
 
@@ -326,24 +407,62 @@ public class Player : MonoBehaviour
     void KilledEnemy(int exp)
     {
         mTotalExp += exp;
+        mEnemiesRemaining--;
     }
 
-    /*
-    void OnCollisionEnter2D(Collision2D coll)
-    {    
-
-        if (coll != null && coll.gameObject.tag == "Enemy" && mWeapon.mMelee)
+    void ShovedByEnemy(Vector3 shoveInfo)
+    {
+        if(!mInvincible)
         {
-            Vector3 enemyPos = coll.gameObject.transform.position;
+            mInvincible = true;
+            mInvincibleTimer = kInvincibilityDuration;
+            mHealth -= (int)shoveInfo.z;
+            mShoveDirection = 3*shoveInfo;
+        }
+        else
+        {
+            mShoveDirection = Vector2.zero;
+        }
+    }
+    
+    void StartPos(Vector3 pos)
+    {
+        transform.position = pos;
+        GameObject.Find("Main Camera").SendMessage("StartPos", pos);
 
-            if (((mFacingDirection == Vector2.right) && (enemyPos.x > transform.position.x))
-                || ((mFacingDirection == Vector2.left) && (enemyPos.x < transform.position.x))
-                || ((mFacingDirection == Vector2.up) && (enemyPos.y > transform.position.y))
-                || ((mFacingDirection == Vector2.down) && (enemyPos.y < transform.position.y)))
+        mInvincible = true;
+        mInvincibleTimer = 5.0f;
+    }
+
+    void ExitPos(Vector3 pos)
+    {
+        mExitLocation = pos;
+    }
+
+    void CurrentLevel(int level)
+    {
+        mCurrentLevel = level;
+    }
+
+    void TotalEnemies(int numEnemies)
+    {
+        mEnemiesRemaining = numEnemies;
+    }
+
+    void UpdateCameraVelocity()
+    {
+        GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
+    }
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll != null)
+        {
+            if (coll.gameObject.tag == "Exit")
             {
-                coll.gameObject.SendMessage("KilledBySword");
+                GameObject.Find("MapGenerator").SendMessage("NextLevel");
             }
         }
     }
-    */
 }

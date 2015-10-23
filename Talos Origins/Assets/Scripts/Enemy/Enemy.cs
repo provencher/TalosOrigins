@@ -9,15 +9,16 @@ public class Enemy : MonoBehaviour {
     Vector2 lastDirection;
     Vector3 currentPosition;
 
-    Animator animController;
-    Rigidbody2D rb;
+    Animator mAnimController;
+    Rigidbody2D mRigidBody2D;
 
     public float mMoveSpeed;
     float stepOverThreshold = 0.05f;
     public float distanceThreshold;
 
-    public int mCurrentLevel;
+    int mCurrentLevel;
     int mExpGiven;
+    float mDamageModifier;
 
     LayerMask ignoreLayer, defaultLayer;
 
@@ -27,7 +28,7 @@ public class Enemy : MonoBehaviour {
     int mapGenIndex;
 
     bool firstLoop = true;
-    
+
 
     void Start() {
         //Write Code for Modifying stats based on currentLevel
@@ -36,21 +37,23 @@ public class Enemy : MonoBehaviour {
         type = eClass.flyer;
         gameObject.tag = "Enemy";
 
+        mRigidBody2D = GetComponent<Rigidbody2D>();
+
         //Write logic for changing enemy sprite 
 
         // Initialize variables
         defaultLayer = LayerMask.NameToLayer("Enemy");
         ignoreLayer = LayerMask.NameToLayer("Ignore");
-        
-        mCurrentLevel = 1; 
-        mMoveSpeed = 3.0f;
-        distanceThreshold = 12f;        
 
-        lastDirection = Vector2.right;        
+        mCurrentLevel = 1;
+        mMoveSpeed = 2.0f;
+        distanceThreshold = 12f;
+
+        lastDirection = Vector2.right;
     }
 
     void FixedUpdate()
-    {       
+    {
         currentPosition = transform.position;
 
         // Update according to enemy class
@@ -76,8 +79,8 @@ public class Enemy : MonoBehaviour {
 
 
     void FlyerUpdate()
-    {        
-        if(firstLoop)
+    {
+        if (firstLoop)
         {
             FlyerInit();
             firstLoop = false;
@@ -87,14 +90,18 @@ public class Enemy : MonoBehaviour {
         {
             Vector2 targetDirection = lastDirection;
 
-            int dice6Roll = Random.Range(1, 6);
-
-            if (!DirectionClear(lastDirection) || dice6Roll%5 == 0)
+            int d30Roll = Random.Range(1, 30);
+            if (!DirectionClear(lastDirection) || d30Roll == 5)
             {
-                targetDirection = FindDirectionWithTarget(playerPosition);
-                lastDirection = targetDirection;
+                targetDirection = FindDirectionWithTarget(playerPosition);               
+            }
+            else if (d30Roll == 15)
+            {
+                targetDirection = ChooseRandomDirection();
             }
             
+            lastDirection = targetDirection;
+
             //Pursue Player            
             TranslateToTarget(transform.position + (Vector3)targetDirection);
         }
@@ -103,13 +110,21 @@ public class Enemy : MonoBehaviour {
     void FlyerInit()
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
+        mDamageModifier = 5;
     }
 
     void WalkerUpdate()
     { }
 
+    void WalkerInit()
+    {    }
+
     void RunnerUpdate()
     { }
+
+    void RunnerInit()
+    { }
+
 
     bool InTalosRange(Vector3 target)
     {
@@ -128,72 +143,28 @@ public class Enemy : MonoBehaviour {
         {
             Vector3 direction = target - transform.position;
             direction.z = 0;
-            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
-
-            /*
-            if (direction.magnitude > stepOverThreshold)
-            {
-                // If too far, translate at kFollowSpeed
-                transform.Translate(direction.normalized * mMoveSpeed * Time.deltaTime);
-            }
-            else
-            {
-                target.z = 0;
-                // If close enough, just step over
-                transform.position = target;                
-            }
-            */
+            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
         }
     }
 
     Vector2 FindDirectionWithTarget(Vector3 target)
-    {        
-        Vector3 direction = target - transform.position;
-        Vector2 ret = new Vector2();   
+    {
+        Vector3 direction = (target - transform.position).normalized;
+        Vector2 ret = direction;
 
-        Vector2 dir1 = new Vector2(direction.x, 0);
-        Vector2 dir2 = new Vector2(0, direction.y);
-
-        dir1.Normalize();
-        dir2.Normalize();
-
-        bool dir1Clear = DirectionClear(dir1);
-        bool dir2Clear = DirectionClear(dir2);
-
-        float x = Mathf.Abs(direction.x);
-        float y = Mathf.Abs(direction.y);
-
-
-        int coinFlip = 0;
-
-        if(dir1Clear && dir2Clear)
+        if (!(DirectionClear(ret)))
         {
-            coinFlip = Random.Range(0, 1);
-            if (coinFlip == 0)
-            {
-                ret = dir1;
-            }
-            else
-            {
-                ret = dir2;
-            }
-        }
-        else if (dir1Clear && !dir2Clear)
-        {
-            ret = dir1;
+            Vector2 dir1 = new Vector2(direction.x, 0);
+            Vector2 dir2 = new Vector2(0, direction.y);
 
-        }
-        else if (dir2Clear && !dir1Clear)
-        {
-            ret = dir2;
-        }            
-        else
-        {
-            dir1 = -1 * dir1;
-            dir2 = -1 * dir2;
-            dir1Clear = DirectionClear(dir1);
-            dir2Clear = DirectionClear(dir2);
+            bool dir1Clear = DirectionClear(dir1);
+            bool dir2Clear = DirectionClear(dir2);
 
+            float x = Mathf.Abs(direction.x);
+            float y = Mathf.Abs(direction.y);
+
+
+            int coinFlip = 0;
             if (dir1Clear && dir2Clear)
             {
                 coinFlip = Random.Range(0, 1);
@@ -211,12 +182,41 @@ public class Enemy : MonoBehaviour {
                 ret = dir1;
 
             }
-            else
+            else if (dir2Clear && !dir1Clear)
             {
                 ret = dir2;
             }
+            else
+            {
+                dir1 = -1 * dir1;
+                dir2 = -1 * dir2;
+                dir1Clear = DirectionClear(dir1);
+                dir2Clear = DirectionClear(dir2);
+
+                if (dir1Clear && dir2Clear)
+                {
+                    coinFlip = Random.Range(0, 1);
+                    if (coinFlip == 0)
+                    {
+                        ret = dir1;
+                    }
+                    else
+                    {
+                        ret = dir2;
+                    }
+                }
+                else if (dir1Clear && !dir2Clear)
+                {
+                    ret = dir1;
+
+                }
+                else
+                {
+                    ret = dir2;
+                }
+            }
         }
-      
+
         return ret;
     }
 
@@ -232,11 +232,11 @@ public class Enemy : MonoBehaviour {
             direct = possibleDirections[randomInt % possibleDirections.Length];
             if (DirectionClear(direct))
             {
-                return direct;               
+                return direct;
             }
             else if (loopCount > 10)
             {
-                return -1* lastDirection;
+                return -1 * lastDirection;
             }
         }
     }
@@ -306,7 +306,7 @@ public class Enemy : MonoBehaviour {
 
             isClear = isClear && !(hit.collider != null &&
                (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy"
+               hit.collider.gameObject.tag == "Enemy" 
                ));
 
         }
@@ -325,7 +325,7 @@ public class Enemy : MonoBehaviour {
         {
             return false;
         }
-    }    
+    }
 
 
     void SetCollisionWithPlayer(bool enabled)
@@ -340,31 +340,32 @@ public class Enemy : MonoBehaviour {
             gameObject.tag = "Ignore";
             gameObject.layer = ignoreLayer;
         }
-    }    
+    }
 
     int CalculateEXP(int level)
     {
-        return (int)50 * (1 + level / 2);
+        return 50 * (int)(1 + level / 2);
     }
 
-    // Collision Detection
-    void OnCollisionEnter2D(Collision2D other)
+    // Each level, enemies do an extra 5% damage
+    float CalculateDamage()
     {
-        // add code to detect collision with bullet        
-    }
+        return mDamageModifier * (1 + mCurrentLevel / 20);
+    }  
+    
 
     // MESSAGING FUNCTIONS   
     ////////////////////////////////////////////////////////////
     void UpdatePlayerPosition(Vector3 playerPos)
     {
         playerPosition = playerPos;
-    }    
+    }
 
     void UpdateEnemyIndex(int index)
     {
         mapGenIndex = index;
-    }    
-    
+    }
+
     void UpdateLevel(int level)
     {
         // Message Receive function to communicate level and change enemy stats
@@ -384,4 +385,34 @@ public class Enemy : MonoBehaviour {
         // Notify Map Generator of index of enemy killed
         GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
     }
+
+    void ShovedByEnemy(Vector2 shoveDir)
+    {
+        switch(type)
+        {
+            case eClass.flyer:
+                {
+                    mRigidBody2D.AddForce(shoveDir, ForceMode2D.Impulse);
+                    break;
+                }
+            default:
+                break;
+        }
+    }
+
+    //Shove Player and provide him with damage and direction
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll != null)
+        {
+            if (coll.gameObject.tag == "Player")
+            {
+                coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
+            }
+            else if (coll.gameObject.tag == "Enemy")
+            {
+                coll.gameObject.SendMessage("ShovedByEnemy", lastDirection);
+            }
+        }    
+    }   
 }

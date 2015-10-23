@@ -33,5 +33,17 @@ public class CameraFollow : MonoBehaviour
     {
         pos.z = transform.position.z;
         transform.position = pos;        
-    }       
+    }  
+    
+    void PlayerVelocity(Vector2 velocity)
+    {
+        if (velocity.magnitude > 8.0f)
+        {
+            kFollowSpeed = velocity.magnitude;
+        }
+        else
+        {
+            kFollowSpeed = 8.0f;
+        }
+    }     
 }
