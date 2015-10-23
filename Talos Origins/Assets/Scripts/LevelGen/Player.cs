@@ -56,10 +56,10 @@ public class Player : MonoBehaviour
         // Get references to other components and game objects
         
         mRigidBody2D = GetComponent<Rigidbody2D>();
-
+        mAnimator = GetComponent<Animator>();
 
         /*
-        mAnimator = GetComponent<Animator>();
+        
 
 
         // Obtain ground check components and store in list
@@ -102,6 +102,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
+        CheckGround();
 
 
         mRunning = false;
@@ -156,6 +157,7 @@ public class Player : MonoBehaviour
             }
         }
         */
+        UpdateAnimator();
     }
 
     void StartPos(Vector3 pos)
@@ -163,4 +165,24 @@ public class Player : MonoBehaviour
         transform.position = pos;
         GameObject.Find("Main Camera").SendMessage("StartPos", pos);
     }
+    void CheckGround()
+    {
+        //temp
+        if (mRigidBody2D.velocity.y == 0)
+        {
+            mGrounded = true;
+        }
+        else
+        {
+            mGrounded = false;
+        }
+    }
+
+    void UpdateAnimator()
+    {
+        mAnimator.SetBool("isGrounded", mGrounded);
+
+    }
+
+    
 }
