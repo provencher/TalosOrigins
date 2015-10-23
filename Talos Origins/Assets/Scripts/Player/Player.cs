@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {   
@@ -57,7 +58,9 @@ public class Player : MonoBehaviour
 
     Vector3 mExitLocation;
     int mCurrentLevel;
-    
+    int mEnemiesRemaining;
+
+    Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;    
 
     /*
     [SerializeField]
@@ -79,6 +82,18 @@ public class Player : MonoBehaviour
         mShoveDirection = Vector2.zero;
         mHealth = 100;
         mInvincibleTimer = 0;
+
+
+        // UI Text
+        exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
+        enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
+        curLevel = GameObject.Find("CurrentLevel").GetComponent<Text>();
+        talosHealth = GameObject.Find("TalosHealth").GetComponent<Text>();
+        experience = GameObject.Find("Experience").GetComponent<Text>();
+        actionPts = GameObject.Find("ActionPoints").GetComponent<Text>();
+        invicibleTime = GameObject.Find("Invicible").GetComponent<Text>();
+
+
         /*
         // Obtain ground check components and store in list
         mGroundCheckList = new List<GroundCheck>();
@@ -112,7 +127,13 @@ public class Player : MonoBehaviour
 
     void UpdateUIText()
     {
-
+        exitDistance.text = "Distance From Exit: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
+        enemiesLeft.text = "Enemies Remaining: " + mEnemiesRemaining.ToString();
+        curLevel.text = "Current Level: " + mCurrentLevel.ToString();
+        talosHealth.text = "Health: " + mHealth.ToString();
+        experience.text = "Exp: " + mTotalExp.ToString();
+        actionPts.text = "Action Points: INF";
+        invicibleTime.text = "Invincible Timer: " + (Mathf.CeilToInt(mInvincibleTimer)).ToString();
     }
  
 
@@ -154,6 +175,14 @@ public class Player : MonoBehaviour
         }
         */
 
+    }
+
+    void CheckDead()
+    {
+        if(mHealth <= 0)
+        {
+            GameObject.Find("MapGenerator").SendMessage("ResetGame");            
+        }
     }
 
     void CheckJump()
@@ -359,6 +388,7 @@ public class Player : MonoBehaviour
         return null;
     }
 
+  
 
 
 
@@ -376,6 +406,7 @@ public class Player : MonoBehaviour
     void KilledEnemy(int exp)
     {
         mTotalExp += exp;
+        mEnemiesRemaining--;
     }
 
     void ShovedByEnemy(Vector3 shoveInfo)
@@ -384,20 +415,22 @@ public class Player : MonoBehaviour
         {
             mInvincible = true;
             mInvincibleTimer = kInvincibilityDuration;
-            mHealth -= (int) shoveInfo.z;
-            mShoveDirection = 6*shoveInfo;
+            mHealth -= (int)shoveInfo.z;
+            mShoveDirection = 3*shoveInfo;
         }
         else
         {
             mShoveDirection = Vector2.zero;
         }
     }
-
-    // Camera Update Notification
+    
     void StartPos(Vector3 pos)
     {
         transform.position = pos;
         GameObject.Find("Main Camera").SendMessage("StartPos", pos);
+
+        mInvincible = true;
+        mInvincibleTimer = 5.0f;
     }
 
     void ExitPos(Vector3 pos)
@@ -407,12 +440,28 @@ public class Player : MonoBehaviour
 
     void CurrentLevel(int level)
     {
+        mCurrentLevel = level;
+    }
 
+    void TotalEnemies(int numEnemies)
+    {
+        mEnemiesRemaining = numEnemies;
     }
 
     void UpdateCameraVelocity()
     {
         GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
-    }   
-       
+    }
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll != null)
+        {
+            if (coll.gameObject.tag == "Exit")
+            {
+                GameObject.Find("MapGenerator").SendMessage("NextLevel");
+            }
+        }
+    }
 }

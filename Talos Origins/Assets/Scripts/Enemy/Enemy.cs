@@ -110,6 +110,7 @@ public class Enemy : MonoBehaviour {
     void FlyerInit()
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
+        mDamageModifier = 5;
     }
 
     void WalkerUpdate()

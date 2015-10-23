@@ -41,7 +41,8 @@ public class MapGenerator : MonoBehaviour
     public int enemyModifier;
 
     int numEnemies;
-
+    Vector3 mTalosPos;
+    Vector3 mExitPos;
 
     private Room startRoom, endRoom;
     private List<Room> allRooms;
@@ -121,6 +122,7 @@ public class MapGenerator : MonoBehaviour
         PlaceTalosInRoom();
         PlaceExitInRoom();
         SpawnAllEnemies();
+        MessageHandling();
     }
 
     void PlaceTalosInRoom()
@@ -147,11 +149,29 @@ public class MapGenerator : MonoBehaviour
             center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
         }
 
-        Vector3 position = CoordToWorldPoint(center);
-
-        Debug.Log("Talos Start Position: " + position.ToString());
-        mTalos.SendMessage("StartPos", position);
+        mTalosPos = CoordToWorldPoint(center);        
     }
+
+    void MessageHandling()
+    {
+        Debug.Log("Talos Start Position: " + mTalosPos.ToString());
+        mTalos.SendMessage("StartPos", mTalosPos);
+        mTalos.SendMessage("TotalEnemies", enemies.Count);
+        mTalos.SendMessage("CurrentLevel", currentLevel);
+        mTalos.SendMessage("ExitPos", mExit.transform.position);
+    }
+
+    void NextLevel()
+    {
+        currentLevel++;
+        GenerateMap();
+    }
+
+    void ResetGame()
+    {
+        Application.LoadLevel(0);
+    }
+
 
     /// ENEMY PROCESSING
     ////////////////////////////////////////////////////////////////////////////////////
