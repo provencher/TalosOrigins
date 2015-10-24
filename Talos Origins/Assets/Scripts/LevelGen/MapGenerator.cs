@@ -163,8 +163,7 @@ public class MapGenerator : MonoBehaviour
 
     void NextLevel()
     {
-        currentLevel++;
-        ClearExit();
+        currentLevel++;        
         GenerateMap();
     }
 
@@ -234,10 +233,6 @@ public class MapGenerator : MonoBehaviour
 
     ////////////////////////////////////////////////////////////////////////////////////  
 
-    void ClearExit()
-    {
-        Destroy(mExit);
-    }
 
     void PlaceExitInRoom()
     {
@@ -263,9 +258,8 @@ public class MapGenerator : MonoBehaviour
             center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
         }
 
-        Vector3 position = CoordToWorldPoint(center);                
-        
-        mExit = (GameObject)Instantiate(mExit, position, Quaternion.identity);
+        Vector3 position = CoordToWorldPoint(center);
+        mExit.SendMessage("NewExit", position);
     }    
 
 
