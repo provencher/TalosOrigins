@@ -123,18 +123,17 @@ public class Player : MonoBehaviour
         CheckDead();
         NotifyEnemiesOfPosition();
         UpdateCameraVelocity();
-       // UpdateUIText();
+        UpdateUIText();
     }
 
     void UpdateUIText()
     {
-        exitDistance.text = "Distance From Exit: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
-        enemiesLeft.text = "Enemies Remaining: " + mEnemiesRemaining.ToString();
-        curLevel.text = "Current Level: " + mCurrentLevel.ToString();
-        talosHealth.text = "Health: " + mHealth.ToString();
-        experience.text = "Exp: " + mTotalExp.ToString();
-        actionPts.text = "Action Points: INF";
-        invicibleTime.text = "Invincible Timer: " + (Mathf.CeilToInt(mInvincibleTimer)).ToString();
+        GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
+        GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
+        GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
+        GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
+        GameObject.Find("experience").GetComponent<Text>().text = "Exp: " + mTotalExp.ToString();
+        GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
     }
  
 
