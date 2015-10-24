@@ -257,6 +257,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    public Vector3 PlayerVelocity()
+    {
+        return mRigidBody2D.velocity;
+    }
     
  
 

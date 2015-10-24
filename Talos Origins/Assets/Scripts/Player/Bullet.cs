@@ -36,10 +36,25 @@ public class Bullet : MonoBehaviour {
         }
     }
 
-    public void SetDirection( Vector3 dic)
-    {        
-        mRigidbody2D.velocity = (mSpeed * (Vector2)dic);
-        transform.rotation = Quaternion.FromToRotation(Vector3.right, dic);
+    public void SetDirection( Vector3 direction, Vector3 playerVelocity)
+    {
+        playerVelocity.Normalize();
+
+        if((direction.x > 0 && playerVelocity.x > 0)
+            || (direction.x < 0 && playerVelocity.x < 0))
+        {
+            direction.x += playerVelocity.x;
+        }
+
+        if ((direction.y > 0 && playerVelocity.y > 0)
+           || (direction.y < 0 && playerVelocity.y < 0))
+        {
+            direction.y += playerVelocity.y;
+        }
+
+
+        mRigidbody2D.velocity = (mSpeed * (Vector2)direction);
+        transform.rotation = Quaternion.FromToRotation(Vector3.right, direction);
     }
 
     void BulletDamage(int damage)
