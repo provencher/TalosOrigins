@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     bool mRising;
 
     // Invincibility timer
-    float kInvincibilityDuration = 1.0f;
+    float kInvincibilityDuration = 0.5f;
     float mInvincibleTimer;
     bool mInvincible;
 
@@ -139,8 +139,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);
-       
+        //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
         CheckGround();
         CheckInvicible();       
                           
@@ -217,12 +216,7 @@ public class Player : MonoBehaviour
     }
 
     Vector3 CheckMove()
-    {
-        // Get Shoved
-        mRigidBody2D.AddForce(mShoveDirection, ForceMode2D.Impulse);
-        mShoveDirection = Vector2.zero;
-
-
+    {       
         if (mWeapon.mMelee)
         {
             mMeleeTrigger = true;
@@ -252,11 +246,12 @@ public class Player : MonoBehaviour
 
     void TranslateInDirection(Vector3 direction)
     {
-        if (direction != null)
+        if (direction != null && (Mathf.Abs(mRigidBody2D.velocity.x) < 7.0f))
         {
             //Vector3 direction = target - transform.position;
-            direction.z = 0;
-            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
+            direction.z = 0;            
+            mRigidBody2D.AddForce(10*direction);
+            //transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
         }
     }
 
@@ -416,7 +411,9 @@ public class Player : MonoBehaviour
             mInvincible = true;
             mInvincibleTimer = kInvincibilityDuration;
             mHealth -= (int)shoveInfo.z;
-            mShoveDirection = 3*shoveInfo;
+
+            // Get Shoved
+            mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
         else
         {
@@ -430,7 +427,7 @@ public class Player : MonoBehaviour
         GameObject.Find("Main Camera").SendMessage("StartPos", pos);
 
         mInvincible = true;
-        mInvincibleTimer = 5.0f;
+        mInvincibleTimer = 1.5f;
     }
 
     void ExitPos(Vector3 pos)

@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour {
     int mCurrentLevel;
     int mExpGiven;
     float mDamageModifier;
+    int mHealth;
 
     LayerMask ignoreLayer, defaultLayer;
 
@@ -48,12 +49,14 @@ public class Enemy : MonoBehaviour {
         mCurrentLevel = 1;
         mMoveSpeed = 2.0f;
         distanceThreshold = 12f;
+        mHealth = 100;
 
         lastDirection = Vector2.right;
     }
 
     void FixedUpdate()
     {
+        CheckDead();
         currentPosition = transform.position;
 
         // Update according to enemy class
@@ -74,6 +77,14 @@ public class Enemy : MonoBehaviour {
                     RunnerUpdate();
                     break;
                 }
+        }
+    }
+
+    void CheckDead()
+    {
+        if(mHealth <= 0)
+        {
+            NotifyOfDeath();
         }
     }
 
@@ -111,6 +122,7 @@ public class Enemy : MonoBehaviour {
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
+        mHealth = mHealth * (1 + mCurrentLevel / 20);
     }
 
     void WalkerUpdate()
@@ -400,6 +412,12 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    void HitByBullet(int damage)
+    {
+        mHealth -= damage;
+    }
+
+
     //Shove Player and provide him with damage and direction
     void OnCollisionEnter2D(Collision2D coll)
     {
@@ -412,7 +430,7 @@ public class Enemy : MonoBehaviour {
             else if (coll.gameObject.tag == "Enemy")
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", lastDirection);
-            }
+            }            
         }    
     }   
 }

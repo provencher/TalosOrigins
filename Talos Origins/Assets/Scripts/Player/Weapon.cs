@@ -13,11 +13,14 @@ public class Weapon : MonoBehaviour {
     [SerializeField]
     GameObject mBulletPrefab;
 
+    int mGunDamage;
+
     // Use this for initialization
     void Start () {       
         mMelee = false;
         mShoot = false;
-        mWeapon = 1;
+        mWeapon = 2;
+        mGunDamage = 25;
         lastShootTime = Time.time;
         mTalos = transform.parent.GetComponent<Player>();
 	}
@@ -67,6 +70,8 @@ public class Weapon : MonoBehaviour {
         if (Time.time - lastShootTime > ShootInterval)
         {
             GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, transform.position+mTalos.mFacingDirection.x*Vector3.right * 0.4f, Quaternion.identity);
+            mBullet.SendMessage("BulletDamage", mGunDamage);
+
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 mBulletDirection = mousePosition-mBullet.transform.position;
             mBulletDirection.z = 0;
