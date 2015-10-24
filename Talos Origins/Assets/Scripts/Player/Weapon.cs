@@ -54,7 +54,7 @@ public class Weapon : MonoBehaviour {
             {
                 mShoot = true;
                 mMelee = false;
-                //Shoot();
+                Shoot();
             }
         }
         else
