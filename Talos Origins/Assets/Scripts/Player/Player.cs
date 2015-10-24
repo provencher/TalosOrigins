@@ -140,12 +140,14 @@ public class Player : MonoBehaviour
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
+        FaceMouse();
         CheckGround();
         CheckInvicible();       
                           
         TranslateInDirection(CheckMove());
         TriggerMelee();
-        CheckJump();        
+        CheckJump();
+        FaceMouse();
 
         UpdateAnimator();
         /*
@@ -229,14 +231,14 @@ public class Player : MonoBehaviour
         if (Input.GetButton("Left"))
         {
             //transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);           
-            FaceDirection(Vector2.left);
+            //FaceDirection(Vector2.left);
             mRunning = true;
             return Vector3.left;
         }
         if (Input.GetButton("Right"))
         {
             //transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
-            FaceDirection(Vector2.right);            
+            //FaceDirection(Vector2.right);            
             mRunning = true;
             return Vector3.right;
         }
@@ -255,8 +257,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    void FaceDirection(Vector2 faceD)
+    
+ 
+
+    void FaceMouse()
     {
+        if (Camera.main.ScreenToWorldPoint(Input.mousePosition).x > transform.position.x)
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            mFacingDirection = Vector2.right;
+        }
+        else
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
+            mFacingDirection = Vector2.left;
+        }
+    }
+
+    public void FaceDirection(Vector2 faceD)
+    {
+        
         if (faceD == Vector2.left)
         {
             transform.rotation = Quaternion.LookRotation(Vector3.back);

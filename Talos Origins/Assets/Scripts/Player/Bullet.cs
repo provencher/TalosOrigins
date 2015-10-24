@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour {
     void Awake () {
         mRigidbody2D = GetComponent<Rigidbody2D>();
         mRigidbody2D.velocity = (mSpeed * Vector2.right);
-        //mRigidbody2D.gravityScale = 0;
+        mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
         mDamage = 25;
 	}
@@ -37,8 +37,8 @@ public class Bullet : MonoBehaviour {
     }
 
     public void SetDirection( Vector3 dic)
-    {
-        mRigidbody2D.velocity = (mSpeed * new Vector2(dic.x, dic.y));
+    {        
+        mRigidbody2D.velocity = (mSpeed * (Vector2)dic);
         transform.rotation = Quaternion.FromToRotation(Vector3.right, dic);
     }
 
