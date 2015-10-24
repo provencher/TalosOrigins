@@ -85,13 +85,13 @@ public class Player : MonoBehaviour
 
 
         // UI Text
-        exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
+        /*exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
         enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
         curLevel = GameObject.Find("CurrentLevel").GetComponent<Text>();
         talosHealth = GameObject.Find("TalosHealth").GetComponent<Text>();
         experience = GameObject.Find("Experience").GetComponent<Text>();
         actionPts = GameObject.Find("ActionPoints").GetComponent<Text>();
-        invicibleTime = GameObject.Find("Invicible").GetComponent<Text>();
+        invicibleTime = GameObject.Find("Invicible").GetComponent<Text>();*/
 
 
         /*
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
         CheckDead();
         NotifyEnemiesOfPosition();
         UpdateCameraVelocity();
-        UpdateUIText();
+       // UpdateUIText();
     }
 
     void UpdateUIText()

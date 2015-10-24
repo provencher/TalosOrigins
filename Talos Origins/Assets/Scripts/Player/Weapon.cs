@@ -9,8 +9,6 @@ public class Weapon : MonoBehaviour {
     Player mTalos;
     [SerializeField]
     float ShootInterval;
-    [SerializeField]
-    float mBulletSpeed;
     float lastShootTime;
     [SerializeField]
     GameObject mBulletPrefab;
@@ -73,7 +71,7 @@ public class Weapon : MonoBehaviour {
             Vector3 mBulletDirection = mousePosition-mBullet.transform.position;
             mBulletDirection.z = 0;
             mBulletDirection.Normalize();
-            mBullet.GetComponent<Rigidbody2D>().velocity = (mBulletSpeed * mBulletDirection);
+            mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection);
             lastShootTime = Time.time;
         }
         
