@@ -13,6 +13,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     GameObject tempEnemy;
 
+    [SerializeField]
+    GameObject enemyCo;
+
     List<GameObject> enemies;
 
     public int width;
@@ -191,8 +194,16 @@ public class MapGenerator : MonoBehaviour
         //Add Spacing code to spread enemies out       
         //Unecessary
         Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
-                
-        enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos+ offSetVector, Quaternion.identity));
+
+        if (UnityEngine.Random.Range(0, 2) == 0)
+        {
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos + offSetVector, Quaternion.identity));
+        }
+        else
+        {
+            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos + offSetVector, Quaternion.identity));
+        }
+        
         enemies[index].SendMessage("UpdateEnemyIndex", index);            
         enemies[index].SendMessage("UpdateLevel", currentLevel);
         

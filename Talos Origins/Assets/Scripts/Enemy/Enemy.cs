@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
-    public enum eClass { flyer, walker, runner };
+    public enum eClass { flyer, walker, runner, Crawler };
     public eClass type;
 
     Vector2[] possibleDirections = { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
@@ -31,14 +31,29 @@ public class Enemy : MonoBehaviour {
     bool firstLoop = true;
 
 
+    //For animator
+    Animator mAnimator;
+    //crawer
+    public Vector2 crawlerFacedirection;
+    bool crawlerIsWalking;
+    bool crawlerIsShooting;
+    float shootingTime=1.0f;
+    float shootEndTime;
+    bool  crawlerIsHit;
+    float hitTime = 0.5f;
+    float hitEndTime;
+
+
+
     void Start() {
         //Write Code for Modifying stats based on currentLevel
 
         //Write logic for setting enemy type
-        type = eClass.flyer;
+        //type = eClass.flyer;
         gameObject.tag = "Enemy";
 
         mRigidBody2D = GetComponent<Rigidbody2D>();
+        
 
         //Write logic for changing enemy sprite 
 
@@ -75,6 +90,11 @@ public class Enemy : MonoBehaviour {
             case eClass.walker:
                 {
                     RunnerUpdate();
+                    break;
+                }
+            case eClass.Crawler:
+                {
+                    CrawlerUpdate();
                     break;
                 }
         }
@@ -123,6 +143,96 @@ public class Enemy : MonoBehaviour {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
         mHealth = mHealth * (1 + mCurrentLevel / 20);
+    }
+    void CrawlerUpdate()
+    {
+        if (firstLoop)
+        {
+            CrawlerInit();
+            firstLoop = false;
+        }
+
+        CrawlerCheckMove();
+
+        if (InTalosRange(playerPosition))
+        {
+            Vector2 targetDirection = lastDirection;
+            /*
+
+            int d30Roll = Random.Range(1, 30);
+            if (!DirectionClear(lastDirection) || d30Roll == 5)
+            {
+                targetDirection = FindDirectionWithTarget(playerPosition);
+            }
+            else if (d30Roll == 15)
+            {
+                targetDirection = ChooseRandomDirection();
+            }
+            */
+
+            targetDirection = FindDirectionWithTarget(playerPosition);
+            targetDirection.y = 0;
+            lastDirection = targetDirection;
+
+            //Pursue Player         
+            TranslateToTarget(transform.position + (Vector3)targetDirection);
+            CrawlerFaceDirection(targetDirection);
+            CrawlerUpdateAnimator();
+        }
+    }
+
+    void CrawlerFaceDirection(Vector2 fDic)
+    {
+        if (fDic.x < 0)
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        }
+        else
+        {
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
+        }
+    }
+    void CrawlerInit()
+    {
+        gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
+        mDamageModifier = 5;
+        mHealth = mHealth * (1 + mCurrentLevel / 20);
+
+
+        crawlerFacedirection = Vector2.left;
+        //animator
+        mAnimator = GetComponent<Animator>();
+        //mAnimator.enabled = true;
+        crawlerIsWalking = true;
+        crawlerIsShooting = false;
+        crawlerIsHit = false;
+    }
+
+    void CrawlerCheckMove()
+    {
+        if (mRigidBody2D.velocity == Vector2.zero)
+        {
+            crawlerIsWalking = false;
+        }
+        else
+        {
+            crawlerIsWalking = true;
+            if (FindDirectionWithTarget(playerPosition).x < 0)
+            {
+                crawlerFacedirection = Vector2.left;
+            }
+            else
+            {
+                crawlerFacedirection = Vector2.right;
+            }
+        }
+    }
+
+    void CrawlerUpdateAnimator()
+    {
+        mAnimator.SetBool("isWalking", crawlerIsWalking);
+        mAnimator.SetBool("isShooting", crawlerIsShooting);
+        mAnimator.SetBool("isHit", crawlerIsHit);
     }
 
     void WalkerUpdate()

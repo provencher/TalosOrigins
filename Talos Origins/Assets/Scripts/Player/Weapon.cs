@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Weapon : MonoBehaviour {
-    Animator mAnimator;
+   
     public bool mMelee;
     public bool mShoot;
     int mWeapon;// 1: sword; 2:gun;
