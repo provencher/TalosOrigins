@@ -12,7 +12,7 @@ public class EnemyCoWeapon : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        mRandomTime = UnityEngine.Random.Range(3.0f, 5.0f);
+        mRandomTime = UnityEngine.Random.Range(5.0f, 7.0f);
     }
 	
 	// Update is called once per frame
@@ -33,7 +33,7 @@ public class EnemyCoWeapon : MonoBehaviour {
         if (Time.time - lastShootTime > ShootInterval)
         {
             Vector2 enemyFaceDirection=transform.parent.GetComponent<Enemy>().crawlerFacedirection;
-            Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection*0.5f;
+            Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection*0.5f+Vector3.up*2.0f;
             Vector3 mBulletDirection = enemyFaceDirection;
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);
