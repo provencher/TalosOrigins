@@ -12,6 +12,8 @@ public class EnemyCoBullet : MonoBehaviour {
     float deadTime;
     Animator mAnimator;
 
+    int mDamage;
+
 
 
     Rigidbody2D mRigidbody2D;
@@ -47,5 +49,27 @@ public class EnemyCoBullet : MonoBehaviour {
     void UpdateAnimator()
     {
         mAnimator.SetFloat("time", Time.time - createTime);
+    }
+
+    void SetDamage(int damage)
+    {
+        mDamage = 2 * damage;
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll != null)
+        {
+            if (coll.gameObject.tag == "Player")
+            {
+                coll.gameObject.SendMessage("HitByBullet", mDamage);
+                /*
+                Vector3 direction = transform.position - coll.gameObject.transform.position;
+                Vector3 force =  direction.normalized / Mathf.Pow(direction.magnitude, 2);
+
+                coll.gameObject.GetComponent<Rigidbody2D>().AddForce(300 * force);
+                */
+            }           
+        }
     }
 }

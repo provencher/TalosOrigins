@@ -195,7 +195,7 @@ public class MapGenerator : MonoBehaviour
         //Unecessary
         Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
 
-        if (UnityEngine.Random.Range(0, 4) == 0)
+        if (UnityEngine.Random.Range(0,3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos + offSetVector, Quaternion.identity));
         }

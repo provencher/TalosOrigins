@@ -45,6 +45,7 @@ public class EnemyCoWeapon : MonoBehaviour {
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);
             mBullet.GetComponent<EnemyCoBullet>().setDirection((Vector3)enemyFaceDirection);
+            mBullet.SendMessage("SetDamage", mParent.CalculateDamage());
             //mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
 
             lastShootTime = Time.time;

@@ -474,6 +474,13 @@ public class Player : MonoBehaviour
         GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
     }
 
+    void HitByBullet(int damage)
+    {
+        if(!mInvincible)
+        {
+            mHealth -= damage;
+        }
+    }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
