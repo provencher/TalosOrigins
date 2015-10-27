@@ -195,13 +195,13 @@ public class MapGenerator : MonoBehaviour
         //Unecessary
         Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
 
-        if (UnityEngine.Random.Range(0, 2) == 0)
+        if (UnityEngine.Random.Range(0, 4) == 0)
         {
-            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos + offSetVector, Quaternion.identity));
+            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos + offSetVector, Quaternion.identity));
         }
         else
         {
-            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos + offSetVector, Quaternion.identity));
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos + offSetVector, Quaternion.identity));
         }
         
         enemies[index].SendMessage("UpdateEnemyIndex", index);            
@@ -222,7 +222,7 @@ public class MapGenerator : MonoBehaviour
             {
                 tempCoord = new Coord(j, i);                
 
-                if (UnityEngine.Random.Range(0, 50) == 15)
+                if (UnityEngine.Random.Range(0, 45) == 15)
                 {
                     if (CheckForFit(tempCoord, 1, 1))
                     {

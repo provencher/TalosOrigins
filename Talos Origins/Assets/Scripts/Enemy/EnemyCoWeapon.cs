@@ -10,23 +10,30 @@ public class EnemyCoWeapon : MonoBehaviour {
     [SerializeField]
     GameObject mEnemyCoBulletPrefab;
 
+    Enemy mParent; 
+
     // Use this for initialization
     void Start () {
         mRandomTime = UnityEngine.Random.Range(5.0f, 7.0f);
+        mParent = transform.parent.GetComponent<Enemy>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        float shootTime = Time.time;
-        
-        while (shootTime > mRandomTime)
+
+        if (mParent.mInRange)
         {
-            shootTime -= mRandomTime;
-        }
-        if (shootTime < 1)
-        {
-            Shoot();
-        }
+            float shootTime = Time.time;
+
+            while (shootTime > mRandomTime)
+            {
+                shootTime -= mRandomTime;
+            }
+            if (shootTime < 1)
+            {
+                Shoot();
+            }
+        }       
 	}
     void Shoot()
     {

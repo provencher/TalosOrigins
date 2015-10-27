@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour {
     int mapGenIndex;
 
     bool firstLoop = true;
-
+    public bool mInRange = false;
 
     //For animator
     Animator mAnimator;
@@ -42,6 +42,8 @@ public class Enemy : MonoBehaviour {
     bool  crawlerIsHit;
     float hitTime = 0.5f;
     float hitEndTime;
+
+
 
 
 
@@ -74,29 +76,33 @@ public class Enemy : MonoBehaviour {
         CheckDead();
         currentPosition = transform.position;
 
-        // Update according to enemy class
-        switch (type)
+        mInRange = InTalosRange(playerPosition);
+        if (mInRange)
         {
-            case eClass.flyer:
-                {
-                    FlyerUpdate();
-                    break;
-                }
-            case eClass.runner:
-                {
-                    WalkerUpdate();
-                    break;
-                }
-            case eClass.walker:
-                {
-                    RunnerUpdate();
-                    break;
-                }
-            case eClass.Crawler:
-                {
-                    CrawlerUpdate();
-                    break;
-                }
+            // Update according to enemy class
+            switch (type)
+            {
+                case eClass.flyer:
+                    {
+                        FlyerUpdate();
+                        break;
+                    }
+                case eClass.runner:
+                    {
+                        WalkerUpdate();
+                        break;
+                    }
+                case eClass.walker:
+                    {
+                        RunnerUpdate();
+                        break;
+                    }
+                case eClass.Crawler:
+                    {
+                        CrawlerUpdate();
+                        break;
+                    }
+            }
         }
     }
 
@@ -117,8 +123,7 @@ public class Enemy : MonoBehaviour {
             firstLoop = false;
         }
 
-        if (InTalosRange(playerPosition))
-        {
+        
             Vector2 targetDirection = lastDirection;
 
             int d30Roll = Random.Range(1, 30);
@@ -135,7 +140,7 @@ public class Enemy : MonoBehaviour {
 
             //Pursue Player            
             TranslateToTarget(transform.position + (Vector3)targetDirection);
-        }
+        
     }
 
     void FlyerInit()
@@ -154,8 +159,7 @@ public class Enemy : MonoBehaviour {
 
         CrawlerCheckMove();
 
-        if (InTalosRange(playerPosition))
-        {
+        
             Vector2 targetDirection = lastDirection;
             /*
 
@@ -178,7 +182,7 @@ public class Enemy : MonoBehaviour {
             TranslateToTarget(transform.position + (Vector3)targetDirection);
             CrawlerFaceDirection(targetDirection);
             CrawlerUpdateAnimator();
-        }
+        
     }
 
     void CrawlerFaceDirection(Vector2 fDic)
