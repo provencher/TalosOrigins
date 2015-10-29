@@ -38,15 +38,15 @@ public class Grapple : MonoBehaviour {
             moveHook(hit.point);
             drawLine();
             lineRenderer.enabled = true;
+            lineRenderer.SetColors(Color.red,Color.red);
             grapplehooked = true;
 
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            grapple.enabled = false;
             lineRenderer.enabled = false;
-            lineRenderer.SetPosition(1,transform.position);
+            grapple.enabled = false;
 
         }
 
@@ -63,9 +63,8 @@ public class Grapple : MonoBehaviour {
 
     void drawLine()
     {
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, anchor.transform.position);
-        lineRenderer.enabled = true;
+        lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -1));
+        lineRenderer.SetPosition(1, new Vector3(anchor.transform.position.x, anchor.transform.position.y, -1));
     }
 
     void moveHook(Vector3 anchorPosition)
