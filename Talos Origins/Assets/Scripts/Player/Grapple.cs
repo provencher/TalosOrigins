@@ -69,11 +69,11 @@ public class Grapple : MonoBehaviour {
 
             if (Input.GetButton("Up"))
             {
-                grapple.distance -= grapple.distance * 0.02f;
+                grapple.distance -= grapple.distance * 0.01f;
             }
             else if (Input.GetButton("Down"))
             {
-                grapple.distance += grapple.distance * 0.02f;
+                grapple.distance += grapple.distance * 0.01f;
             }
         }
 	}
