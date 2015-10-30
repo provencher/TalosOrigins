@@ -52,6 +52,7 @@ public class Grapple : MonoBehaviour {
         if (grapplehooked)
         {
             drawLine();
+			bendRope();
 
             if (Input.GetKey(KeyCode.Space))
             {
@@ -67,8 +68,7 @@ public class Grapple : MonoBehaviour {
     }
 
     void moveHook(Vector3 anchorPosition)
-    {
-              
+    {      
         anchor.gameObject.transform.position = anchorPosition;
 
         float distance = Mathf.Abs(Vector3.Distance(anchorPosition, transform.position));
@@ -76,4 +76,9 @@ public class Grapple : MonoBehaviour {
         grapple.distance = distance;
         grapple.enabled = true;
     }
+
+	void bendRope(){
+		//TODO: Use raycasting to bend rope around the corners of the cave.
+	}
+
 }
