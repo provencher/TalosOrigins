@@ -69,11 +69,10 @@ public class Bullet : MonoBehaviour {
             coll.gameObject.SendMessage("HitByBullet", mDamage);
             Destroy(gameObject);
         }
-        else if (coll.gameObject.tag == "Cave")
+        else if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "Exit")
         {
             Destroy(gameObject);
-        }
-        
+        }        
 
     }
 }
