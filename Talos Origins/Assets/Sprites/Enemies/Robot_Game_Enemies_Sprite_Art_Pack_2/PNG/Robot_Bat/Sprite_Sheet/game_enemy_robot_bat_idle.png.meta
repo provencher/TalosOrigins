@@ -1,7 +1,29 @@
 fileFormatVersion: 2
 guid: be2473673be93cf44a28a6d7d4cdcfa3
+timeCreated: 1446222269
+licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: game_enemy_robot_bat_idle_0
+    21300002: game_enemy_robot_bat_idle_1
+    21300004: game_enemy_robot_bat_idle_2
+    21300006: game_enemy_robot_bat_idle_3
+    21300008: game_enemy_robot_bat_idle_4
+    21300010: game_enemy_robot_bat_idle_5
+    21300012: game_enemy_robot_bat_idle_6
+    21300014: game_enemy_robot_bat_idle_7
+    21300016: game_enemy_robot_bat_idle_8
+    21300018: game_enemy_robot_bat_idle_9
+    21300020: game_enemy_robot_bat_idle_10
+    21300022: game_enemy_robot_bat_idle_11
+    21300024: game_enemy_robot_bat_idle_12
+    21300026: game_enemy_robot_bat_idle_13
+    21300028: game_enemy_robot_bat_idle_14
+    21300030: game_enemy_robot_bat_idle_15
+    21300032: game_enemy_robot_bat_idle_16
+    21300034: game_enemy_robot_bat_idle_17
+    21300036: game_enemy_robot_bat_idle_18
+    21300038: game_enemy_robot_bat_idle_19
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -24,7 +46,7 @@ TextureImporter:
   cubemapConvolutionSteps: 8
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: -3
   maxTextureSize: 1024
   textureSettings:
     filterMode: -1
@@ -36,7 +58,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -52,7 +74,207 @@ TextureImporter:
     compressionQuality: 50
     allowsAlphaSplitting: 0
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: game_enemy_robot_bat_idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 656
+        width: 904
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_1
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 630
+        width: 829
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_2
+      rect:
+        serializedVersion: 2
+        x: 1892
+        y: 568
+        width: 432
+        height: 422
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_3
+      rect:
+        serializedVersion: 2
+        x: 2756
+        y: 630
+        width: 820
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_4
+      rect:
+        serializedVersion: 2
+        x: 3611
+        y: 656
+        width: 908
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_5
+      rect:
+        serializedVersion: 2
+        x: 4555
+        y: 630
+        width: 828
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_6
+      rect:
+        serializedVersion: 2
+        x: 5507
+        y: 559
+        width: 432
+        height: 423
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_7
+      rect:
+        serializedVersion: 2
+        x: 6362
+        y: 630
+        width: 821
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_8
+      rect:
+        serializedVersion: 2
+        x: 7218
+        y: 656
+        width: 916
+        height: 480
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_9
+      rect:
+        serializedVersion: 2
+        x: 8161
+        y: 630
+        width: 829
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_10
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 48
+        width: 828
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_11
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 66
+        width: 838
+        height: 413
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_12
+      rect:
+        serializedVersion: 2
+        x: 1803
+        y: 84
+        width: 909
+        height: 493
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_13
+      rect:
+        serializedVersion: 2
+        x: 2747
+        y: 66
+        width: 829
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_14
+      rect:
+        serializedVersion: 2
+        x: 3699
+        y: 0
+        width: 432
+        height: 418
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_15
+      rect:
+        serializedVersion: 2
+        x: 4564
+        y: 66
+        width: 811
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_16
+      rect:
+        serializedVersion: 2
+        x: 5419
+        y: 84
+        width: 907
+        height: 493
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_17
+      rect:
+        serializedVersion: 2
+        x: 6362
+        y: 66
+        width: 829
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_18
+      rect:
+        serializedVersion: 2
+        x: 7315
+        y: 0
+        width: 432
+        height: 418
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: game_enemy_robot_bat_idle_19
+      rect:
+        serializedVersion: 2
+        x: 8170
+        y: 66
+        width: 820
+        height: 414
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 

@@ -67,9 +67,13 @@ public class Grapple : MonoBehaviour {
         {
             drawLine();
 
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetButton("Up"))
             {
-                grapple.distance -= grapple.distance*0.01f;
+                grapple.distance -= grapple.distance * 0.02f;
+            }
+            else if (Input.GetButton("Down"))
+            {
+                grapple.distance += grapple.distance * 0.02f;
             }
         }
 	}
