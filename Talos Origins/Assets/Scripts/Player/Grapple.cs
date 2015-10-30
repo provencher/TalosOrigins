@@ -17,9 +17,9 @@ public class Grapple : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         grapple = GetComponent<DistanceJoint2D>();
-        grapple.enabled = false;
-        grapple.connectedBody = anchor.gameObject.GetComponent<Rigidbody2D>();
-        grapplehooked = false;
+		grapple.connectedBody = anchor.gameObject.GetComponent<Rigidbody2D>();
+		grapple.enabled = false;
+		grapplehooked = false;
         
     }
 
@@ -46,7 +46,6 @@ public class Grapple : MonoBehaviour {
         {
             grapple.enabled = false;
             lineRenderer.enabled = false;
-            lineRenderer.SetPosition(1,transform.position);
 
         }
 
@@ -65,7 +64,6 @@ public class Grapple : MonoBehaviour {
     {
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, anchor.transform.position);
-        lineRenderer.enabled = true;
     }
 
     void moveHook(Vector3 anchorPosition)
