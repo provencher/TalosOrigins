@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     // Damage effects
     float kDamagePushForce = 2.5f;
 
-    bool mUsedDoubleJump = false;
+    public bool mUsedDoubleJump = false;
 
     // Wall kicking
     bool mAllowWallKick;
@@ -447,7 +447,7 @@ public class Player : MonoBehaviour
             mHealth -= (int)shoveInfo.z;
 
             // Get Shoved
-            mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
+            //mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
         else
         {

@@ -16,9 +16,12 @@ public class Grapple : MonoBehaviour {
 
     public int grappleDistance;
 
+    Player mTalos;
+
     // Use this for initialization
     void Start()
     {
+        mTalos = GameObject.Find("Talos").GetComponent<Player>();
         grapple = GetComponent<DistanceJoint2D>();
         grapple.enabled = false;
         grapple.connectedBody = anchor.gameObject.GetComponent<Rigidbody2D>();
@@ -49,8 +52,8 @@ public class Grapple : MonoBehaviour {
                 drawLine();
                 lineRenderer.SetColors(Color.red, Color.red);
                 grapplehooked = true;
-            }
-                  
+                mTalos.mUsedDoubleJump = false;
+            }                
 
         }
 
