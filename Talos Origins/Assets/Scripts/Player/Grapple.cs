@@ -35,12 +35,12 @@ public class Grapple : MonoBehaviour {
             targetDirection.Normalize();
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection);
 
-            moveHook(hit.point);
-            drawLine();
-            lineRenderer.enabled = true;
-            lineRenderer.SetColors(Color.red,Color.red);
-            grapplehooked = true;
-
+            if (hit.collider.tag == "Cave") {
+                moveHook(hit.point);
+                drawLine();
+                lineRenderer.enabled = true;
+                grapplehooked = true;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E))
