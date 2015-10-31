@@ -40,12 +40,15 @@ public class MapGenerator : MonoBehaviour
     public int roomThresholdSize;
 
 
-    [Range(10, 20)]
+    [Range(1, 50)]
     public int enemyModifier;
 
     int numEnemies;
     Vector3 mTalosPos;
+    Coord mTalosCoord;
+
     Vector3 mExitPos;
+    Coord mExitCoord;
 
     private Room startRoom, endRoom;
     private List<Room> allRooms;
@@ -148,29 +151,29 @@ public class MapGenerator : MonoBehaviour
 
     void PlaceTalosInRoom()
     {
-        startRoom = allRooms[0];
-
-        List<Coord> coordsInRoom = startRoom.tiles;
-        Coord center = new Coord();
         bool foundSpot = false;
-
-        foreach (Coord pos in coordsInRoom)
+        foreach (Room room in allRooms)
         {
-            if (CheckForFit(pos, 1, 1))
+            List<Coord> coordsInRoom = room.tiles;
+            Coord center = new Coord();            
+
+            foreach (Coord pos in coordsInRoom)
             {
-                center = pos;
-                foundSpot = true;
+                if (CheckForFit(pos, 1, 1, false))
+                {
+                    center = pos;
+                    foundSpot = true;
+                    break;
+                }
+            }
+
+            if(foundSpot)
+            {
+                mTalosCoord = center;
+                mTalosPos = CoordToWorldPoint(center);
                 break;
             }
-        }
-
-        //if spot not found choose random spot
-        if (!foundSpot)
-        {
-            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
-        }
-
-        mTalosPos = CoordToWorldPoint(center);        
+        }                    
     }
 
     void MessageHandling()
@@ -179,7 +182,8 @@ public class MapGenerator : MonoBehaviour
         mTalos.SendMessage("StartPos", mTalosPos);
         mTalos.SendMessage("TotalEnemies", enemies.Count);
         mTalos.SendMessage("CurrentLevel", currentLevel);
-        mTalos.SendMessage("ExitPos", mExit.transform.position);
+        mTalos.SendMessage("ExitPos", mExitPos);        
+        mExit.SendMessage("NewExit", mExitPos);
     }  
 
 
@@ -198,27 +202,21 @@ public class MapGenerator : MonoBehaviour
     {
         Vector3 WorldPos = CoordToWorldPoint(position);
 
-        //Add Spacing code to spread enemies out       
-        //Unecessary
-        Vector3 offSetVector = Vector3.zero;//new Vector3(UnityEngine.Random.Range(-2f, 2f), UnityEngine.Random.Range(-2f, 2f), 0);
-
         if (UnityEngine.Random.Range(0,3) == 1)
         {
-            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos + offSetVector, Quaternion.identity));
+            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));
         }
         else
         {
-            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos + offSetVector, Quaternion.identity));
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
         }
         
         enemies[index].SendMessage("UpdateEnemyIndex", index);            
-        enemies[index].SendMessage("UpdateLevel", currentLevel);
-        
+        enemies[index].SendMessage("UpdateLevel", currentLevel);        
     }
 
     void SpawnAllEnemies()
     {
-
         ClearAllEnemies();
         Coord tempCoord;
         int enemiesSpawned = 0;
@@ -229,9 +227,9 @@ public class MapGenerator : MonoBehaviour
             {
                 tempCoord = new Coord(j, i);                
 
-                if (UnityEngine.Random.Range(0, 45) == 15)
+                if (UnityEngine.Random.Range(0, enemyModifier) == 15)
                 {
-                    if (CheckForFit(tempCoord, 1, 1))
+                    if (CheckForFit(tempCoord, 2, 2, true))
                     {
                         SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
                         enemiesSpawned++;
@@ -254,42 +252,82 @@ public class MapGenerator : MonoBehaviour
 
     void PlaceExitInRoom()
     {
-        endRoom = allRooms[allRooms.Count - 1];
+        bool exitFound = false;
+        int startIndex = allRooms.Count - 1;
 
-        List<Coord> coordsInRoom = endRoom.tiles;
-        Coord center = new Coord();
-        bool foundSpot = false;
-
-        foreach (Coord pos in coordsInRoom)
+        while (startIndex > 1)
         {
-            if (CheckForFit(pos, 1, 1))
+            endRoom = allRooms[startIndex];
+
+            List<Coord> coordsInRoom = endRoom.tiles;
+            Coord center = new Coord();
+            bool foundSpot = false;
+
+            foreach (Coord pos in coordsInRoom)
             {
-                center = pos;
-                foundSpot = true;
+                if (CheckForFit(pos, 1, 1, false))
+                {
+                    center = pos;
+                    exitFound = true;
+                    break;
+                }
+            }
+
+            if(exitFound)
+            {               
+                mExitPos = CoordToWorldPoint(center);
+                mExitCoord = center;
                 break;
             }
-        }
-
-        //if spot not found choose random spot
-        if (!foundSpot)
+            else
+            {
+                startIndex--;
+            }
+        }       
+        
+        if(!exitFound)
         {
-            center = coordsInRoom[UnityEngine.Random.Range(((int)coordsInRoom.Count / 3), coordsInRoom.Count - 1)];
-        }
-
-        Vector3 position = CoordToWorldPoint(center);
-        mExit.SendMessage("NewExit", position);
+            ResetLevel();
+            GenerateMap();
+        }         
     }    
 
 
     // Check if each corner of the sprite fits in the tile
-    bool CheckForFit(Coord pos, int offSetX, int offSetY)
-    {        
+    bool CheckForFit(Coord pos, int offSetX, int offSetY, bool isEnemy)
+    {
+        bool clearOfTalos = true;
+        bool clearOfExit = true;
+
+        if(isEnemy)
+        {
+            clearOfTalos =
+            //Away from Talos
+            (pos.tileX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
+
+            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
+            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
+
+            && (pos.tileX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
+            && (pos.tileX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY)
+
+            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
+            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY)
+
+            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
+            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY);
+
+            clearOfExit = (pos.tileX != mExitCoord.tileX && pos.tileY != mExitCoord.tileY);
+        }
+
         return
+            clearOfTalos 
+            && clearOfExit 
             //In map Range
-            ((pos.tileX - offSetX) > 0) && ((pos.tileX + offSetX) < width) &&
-            ((pos.tileY - offSetY) > 0) && ((pos.tileY + offSetY) < height) &&
+            && ((pos.tileX - offSetX) > 0) && ((pos.tileX + offSetX) < width)
+            && ((pos.tileY - offSetY) > 0) && ((pos.tileY + offSetY) < height)
             //Top Left
-            (map[pos.tileX - offSetX, pos.tileY + offSetY] == 0)
+            && (map[pos.tileX - offSetX, pos.tileY + offSetY] == 0)
             //Top Right
             && (map[pos.tileX + offSetX, pos.tileY + offSetY] == 0)
             //Lower Left
