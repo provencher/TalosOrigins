@@ -66,7 +66,8 @@ public class MapGenerator : MonoBehaviour
      // if (Input.GetMouseButtonDown(0))
         if (Input.GetButtonDown("MapGeneration"))
         {
-         GenerateMap();
+            GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
+            GenerateMap();
         }
     }
 

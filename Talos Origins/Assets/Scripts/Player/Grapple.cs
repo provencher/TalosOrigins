@@ -12,7 +12,7 @@ public class Grapple : MonoBehaviour {
     DistanceJoint2D grapple;
     Vector3 targetPosition;
     Vector3 targetDirection;
-    bool grapplehooked;
+    public bool grapplehooked;
 
     public int grappleDistance;
 
