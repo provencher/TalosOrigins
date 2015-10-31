@@ -34,16 +34,18 @@ public class Trail : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            trailActivated = !trailActivated;
+            ResetTrail();
+        }        
+    }
 
-            if (!trailActivated)
-            {
-                foreach(GameObject crumb in trail)
-                {
-                    //housekeeping
-                    Destroy(crumb);
-                }
-            }
+    public void ResetTrail()
+    {
+        trailActivated = false; 
+               
+        foreach (GameObject crumb in trail)
+        {
+            //housekeeping
+            Destroy(crumb);
         }        
     }
 

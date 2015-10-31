@@ -61,14 +61,31 @@ public class MapGenerator : MonoBehaviour
         GenerateMap();     
     }
 
-    void Update()
-    {
-     // if (Input.GetMouseButtonDown(0))
+    void FixedUpdate()
+    {     
         if (Input.GetButtonDown("MapGeneration"))
         {
-            GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
+            ResetLevel();
             GenerateMap();
         }
+    }
+
+    void ResetLevel()
+    {
+        GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
+        GameObject.Find("Talos").GetComponent<Trail>().ResetTrail();
+    }
+
+    void NextLevel()
+    {
+        currentLevel++;
+        ResetLevel();
+        GenerateMap();
+    }
+
+    void ResetGame()
+    {
+        Application.LoadLevel(0);
     }
 
     void SetLevelParameters()
@@ -163,18 +180,7 @@ public class MapGenerator : MonoBehaviour
         mTalos.SendMessage("TotalEnemies", enemies.Count);
         mTalos.SendMessage("CurrentLevel", currentLevel);
         mTalos.SendMessage("ExitPos", mExit.transform.position);
-    }
-
-    void NextLevel()
-    {
-        currentLevel++;        
-        GenerateMap();
-    }
-
-    void ResetGame()
-    {
-        Application.LoadLevel(0);
-    }
+    }  
 
 
     /// ENEMY PROCESSING
