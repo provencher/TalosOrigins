@@ -71,6 +71,14 @@ public class Weapon : MonoBehaviour {
         {
             Vector3 bulletPosition = transform.position + mTalos.mFacingDirection.x * Vector3.right * 0.4f;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 talosOffset = mTalos.GetComponent<BoxCollider2D>().size;
+
+            //Offset mouse position to avoid problems when clicking on talos
+            if (Mathf.Abs(mousePosition.x - mTalos.transform.position.x) < talosOffset.x/4)
+            {
+                mousePosition.x += talosOffset.x / 4 * mTalos.mFacingDirection.x;
+            }          
+
             Vector3 mBulletDirection = mousePosition- bulletPosition;
             mBulletDirection.z = 0;        
 

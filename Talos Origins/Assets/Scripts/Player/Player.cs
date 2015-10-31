@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     // Damage effects
     float kDamagePushForce = 2.5f;
 
+    public bool mUsedDoubleJump = false;
 
     // Wall kicking
     bool mAllowWallKick;
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour
     int mHealth;
     int mEnemiesKilled;
 
+
     Vector2 mShoveDirection;
 
     Vector3 mExitLocation;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     int mEnemiesRemaining;
 
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;    
+
 
     /*
     [SerializeField]
@@ -187,9 +190,15 @@ public class Player : MonoBehaviour
 
     void CheckJump()
     {
-        if /*(mGrounded &&*/(Input.GetButtonDown("Jump"))
-        {
+        if (Input.GetButtonDown("Jump") && (mGrounded || !mUsedDoubleJump))
+        {           
+
             mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+
+            if(!mGrounded)
+            {
+                mUsedDoubleJump = true;
+            }
         }
         else if (mAllowWallKick && Input.GetButtonDown("Jump"))
         {
@@ -197,7 +206,6 @@ public class Player : MonoBehaviour
             mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
             // mWallKickSound.Play();
         }
-
     }
 
     void CheckInvicible()
@@ -240,13 +248,14 @@ public class Player : MonoBehaviour
             //FaceDirection(Vector2.right);            
             mRunning = true;
             return Vector3.right;
-        }
+        }      
 
         return Vector3.zero;
     }
 
     void TranslateInDirection(Vector3 direction)
-    {
+    {      
+
         if (direction != null && (Mathf.Abs(mRigidBody2D.velocity.x) < 7.0f))
         {
             //Vector3 direction = target - transform.position;
@@ -299,6 +308,7 @@ public class Player : MonoBehaviour
         else
         {
             mGrounded = true;
+            mUsedDoubleJump = false;
         }
     }
 
@@ -433,7 +443,7 @@ public class Player : MonoBehaviour
             mHealth -= (int)shoveInfo.z;
 
             // Get Shoved
-            mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
+            //mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
         else
         {
