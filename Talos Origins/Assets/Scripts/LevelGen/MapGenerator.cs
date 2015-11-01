@@ -82,6 +82,11 @@ public class MapGenerator : MonoBehaviour
             ResetLevel();
             GenerateMap();
         }
+
+        if(numAsteroids < 5)
+        {
+            SpawnAllAsteroids(10);
+        }
     }
 
     void ResetLevel()

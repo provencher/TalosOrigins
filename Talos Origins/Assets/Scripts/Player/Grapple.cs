@@ -58,9 +58,13 @@ public class Grapple : MonoBehaviour {
                 grapplehooked = true;
                 mTalos.mUsedDoubleJump = false;
 
-                if (hit.collider.gameObject.tag == "Asteroid" || hit.collider.gameObject.tag == "Enemy")
+                if (hit.collider.gameObject.tag == "Asteroid")                    
                 {
-                    hookedObject = hit.collider.gameObject;                    
+                    hit.collider.gameObject.GetComponent<Asteroid_Script>().IsHooked();                  
+                }
+                else if(hit.collider.gameObject.tag == "Enemy")
+                {
+                    hit.collider.gameObject.GetComponent<Enemy>().IsHooked();
                 }
                 else
                 {
@@ -101,7 +105,7 @@ public class Grapple : MonoBehaviour {
         }
     }
 
-    void unHook()
+    public void unHook()
     {
         lineRenderer.enabled = false;
         grapple.enabled = false;

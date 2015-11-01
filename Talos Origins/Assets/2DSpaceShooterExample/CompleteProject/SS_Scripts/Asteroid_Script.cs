@@ -27,37 +27,53 @@ public class Asteroid_Script : MonoBehaviour
     int index;
     float switchTime = 5;
 
+    Rigidbody2D rigidBody;
+
     Vector3 lastDirection;
 
     GameObject driftTarget;
+
+    bool hookedGrapple = false;
    
 
 	// Use this for initialization
 	void Start () 
 	{
-        RandomVelocity(Vector3.right);
-        driftTarget = GameObject.Find("Talos");
+        rigidBody = GetComponent<Rigidbody2D>();
+        //RandomVelocity(Vector3.right);
+        //driftTarget = GameObject.Find("Talos");
+        rigidBody.angularVelocity = Random.Range(minTumble, maxTumble);
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if(switchTime <= 0)
+        if (false)
         {
-            GetComponent<Rigidbody2D>().velocity = -1 * lastDirection;
-            switchTime = Random.Range(1, 5);
-        }
-        else
-        {
-            switchTime -= Time.fixedDeltaTime;
-        }
+            if ((driftTarget.transform.position - transform.position).magnitude > 500)
+            {
+                DestroyAsteroid();
+            }
+            else
+            {
+                if (switchTime >= 0)
+                {
+                    //rigidBody.velocity = RandomVelocity(Vector3.right);
+                    switchTime = Random.Range(5, 10);
+                }
+                else
+                {
+                    switchTime -= Time.deltaTime;
+                }
+            }
+        }      
     }
 
-    void RandomVelocity(Vector3 direction)
-    {
-        GetComponent<Rigidbody2D>().angularVelocity = Random.Range(minTumble, maxTumble);       //Angular movement based on random speed values
+    Vector3 RandomVelocity(Vector3 direction)
+    {          
 
         Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360), direction) * Vector3.up;
-        lastDirection = GetComponent<Rigidbody2D>().velocity = v * speed; 						//Negative Velocity to move down towards the player ship
+        						//Negative Velocity to move down towards the player ship
+        return v * speed;
     }
 
     void UpdateAsteroidIndex(int ind)
@@ -71,13 +87,13 @@ public class Asteroid_Script : MonoBehaviour
     }
 
     //Called when the Trigger entered
-    void OnTriggerEnter2D(Collider2D other)
-	{
+    void OnCollisionEnter2D(Collision2D coll)
+    {
 		//Excute if the object tag was equal to one of these
-		if(other.tag == "Bullet")
+		if(coll.gameObject.tag == "Bullet")
 		{
 			Instantiate (LaserGreenHit, transform.position , transform.rotation); 		//Instantiate LaserGreenHit 
-			Destroy(other.gameObject);													//Destroy the Other (PlayerLaser)
+			Destroy(coll.gameObject);													//Destroy the Other (PlayerLaser)
 
 			//Check the Health if greater than 0
 			if(health > 0)
@@ -86,15 +102,25 @@ public class Asteroid_Script : MonoBehaviour
 			//Check the Health if less or equal 0
 			if(health <= 0)
 			{
-				Instantiate (Explosion, transform.position , transform.rotation); 		//Instantiate Explosion
-				//SharedValues_Script.score +=ScoreValue; 								//Increment score by ScoreValue
-				//Destroy(gameObject); 													//Destroy the Asteroid
-                // Notify Map Generator of index of enemy killed
-                GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
+                if(hookedGrapple)
+                {
+                    GameObject.Find("Talos").GetComponent<Grapple>().unHook();
+                }
 
-
+				Instantiate (Explosion, transform.position , transform.rotation);       //Instantiate Explosion                                                                                                        
+                DestroyAsteroid();
 			}
 		}
 	}
+
+    public void IsHooked()
+    {
+        hookedGrapple = true;
+    }
+
+    void DestroyAsteroid()
+    {
+        GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
+    }
     
 }

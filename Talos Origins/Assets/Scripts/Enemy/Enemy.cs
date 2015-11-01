@@ -31,6 +31,8 @@ public class Enemy : MonoBehaviour {
     bool firstLoop = true;
     public bool mInRange = false;
 
+    bool hookedGrapple = false;
+
     //For animator
     Animator mAnimator;
     //crawer
@@ -432,7 +434,8 @@ public class Enemy : MonoBehaviour {
 
             isClear = isClear && !(hit.collider != null &&
                (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy" 
+               hit.collider.gameObject.tag == "Enemy" ||
+               hit.collider.gameObject.tag == "Asteroid"
                ));
 
         }
@@ -503,8 +506,18 @@ public class Enemy : MonoBehaviour {
         NotifyOfDeath();
     }
 
+    public void IsHooked()
+    {
+        hookedGrapple = true;
+    }
+
     void NotifyOfDeath()
     {
+        if (hookedGrapple)
+        {
+            GameObject.Find("Talos").GetComponent<Grapple>().unHook();
+        }
+
         // Notify Player of kill with experience gained
         GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
 
