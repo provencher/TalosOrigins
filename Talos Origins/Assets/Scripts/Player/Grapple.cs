@@ -16,7 +16,8 @@ public class Grapple : MonoBehaviour {
 
     public int grappleDistance;
 
-    GameObject hookedAsteroid = null;
+    GameObject hookedObject = null;
+    Vector3 hitPoint;
 
     Player mTalos;
     
@@ -47,8 +48,9 @@ public class Grapple : MonoBehaviour {
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection, grappleDistance);
 
-            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
+            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid" || hit.collider.gameObject.tag == "Enemy")
             {
+                hitPoint = hit.point;
                 moveHook(hit.point);
                 lineRenderer.enabled = true;
                 drawLine();
@@ -56,13 +58,13 @@ public class Grapple : MonoBehaviour {
                 grapplehooked = true;
                 mTalos.mUsedDoubleJump = false;
 
-                if (hit.collider.gameObject.tag == "Asteroid")
+                if (hit.collider.gameObject.tag == "Asteroid" || hit.collider.gameObject.tag == "Enemy")
                 {
-                    hookedAsteroid = hit.collider.gameObject;
+                    hookedObject = hit.collider.gameObject;                    
                 }
                 else
                 {
-                    hookedAsteroid = null;
+                    hookedObject = null;                    
                 }
             }                
 
@@ -70,10 +72,9 @@ public class Grapple : MonoBehaviour {
 
         UpdateAnchor();
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") || Input.GetButtonDown("UnHook") || (hookedObject == null && hitPoint == Vector3.zero))
         {
-            lineRenderer.enabled = false;
-            grapple.enabled = false;
+            unHook();
         }
 
         if (grapplehooked)
@@ -93,10 +94,19 @@ public class Grapple : MonoBehaviour {
 
     void UpdateAnchor()
     {
-        if(hookedAsteroid != null)
+        if(hookedObject != null && hitPoint != Vector3.zero)
         {
-            anchor.transform.position = hookedAsteroid.transform.position;         
+            anchor.transform.position = hookedObject.transform.position;
+            hitPoint = hookedObject.transform.position;
         }
+    }
+
+    void unHook()
+    {
+        lineRenderer.enabled = false;
+        grapple.enabled = false;
+        hitPoint = Vector3.zero;
+        hookedObject = null;
     }
 
 
@@ -110,6 +120,7 @@ public class Grapple : MonoBehaviour {
     {
               
         anchor.gameObject.transform.position = anchorPosition;
+        hitPoint = anchorPosition;
 
         float distance = Mathf.Abs(Vector3.Distance(anchorPosition, transform.position));
       

@@ -25,21 +25,26 @@ public class Asteroid_Script : MonoBehaviour
 	public int ScoreValue; 				//How much the Asteroid give score after explosion
     int currentLevel;
     int index;
-    float switchTime = 0;
+    float switchTime = 5;
+
+    Vector3 lastDirection;
+
+    GameObject driftTarget;
    
 
 	// Use this for initialization
 	void Start () 
 	{
-        RandomVelocity();
+        RandomVelocity(Vector3.right);
+        driftTarget = GameObject.Find("Talos");
     }
 
     void FixedUpdate()
     {
-        if(switchTime == 0)
+        if(switchTime <= 0)
         {
-            RandomVelocity();
-            switchTime = Random.Range(5, 15);
+            GetComponent<Rigidbody2D>().velocity = -1 * lastDirection;
+            switchTime = Random.Range(1, 5);
         }
         else
         {
@@ -47,12 +52,12 @@ public class Asteroid_Script : MonoBehaviour
         }
     }
 
-    void RandomVelocity()
+    void RandomVelocity(Vector3 direction)
     {
         GetComponent<Rigidbody2D>().angularVelocity = Random.Range(minTumble, maxTumble);       //Angular movement based on random speed values
 
-        Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), Vector3.forward) * Vector3.up;
-        GetComponent<Rigidbody2D>().velocity = v * speed; 						//Negative Velocity to move down towards the player ship
+        Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360), direction) * Vector3.up;
+        lastDirection = GetComponent<Rigidbody2D>().velocity = v * speed; 						//Negative Velocity to move down towards the player ship
     }
 
     void UpdateAsteroidIndex(int ind)
@@ -84,7 +89,12 @@ public class Asteroid_Script : MonoBehaviour
 				Instantiate (Explosion, transform.position , transform.rotation); 		//Instantiate Explosion
 				//SharedValues_Script.score +=ScoreValue; 								//Increment score by ScoreValue
 				//Destroy(gameObject); 													//Destroy the Asteroid
+                // Notify Map Generator of index of enemy killed
+                GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
+
+
 			}
 		}
 	}
+    
 }
