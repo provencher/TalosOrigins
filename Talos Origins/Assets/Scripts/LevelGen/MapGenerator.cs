@@ -112,7 +112,6 @@ public class MapGenerator : MonoBehaviour
         {
             currentLevel = 1;
         }
-        numAsteroids = 0;      
 
         width = startWidth;
         height = startHeight;
@@ -120,8 +119,8 @@ public class MapGenerator : MonoBehaviour
         width = startWidth + 3 * currentLevel;
         height = startHeight + 3 * currentLevel;
 
-        numAsteroidsToSpawn = numAsteroidsToSpawn + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
-        numEnemiesToSpawn = numEnemiesToSpawn + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
+        numAsteroidsToSpawn = width/3 + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
+        numEnemiesToSpawn = width/4 + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
 
         // set max values for map size
         width = Math.Min(1000, width);
