@@ -48,7 +48,6 @@ public class Player : MonoBehaviour
     [SerializeField]
     GameObject mDeathParticleEmitter;
 
-
     int mTotalExp;
     float mMeleeTimer;
     bool mMeleeTrigger;
@@ -85,8 +84,8 @@ public class Player : MonoBehaviour
         mShoveDirection = Vector2.zero;
         mHealth = 100;
         mInvincibleTimer = 0;
-
-
+      
+ 
         // UI Text
         /*exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
         enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
@@ -151,8 +150,8 @@ public class Player : MonoBehaviour
         TriggerMelee();
         CheckJump();
         FaceMouse();
-
         UpdateAnimator();
+
         /*
         bool grounded = CheckGrounded();
         if (!mGrounded && grounded)
@@ -270,8 +269,6 @@ public class Player : MonoBehaviour
     {
         return mRigidBody2D.velocity;
     }
-    
- 
 
     void FaceMouse()
     {
@@ -301,7 +298,6 @@ public class Player : MonoBehaviour
         mFacingDirection = faceD;
     }
 
-   
     void CheckGround()
     {
         //temp
@@ -336,7 +332,7 @@ public class Player : MonoBehaviour
             }         
         }
     }
-
+    
     void UpdateAnimator()
     {
         mAnimator.SetBool("isGrounded", mGrounded);
@@ -344,8 +340,8 @@ public class Player : MonoBehaviour
         mAnimator.SetBool("isMelee", mWeapon.mMelee);
         mAnimator.SetBool("isShoot", mWeapon.mShoot);
     }
-
     
+        
     GameObject EnemyInDirection(Vector2 direction)
     {        
         Vector2 StartPosition;

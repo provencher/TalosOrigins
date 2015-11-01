@@ -31,6 +31,8 @@ public class Enemy : MonoBehaviour {
     bool firstLoop = true;
     public bool mInRange = false;
 
+    bool hookedGrapple = false;
+
     //For animator
     Animator mAnimator;
     //crawer
@@ -42,6 +44,9 @@ public class Enemy : MonoBehaviour {
     bool  crawlerIsHit;
     float hitTime = 0.5f;
     float hitEndTime;
+
+    public GameObject LaserGreenHit;    //LaserGreenHit Prefab
+    public GameObject Explosion; 		//Explosion Prefab
 
 
 
@@ -402,12 +407,12 @@ public class Enemy : MonoBehaviour {
             {
                 case 1:
                     {
-                        increment = boxSize * scaleSize;
+                        increment = boxSize/2 * scaleSize;
                         break;
                     }
                 case 2:
                     {
-                        increment = (-1) * boxSize * scaleSize;
+                        increment = (-1) * boxSize / 2 * scaleSize;
                         break;
                     }
                 default:
@@ -432,7 +437,8 @@ public class Enemy : MonoBehaviour {
 
             isClear = isClear && !(hit.collider != null &&
                (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy" 
+               hit.collider.gameObject.tag == "Enemy" ||
+               hit.collider.gameObject.tag == "Asteroid"
                ));
 
         }
@@ -503,8 +509,13 @@ public class Enemy : MonoBehaviour {
         NotifyOfDeath();
     }
 
-    void NotifyOfDeath()
+    public void IsHooked()
     {
+        hookedGrapple = true;
+    }
+
+    void NotifyOfDeath()
+    {       
         // Notify Player of kill with experience gained
         GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
 
@@ -540,11 +551,27 @@ public class Enemy : MonoBehaviour {
             if (coll.gameObject.tag == "Player")
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
+            }                      
+        }
+
+
+        //Excute if the object tag was equal to one of these
+        if (coll.gameObject.tag == "Bullet")
+        {            
+
+            Instantiate(LaserGreenHit, transform.position, transform.rotation);         //Instantiate LaserGreenHit 
+            Destroy(coll.gameObject);  
+
+            //Check the Health if greater than 0
+            if (mHealth > 0)
+                mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;                                                               //Decrement Health by 1
+
+            //Check the Health if less or equal 0
+            if (mHealth <= 0)
+            {               
+                Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion                                                                                                        
+                NotifyOfDeath();
             }
-            else if (coll.gameObject.tag == "Enemy")
-            {
-                coll.gameObject.SendMessage("ShovedByEnemy", lastDirection);
-            }            
-        }    
+        }
     }   
 }
