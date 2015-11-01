@@ -16,8 +16,10 @@ public class Grapple : MonoBehaviour {
 
     public int grappleDistance;
 
-    Player mTalos;
+    GameObject hookedAsteroid = null;
 
+    Player mTalos;
+    
     // Use this for initialization
     void Start()
     {
@@ -45,7 +47,7 @@ public class Grapple : MonoBehaviour {
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection, grappleDistance);
 
-            if (hit.collider != null && hit.collider.gameObject.tag == "Cave")
+            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
             {
                 moveHook(hit.point);
                 lineRenderer.enabled = true;
@@ -53,9 +55,20 @@ public class Grapple : MonoBehaviour {
                 lineRenderer.SetColors(Color.red, Color.red);
                 grapplehooked = true;
                 mTalos.mUsedDoubleJump = false;
+
+                if (hit.collider.gameObject.tag == "Asteroid")
+                {
+                    hookedAsteroid = hit.collider.gameObject;
+                }
+                else
+                {
+                    hookedAsteroid = null;
+                }
             }                
 
         }
+
+        UpdateAnchor();
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -77,6 +90,15 @@ public class Grapple : MonoBehaviour {
             }
         }
 	}
+
+    void UpdateAnchor()
+    {
+        if(hookedAsteroid != null)
+        {
+            anchor.transform.position = hookedAsteroid.transform.position;         
+        }
+    }
+
 
     void drawLine()
     {        

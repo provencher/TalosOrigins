@@ -16,6 +16,11 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     GameObject enemyCo;
 
+    [SerializeField]
+    GameObject asteroid;
+    int numAsteroids;
+
+    List<GameObject> asteroids;
     List<GameObject> enemies;
 
     public int width;
@@ -43,7 +48,12 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 50)]
     public int enemyModifier;
 
-    int numEnemies;
+    [Range(50, 500)]
+    public int numEnemiesToSpawn;
+
+    [Range(50, 500)]
+    public int numAsteroidsToSpawn;
+
     Vector3 mTalosPos;
     Coord mTalosCoord;
 
@@ -58,14 +68,15 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
+        asteroids = new List<GameObject>();
         enemies = new List<GameObject>();
         startWidth = width;
-        startHeight = height;
-        GenerateMap();     
+        startHeight = height;       
+        GenerateMap();
     }
 
     void FixedUpdate()
-    {     
+    {
         if (Input.GetButtonDown("MapGeneration"))
         {
             ResetLevel();
@@ -97,6 +108,8 @@ public class MapGenerator : MonoBehaviour
         {
             currentLevel = 1;
         }
+        numAsteroids = 0;      
+
         width = startWidth;
         height = startHeight;
 
@@ -105,7 +118,7 @@ public class MapGenerator : MonoBehaviour
 
         // set max values for map size
         width = Math.Min(1000, width);
-        height = Math.Min(1000, height);       
+        height = Math.Min(1000, height);
     }
 
 
@@ -145,7 +158,8 @@ public class MapGenerator : MonoBehaviour
 
         PlaceTalosInRoom();
         PlaceExitInRoom();
-        SpawnAllEnemies();
+        SpawnAllEnemies(numEnemiesToSpawn);
+        SpawnAllAsteroids(numAsteroidsToSpawn);
         MessageHandling();
     }
 
@@ -155,7 +169,7 @@ public class MapGenerator : MonoBehaviour
         foreach (Room room in allRooms)
         {
             List<Coord> coordsInRoom = room.tiles;
-            Coord center = new Coord();            
+            Coord center = new Coord();
 
             foreach (Coord pos in coordsInRoom)
             {
@@ -167,24 +181,15 @@ public class MapGenerator : MonoBehaviour
                 }
             }
 
-            if(foundSpot)
+            if (foundSpot)
             {
                 mTalosCoord = center;
                 mTalosPos = CoordToWorldPoint(center);
                 break;
             }
-        }                    
+        }
     }
 
-    void MessageHandling()
-    {
-        Debug.Log("Talos Start Position: " + mTalosPos.ToString());
-        mTalos.SendMessage("StartPos", mTalosPos);
-        mTalos.SendMessage("TotalEnemies", enemies.Count);
-        mTalos.SendMessage("CurrentLevel", currentLevel);
-        mTalos.SendMessage("ExitPos", mExitPos);        
-        mExit.SendMessage("NewExit", mExitPos);
-    }  
 
 
     /// ENEMY PROCESSING
@@ -193,7 +198,7 @@ public class MapGenerator : MonoBehaviour
     {
         for (int i = 0; i < enemies.Count; i++)
         {
-            Destroy(enemies[i]);           
+            Destroy(enemies[i]);
         }
         enemies.Clear();
     }
@@ -202,7 +207,7 @@ public class MapGenerator : MonoBehaviour
     {
         Vector3 WorldPos = CoordToWorldPoint(position);
 
-        if (UnityEngine.Random.Range(0,3) == 1)
+        if (UnityEngine.Random.Range(0, 3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));
         }
@@ -210,45 +215,121 @@ public class MapGenerator : MonoBehaviour
         {
             enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
         }
-        
-        enemies[index].SendMessage("UpdateEnemyIndex", index);            
-        enemies[index].SendMessage("UpdateLevel", currentLevel);        
+
+        enemies[index].SendMessage("UpdateEnemyIndex", index);
+        enemies[index].SendMessage("UpdateLevel", currentLevel);
     }
 
-    void SpawnAllEnemies()
+    void SpawnAllEnemies(int numToSpawn)
     {
         ClearAllEnemies();
         Coord tempCoord;
         int enemiesSpawned = 0;
+        int sentry = 3;
 
-        for (int i = 1; i < height; i++)
+        while (numToSpawn > 0 && sentry > 0)
         {
-            for (int j = 1; j < width; j++)
+            for (int i = 1; i < height; i++)
             {
-                tempCoord = new Coord(j, i);                
-
-                if (UnityEngine.Random.Range(0, enemyModifier) == 15)
+                for (int j = 1; j < width; j++)
                 {
-                    if (CheckForFit(tempCoord, 2, 2, true))
+                    tempCoord = new Coord(j, i);
+
+                    if (UnityEngine.Random.Range(0, numEnemiesToSpawn) == numToSpawn % enemyModifier)
                     {
-                        SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
-                        enemiesSpawned++;
+                        if (CheckForFit(tempCoord, 1, 1, true))
+                        {
+                            SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
+                            enemiesSpawned++;
+                            numToSpawn--;
+                        }
                     }
                 }
-            }     
+            }
         }
+        sentry--;
     }
-        
+
     void KilledEnemy(int index)
     {
         if (index < enemies.Count - 1)
         {
-            Destroy(enemies[index]);          
+            Destroy(enemies[index]);
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////  
+    //Asteroid Processing
+    ////////////////////////////////////////////////////////////////////////////////////
+    void SpawnAllAsteroids(int numToSpawn)
+    {
+        ClearAllAsteroids();
+        Coord tempCoord;
+        numAsteroids = 0;
+        int sentry = 3;
 
+        while (numToSpawn > 0 && sentry > 0)
+        {
+            for (int i = 1; i < height; i++)
+            {
+                for (int j = 1; j < width; j++)
+                {
+                    tempCoord = new Coord(j, i);
+
+                    if (UnityEngine.Random.Range(0, numEnemiesToSpawn) == numToSpawn % enemyModifier)
+                    {
+                        if (CheckForFit(tempCoord, 1, 1, true))
+                        {
+                            SpawnAsteroidAtPosition(numAsteroids, tempCoord);
+                            numAsteroids++;
+                            numToSpawn--;
+                        }
+                    }
+                }
+            }
+        }
+        sentry--;
+    }
+
+    void SpawnAsteroidAtPosition(int index, Coord position)
+    {
+        Vector3 WorldPos = CoordToWorldPoint(position);
+
+        asteroids.Add((GameObject)Instantiate(asteroid, WorldPos, Quaternion.identity));
+
+        /*
+        if (UnityEngine.Random.Range(0, 3) == 1)
+        {
+            enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));
+        }
+        else
+        {
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
+        }
+        */
+
+        asteroids[index].SendMessage("UpdateAsteroidIndex", index);
+        asteroids[index].SendMessage("UpdateLevel", currentLevel);
+    }
+
+
+    void ClearAllAsteroids()
+    {
+        for (int i = 0; i < asteroids.Count; i++)
+        {
+            Destroy(asteroids[i]);
+        }
+        numAsteroids = 0;
+        asteroids.Clear();
+    }
+
+    void DestroyAsteroid(int index)
+    {
+        if (index < asteroids.Count - 1)
+        {
+            Destroy(asteroids[index]);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////
 
     void PlaceExitInRoom()
     {
@@ -290,8 +371,21 @@ public class MapGenerator : MonoBehaviour
             ResetLevel();
             GenerateMap();
         }         
-    }    
+    }
 
+
+    void MessageHandling()
+    {
+        Debug.Log("Talos Start Position: " + mTalosPos.ToString());
+        mTalos.SendMessage("StartPos", mTalosPos);
+        mTalos.SendMessage("TotalEnemies", enemies.Count);
+        mTalos.SendMessage("CurrentLevel", currentLevel);
+        mTalos.SendMessage("ExitPos", mExitPos);
+        mExit.SendMessage("NewExit", mExitPos);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////  
 
     // Check if each corner of the sprite fits in the tile
     bool CheckForFit(Coord pos, int offSetX, int offSetY, bool isEnemy)
