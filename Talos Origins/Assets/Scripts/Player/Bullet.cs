@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour {
     float mDestroyTime;
     Rigidbody2D mRigidbody2D;
 
-    int mDamage;
+    public int mDamage;
 
     // Use this for initialization
     void Awake () {
@@ -64,12 +64,14 @@ public class Bullet : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {       
+        /*
         if (coll.gameObject.tag == "Enemy")
         {          
             coll.gameObject.SendMessage("HitByBullet", mDamage);
             Destroy(gameObject);
         }
-        else if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "Exit")
+        else*/
+        if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "Exit")
         {
             Destroy(gameObject);
         }        

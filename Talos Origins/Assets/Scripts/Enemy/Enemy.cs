@@ -45,6 +45,9 @@ public class Enemy : MonoBehaviour {
     float hitTime = 0.5f;
     float hitEndTime;
 
+    public GameObject LaserGreenHit;    //LaserGreenHit Prefab
+    public GameObject Explosion; 		//Explosion Prefab
+
 
 
 
@@ -512,12 +515,7 @@ public class Enemy : MonoBehaviour {
     }
 
     void NotifyOfDeath()
-    {
-        if (hookedGrapple)
-        {
-            GameObject.Find("Talos").GetComponent<Grapple>().unHook();
-        }
-
+    {       
         // Notify Player of kill with experience gained
         GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
 
@@ -554,6 +552,26 @@ public class Enemy : MonoBehaviour {
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
             }                      
-        }    
+        }
+
+
+        //Excute if the object tag was equal to one of these
+        if (coll.gameObject.tag == "Bullet")
+        {            
+
+            Instantiate(LaserGreenHit, transform.position, transform.rotation);         //Instantiate LaserGreenHit 
+            Destroy(coll.gameObject);  
+
+            //Check the Health if greater than 0
+            if (mHealth > 0)
+                mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;                                                               //Decrement Health by 1
+
+            //Check the Health if less or equal 0
+            if (mHealth <= 0)
+            {               
+                Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion                                                                                                        
+                NotifyOfDeath();
+            }
+        }
     }   
 }
