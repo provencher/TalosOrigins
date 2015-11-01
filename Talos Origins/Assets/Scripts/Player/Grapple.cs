@@ -48,7 +48,7 @@ public class Grapple : MonoBehaviour {
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection, grappleDistance);
 
-            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid" || hit.collider.gameObject.tag == "Enemy")
+            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
             {
                 hitPoint = hit.point;
                 moveHook(hit.point);
@@ -61,11 +61,7 @@ public class Grapple : MonoBehaviour {
                 if (hit.collider.gameObject.tag == "Asteroid")                    
                 {
                     hit.collider.gameObject.GetComponent<Asteroid_Script>().IsHooked();                  
-                }
-                else if(hit.collider.gameObject.tag == "Enemy")
-                {
-                    hit.collider.gameObject.GetComponent<Enemy>().IsHooked();
-                }
+                }               
                 else
                 {
                     hookedObject = null;                    

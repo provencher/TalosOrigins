@@ -553,11 +553,7 @@ public class Enemy : MonoBehaviour {
             if (coll.gameObject.tag == "Player")
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
-            }
-            else if (coll.gameObject.tag == "Enemy")
-            {
-                coll.gameObject.SendMessage("ShovedByEnemy", lastDirection);
-            }            
+            }                      
         }    
     }   
 }

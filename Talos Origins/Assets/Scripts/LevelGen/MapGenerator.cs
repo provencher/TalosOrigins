@@ -81,12 +81,7 @@ public class MapGenerator : MonoBehaviour
         {
             ResetLevel();
             GenerateMap();
-        }
-
-        if(numAsteroids < 5)
-        {
-            SpawnAllAsteroids(10);
-        }
+        }        
     }
 
     void ResetLevel()
@@ -120,6 +115,9 @@ public class MapGenerator : MonoBehaviour
 
         width = startWidth + 3 * currentLevel;
         height = startHeight + 3 * currentLevel;
+
+        numAsteroidsToSpawn = numAsteroidsToSpawn + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
+        numEnemiesToSpawn = numEnemiesToSpawn + UnityEngine.Random.Range(currentLevel, enemyModifier+ currentLevel);
 
         // set max values for map size
         width = Math.Min(1000, width);
@@ -161,10 +159,7 @@ public class MapGenerator : MonoBehaviour
         MeshGenerator meshGen = GetComponent<MeshGenerator>();
         meshGen.GenerateMesh(borderedMap, 1);
 
-        PlaceTalosInRoom();
-        PlaceExitInRoom();
-        SpawnAllEnemies(numEnemiesToSpawn);
-        SpawnAllAsteroids(numAsteroidsToSpawn);
+        SpawnEverything();
         MessageHandling();
     }
 
@@ -195,6 +190,55 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void SpawnEverything()
+    {
+        PlaceTalosInRoom();
+        PlaceExitInRoom();
+        //SpawnAllEnemies(numEnemiesToSpawn);
+        //SpawnAllAsteroids(numAsteroidsToSpawn);      
+
+
+        int enemiesSpawned = 0;
+        int asteroidsSpawned = 0;
+
+        ClearAllEnemies();
+        ClearAllAsteroids();
+        Coord tempCoord;       
+        int sentry = 3;
+
+        while (numEnemiesToSpawn > 0 && numAsteroidsToSpawn > 0 && sentry > 0)
+        {
+            for (int i = 1; i < height; i++)
+            {
+                for (int j = 1; j < width; j++)
+                {
+                    tempCoord = new Coord(j, i);
+
+                    //Spawn Asteroid
+                    if (UnityEngine.Random.Range(0, numEnemiesToSpawn) % enemyModifier == 0)
+                    {
+                        if (CheckForFit(tempCoord, 1, 1, true))
+                        {
+                            SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
+                            enemiesSpawned++;
+                            numEnemiesToSpawn--;
+                        }
+                    }
+                    //Spawn Enemy
+                    else if (UnityEngine.Random.Range(0, numAsteroidsToSpawn) % enemyModifier == 0)
+                    {
+                        if (CheckForFit(tempCoord, 1, 1, true))
+                        {
+                            SpawnAsteroidAtPosition(asteroidsSpawned, tempCoord);
+                            asteroidsSpawned++;
+                            numAsteroidsToSpawn--;
+                        }
+                    }
+                }
+            }
+            sentry--;
+        }       
+    }
 
 
     /// ENEMY PROCESSING
@@ -254,6 +298,9 @@ public class MapGenerator : MonoBehaviour
         }
         sentry--;
     }
+
+    
+
 
     void KilledEnemy(int index)
     {
