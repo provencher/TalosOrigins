@@ -404,12 +404,12 @@ public class Enemy : MonoBehaviour {
             {
                 case 1:
                     {
-                        increment = boxSize * scaleSize;
+                        increment = boxSize/2 * scaleSize;
                         break;
                     }
                 case 2:
                     {
-                        increment = (-1) * boxSize * scaleSize;
+                        increment = (-1) * boxSize / 2 * scaleSize;
                         break;
                     }
                 default:
