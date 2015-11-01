@@ -63,6 +63,8 @@ public class MapGenerator : MonoBehaviour
     private Room startRoom, endRoom;
     private List<Room> allRooms;
 
+    Dictionary<Coord, int> mapPointOccupied;
+
 
     int[,] map;
 
@@ -70,6 +72,7 @@ public class MapGenerator : MonoBehaviour
     {
         asteroids = new List<GameObject>();
         enemies = new List<GameObject>();
+        mapPointOccupied = new Dictionary<Coord, int>(); 
         startWidth = width;
         startHeight = height;       
         GenerateMap();
@@ -88,6 +91,7 @@ public class MapGenerator : MonoBehaviour
     {
         GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
         GameObject.Find("Talos").GetComponent<Trail>().ResetTrail();
+        mapPointOccupied = new Dictionary<Coord, int>();
     }
 
     void NextLevel()
@@ -173,7 +177,7 @@ public class MapGenerator : MonoBehaviour
 
             foreach (Coord pos in coordsInRoom)
             {
-                if (CheckForFit(pos, 1, 1, false))
+                if (CheckForFit(pos, 1, 1))
                 {
                     center = pos;
                     foundSpot = true;
@@ -185,7 +189,44 @@ public class MapGenerator : MonoBehaviour
             {
                 mTalosCoord = center;
                 mTalosPos = CoordToWorldPoint(center);
+                mapPointOccupied.Add(center, 1);
                 break;
+            }
+        }
+    }
+
+    void PlaceExitInRoom()
+    {
+        bool exitFound = false;
+        int startIndex = allRooms.Count - 1;
+
+        while (startIndex > 1)
+        {
+            endRoom = allRooms[startIndex];
+
+            List<Coord> coordsInRoom = endRoom.tiles;
+            Coord center = new Coord();     
+
+            foreach (Coord pos in coordsInRoom)
+            {
+                if (CheckForFit(pos, 1, 1))
+                {
+                    center = pos;
+                    exitFound = true;
+                    break;
+                }
+            }
+
+            if (exitFound)
+            {
+                mExitPos = CoordToWorldPoint(center);
+                mExitCoord = center;
+                mapPointOccupied.Add(center, 2);
+                break;
+            }
+            else
+            {
+                startIndex--;
             }
         }
     }
@@ -217,9 +258,10 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Asteroid
                     if (UnityEngine.Random.Range(0, numEnemiesToSpawn) % enemyModifier == 0)
                     {
-                        if (CheckForFit(tempCoord, 1, 1, true))
+                        if (CheckForFit(tempCoord, 1, 1))
                         {
                             SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
+                            mapPointOccupied.Add(tempCoord, 3);
                             enemiesSpawned++;
                             numEnemiesToSpawn--;
                         }
@@ -227,9 +269,10 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Enemy
                     else if (UnityEngine.Random.Range(0, numAsteroidsToSpawn) % enemyModifier == 0)
                     {
-                        if (CheckForFit(tempCoord, 1, 1, true))
+                        if (CheckForFit(tempCoord, 1, 1))
                         {
                             SpawnAsteroidAtPosition(asteroidsSpawned, tempCoord);
+                            mapPointOccupied.Add(tempCoord, 4);
                             asteroidsSpawned++;
                             numAsteroidsToSpawn--;
                         }
@@ -286,7 +329,7 @@ public class MapGenerator : MonoBehaviour
 
                     if (UnityEngine.Random.Range(0, numEnemiesToSpawn) == numToSpawn % enemyModifier)
                     {
-                        if (CheckForFit(tempCoord, 1, 1, true))
+                        if (CheckForFit(tempCoord, 1, 1))
                         {
                             SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
                             enemiesSpawned++;
@@ -329,7 +372,7 @@ public class MapGenerator : MonoBehaviour
 
                     if (UnityEngine.Random.Range(0, numEnemiesToSpawn) == numToSpawn % enemyModifier)
                     {
-                        if (CheckForFit(tempCoord, 1, 1, true))
+                        if (CheckForFit(tempCoord, 1, 1))
                         {
                             SpawnAsteroidAtPosition(numAsteroids, tempCoord);
                             numAsteroids++;
@@ -383,47 +426,6 @@ public class MapGenerator : MonoBehaviour
     }
     ////////////////////////////////////////////////////////////////////////////////////
 
-    void PlaceExitInRoom()
-    {
-        bool exitFound = false;
-        int startIndex = allRooms.Count - 1;
-
-        while (startIndex > 1)
-        {
-            endRoom = allRooms[startIndex];
-
-            List<Coord> coordsInRoom = endRoom.tiles;
-            Coord center = new Coord();
-            bool foundSpot = false;
-
-            foreach (Coord pos in coordsInRoom)
-            {
-                if (CheckForFit(pos, 1, 1, false))
-                {
-                    center = pos;
-                    exitFound = true;
-                    break;
-                }
-            }
-
-            if(exitFound)
-            {               
-                mExitPos = CoordToWorldPoint(center);
-                mExitCoord = center;
-                break;
-            }
-            else
-            {
-                startIndex--;
-            }
-        }       
-        
-        if(!exitFound)
-        {
-            ResetLevel();
-            GenerateMap();
-        }         
-    }
 
 
     void MessageHandling()
@@ -440,35 +442,19 @@ public class MapGenerator : MonoBehaviour
     ////////////////////////////////////////////////////////////////////////////////////  
 
     // Check if each corner of the sprite fits in the tile
-    bool CheckForFit(Coord pos, int offSetX, int offSetY, bool isEnemy)
-    {
-        bool clearOfTalos = true;
-        bool clearOfExit = true;
+    bool CheckForFit(Coord pos, int offSetX, int offSetY)
+    {     
+        bool clear = true;       
 
-        if(isEnemy)
+        int value;
+        mapPointOccupied.TryGetValue(pos, out value);
+        if(value > 0)
         {
-            clearOfTalos =
-            //Away from Talos
-            (pos.tileX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
-
-            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
-            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY != mTalosCoord.tileY)
-
-            && (pos.tileX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
-            && (pos.tileX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY)
-
-            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
-            && (pos.tileX + offSetX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY)
-
-            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY + offSetY != mTalosCoord.tileY)
-            && (pos.tileX - offSetX != mTalosCoord.tileX && pos.tileY - offSetY != mTalosCoord.tileY);
-
-            clearOfExit = (pos.tileX != mExitCoord.tileX && pos.tileY != mExitCoord.tileY);
-        }
+            clear = false;
+        }       
 
         return
-            clearOfTalos 
-            && clearOfExit 
+            clear
             //In map Range
             && ((pos.tileX - offSetX) > 0) && ((pos.tileX + offSetX) < width)
             && ((pos.tileY - offSetY) > 0) && ((pos.tileY + offSetY) < height)
