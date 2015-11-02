@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 
-  
+
 	public void OnDrop(PointerEventData eventData)
 	{
-		GetComponent<Image> ().color = UnityEngine.Color.gray;
+		GetComponent<Image> ().color = UnityEngine.Color.clear;
 		Draggable d = eventData.pointerDrag.GetComponent<Draggable> ();
 		d.GetComponent<Image> ().color = UnityEngine.Color.white;
 		if (d != null) {
@@ -30,6 +30,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 		}
 	}
 	public void OnPointerExit(PointerEventData eventData){
-		GetComponent<Image> ().color = UnityEngine.Color.gray;
+		GetComponent<Image> ().color = UnityEngine.Color.clear;
+
 	}
 }
