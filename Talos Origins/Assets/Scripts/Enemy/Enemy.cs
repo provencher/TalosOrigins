@@ -45,7 +45,10 @@ public class Enemy : MonoBehaviour {
     float hitTime = 0.5f;
     float hitEndTime;
 
+    [SerializeField]
     public GameObject LaserGreenHit;    //LaserGreenHit Prefab
+
+    [SerializeField]
     public GameObject Explosion; 		//Explosion Prefab
 
 
@@ -556,15 +559,25 @@ public class Enemy : MonoBehaviour {
 
 
         //Excute if the object tag was equal to one of these
-        if (coll.gameObject.tag == "Bullet")
+        if (coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
         {            
-
             Instantiate(LaserGreenHit, transform.position, transform.rotation);         //Instantiate LaserGreenHit 
             Destroy(coll.gameObject);  
 
             //Check the Health if greater than 0
             if (mHealth > 0)
-                mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;                                                               //Decrement Health by 1
+            {
+                if (coll.gameObject.tag == "enemyBullet")
+                {
+                    mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
+                }
+                else
+                {
+                    mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;
+                }               
+                
+            }
+                                                                              //Decrement Health by 1
 
             //Check the Health if less or equal 0
             if (mHealth <= 0)

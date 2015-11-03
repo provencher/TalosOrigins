@@ -12,7 +12,7 @@ public class EnemyCoBullet : MonoBehaviour {
     float deadTime;
     Animator mAnimator;
 
-    int mDamage;
+    public int mDamage;
 
 
 
