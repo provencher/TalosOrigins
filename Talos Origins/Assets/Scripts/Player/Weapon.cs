@@ -74,7 +74,7 @@ public class Weapon : MonoBehaviour {
             float talosHorizOffset = mTalos.GetComponent<BoxCollider2D>().size.x * mTalos.transform.localScale.x;
 
             //Offset mouse position to avoid problems when clicking on talos
-            if ((mousePosition - mTalos.transform.position).magnitude < talosHorizOffset)
+            if ((mousePosition - mTalos.transform.position).magnitude < talosHorizOffset/8)
             {
                 mousePosition.x += talosHorizOffset * mTalos.mFacingDirection.x;
             }          

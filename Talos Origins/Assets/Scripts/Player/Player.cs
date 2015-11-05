@@ -498,7 +498,10 @@ public class Player : MonoBehaviour
             }
             else if(coll.gameObject.tag == "Orb")
             {
+                //Pickup orb
+
                 //
+                Destroy(coll.gameObject);
             }
         }
     }

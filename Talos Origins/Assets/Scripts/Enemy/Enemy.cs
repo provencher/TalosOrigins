@@ -25,6 +25,8 @@ public class Enemy : MonoBehaviour {
 
     Vector3 playerPosition;
 
+    int nbTimesDied;
+
     // Retain index of enemy to properly handle destruction
     int mapGenIndex;
 
@@ -77,6 +79,7 @@ public class Enemy : MonoBehaviour {
         mHealth = 100;
 
         lastDirection = Vector2.right;
+        nbTimesDied = 0;
     }
 
     void FixedUpdate()
@@ -551,7 +554,7 @@ public class Enemy : MonoBehaviour {
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(0);
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0,4));
         }
 
     }
@@ -596,6 +599,12 @@ public class Enemy : MonoBehaviour {
                 Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion   
                 DropOrbs(5);                                                                                                     
                 NotifyOfDeath();
+                nbTimesDied++;
+
+                if(nbTimesDied > 1)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }   
