@@ -71,7 +71,7 @@ public class Bullet : MonoBehaviour {
             Destroy(gameObject);
         }
         else*/
-        if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "Exit")
+        if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet" ||coll.gameObject.tag == "Exit")
         {
             Destroy(gameObject);
         }        
