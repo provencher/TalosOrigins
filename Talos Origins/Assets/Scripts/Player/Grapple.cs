@@ -72,7 +72,7 @@ public class Grapple : MonoBehaviour {
 
         UpdateAnchor();
 
-        if (Input.GetButtonDown("Jump") || Input.GetButtonDown("UnHook") || (hookedObject == null && hitPoint == Vector3.zero))
+        if (Input.GetButtonDown("Jump")|| (hookedObject == null && hitPoint == Vector3.zero))
         {
             unHook();
         }
@@ -87,7 +87,7 @@ public class Grapple : MonoBehaviour {
             }
             else if (Input.GetButton("Down"))
             {
-                grapple.distance += grapple.distance * 0.01f;
+                unHook();
             }
         }
 	}

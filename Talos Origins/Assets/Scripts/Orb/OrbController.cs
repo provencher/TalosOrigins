@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class OrbController : MonoBehaviour {
-    public GameObject attachedParent; 
-    
+       
     [SerializeField]
     public GameObject blueOrbPrefab;
 
