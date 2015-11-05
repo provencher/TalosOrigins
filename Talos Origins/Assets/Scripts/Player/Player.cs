@@ -496,6 +496,10 @@ public class Player : MonoBehaviour
             {
                 GameObject.Find("MapGenerator").SendMessage("NextLevel");
             }
+            else if(coll.gameObject.tag == "Orb")
+            {
+                //
+            }
         }
     }
 }

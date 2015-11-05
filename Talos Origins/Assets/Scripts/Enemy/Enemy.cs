@@ -524,6 +524,8 @@ public class Enemy : MonoBehaviour {
 
         // Notify Map Generator of index of enemy killed
         GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
+
+        
     }
 
     void ShovedByEnemy(Vector2 shoveDir)
@@ -543,6 +545,15 @@ public class Enemy : MonoBehaviour {
     void HitByBullet(int damage)
     {
         mHealth -= damage;
+    }
+
+    void DropOrbs(int numOrbs)
+    {
+        for (int i = 0; i < numOrbs; i++)
+        {
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(0);
+        }
+
     }
 
 
@@ -582,7 +593,8 @@ public class Enemy : MonoBehaviour {
             //Check the Health if less or equal 0
             if (mHealth <= 0)
             {               
-                Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion                                                                                                        
+                Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion   
+                DropOrbs(5);                                                                                                     
                 NotifyOfDeath();
             }
         }
