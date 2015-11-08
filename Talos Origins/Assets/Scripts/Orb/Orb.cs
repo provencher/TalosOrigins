@@ -5,16 +5,32 @@ public class Orb : MonoBehaviour {
 
     float timeToLive;
     float lifeTime;
+    Transform player;
+
+    public int type;
 
 	// Use this for initialization
 	void Start () {
         lifeTime = Random.Range(1.5f,3.0f);
         timeToLive = lifeTime;
+        player = GameObject.Find("Talos").transform;
 	}
+
+    void SeekPlayer()
+    {
+        Vector3 direction = player.position - transform.position;
+
+        if (direction.magnitude < 2.5f)
+        {
+            transform.position += direction.normalized * 2 * Time.deltaTime;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
-	    if(timeToLive > 0)
+        SeekPlayer();
+
+        if (timeToLive > 0)
         {
             timeToLive -= Time.deltaTime;
         }
@@ -23,15 +39,4 @@ public class Orb : MonoBehaviour {
             Destroy(gameObject);
         }
 	}
-
-    void OnCollisionEnter2D(Collision2D coll)
-    {
-        if(coll.gameObject.tag == "Bullet")
-        {
-            Destroy(coll.gameObject);
-            Destroy(gameObject);
-        }
-    }
-
-
 }

@@ -488,6 +488,25 @@ public class Player : MonoBehaviour
         }
     }
 
+    void PickupOrb(int type)
+    {
+        Debug.Log("Picked Orb of type " + type.ToString());
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other != null)
+        {
+            if (other.gameObject.tag == "Orb")
+            {
+                //Pickup orb                
+                PickupOrb(other.gameObject.GetComponent<Orb>().type);
+                //Destroy orb
+                Destroy(other.gameObject);
+            }
+        }
+    }
+
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll != null)
@@ -496,13 +515,7 @@ public class Player : MonoBehaviour
             {
                 GameObject.Find("MapGenerator").SendMessage("NextLevel");
             }
-            else if(coll.gameObject.tag == "Orb")
-            {
-                //Pickup orb
-
-                //
-                Destroy(coll.gameObject);
-            }
+            
         }
     }
 }
