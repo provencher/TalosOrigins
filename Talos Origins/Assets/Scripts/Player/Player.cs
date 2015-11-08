@@ -516,7 +516,7 @@ public class Player : MonoBehaviour
                 //Pickup orb                
                 PickupOrb(other.gameObject.GetComponent<Orb>().type);
                 //Destroy orb
-                Destroy(other.gameObject);
+                other.gameObject.GetComponent<Orb>().pickedUp = true;
             }
         }
     }

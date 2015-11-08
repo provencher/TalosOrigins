@@ -8,6 +8,7 @@ public class Orb : MonoBehaviour {
     Transform player;
 
     public int type;
+    public bool pickedUp = false;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,12 @@ public class Orb : MonoBehaviour {
 
     void SeekPlayer()
     {
+        if(pickedUp)
+        {
+            GetComponent<AudioSource>().Play(); 
+            Destroy(gameObject);
+        }
+
         Vector3 direction = player.position - transform.position;
 
         if (direction.magnitude < 2.5f)
