@@ -61,7 +61,9 @@ public class Player : MonoBehaviour
     int mCurrentLevel;
     int mEnemiesRemaining;
 
-    Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;    
+    Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
+
+    int[] orbTank;
 
 
     /*
@@ -70,6 +72,7 @@ public class Player : MonoBehaviour
 
     List<GroundCheck> mGroundCheckList;
     */
+
 
     void Start()
     {
@@ -84,6 +87,7 @@ public class Player : MonoBehaviour
         mShoveDirection = Vector2.zero;
         mHealth = 100;
         mInvincibleTimer = 0;
+        InitOrbTank();
       
  
         // UI Text
@@ -120,6 +124,15 @@ public class Player : MonoBehaviour
     }
     */
 
+    void InitOrbTank()
+    {
+        orbTank = new int[4];
+        for (int tank = 0; tank < orbTank.Length; tank++)
+        {
+            orbTank[tank] = 0;
+        }
+    }
+
     void FixedUpdate()
     {
         CheckDead();
@@ -134,7 +147,7 @@ public class Player : MonoBehaviour
         GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
         GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
         GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
-        GameObject.Find("experience").GetComponent<Text>().text = "Exp: " + mTotalExp.ToString();
+        GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
         GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
     }
  
@@ -490,7 +503,8 @@ public class Player : MonoBehaviour
 
     void PickupOrb(int type)
     {
-        Debug.Log("Picked Orb of type " + type.ToString());
+        //Debug.Log("Picked Orb of type " + type.ToString());
+        orbTank[type]++;
     }
 
     void OnTriggerEnter2D(Collider2D other)
