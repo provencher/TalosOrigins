@@ -10,18 +10,28 @@ public class Orb : MonoBehaviour {
     public int type;
     public bool pickedUp = false;
 
+    int audioTickCounter = 0;
+
+    [SerializeField]
+    public GameObject audioController;
+
 	// Use this for initialization
 	void Start () {
         lifeTime = Random.Range(1.5f,3.0f);
         timeToLive = lifeTime;
-        player = GameObject.Find("Talos").transform;
+        player = GameObject.Find("Talos").transform;        
 	}
 
     void SeekPlayer()
-    {
-        if(pickedUp)
+    {        
+        if(pickedUp && audioTickCounter == 0)
         {
-            GetComponent<AudioSource>().Play(); 
+            GetComponent<AudioSource>().Play();
+            audioTickCounter++;
+        } 
+        else if (pickedUp && audioTickCounter > 0)
+        {
+            Instantiate(audioController, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
 

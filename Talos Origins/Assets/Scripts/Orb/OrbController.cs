@@ -37,7 +37,7 @@ public class OrbController : MonoBehaviour {
                 break;
 
         }        
-        orbInstance.GetComponent<Orb>().type = colorNum;
+        orbInstance.GetComponent<Orb>().type = colorNum;      
     }   
           
     
