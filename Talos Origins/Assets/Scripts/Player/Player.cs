@@ -4,9 +4,15 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
-{   
+{
     //Vector2 velocity;
 
+    [SerializeField]
+    GameObject PainAudio1;
+    [SerializeField]
+    GameObject PainAudio2;
+    [SerializeField]
+    GameObject PainAudio3;
 
     [SerializeField]
     float mMoveSpeed;
@@ -191,6 +197,35 @@ public class Player : MonoBehaviour
         }
         */
 
+    }
+
+    public void InflictDamage(int damage)
+    {        
+
+        if (!mInvincible)
+        {
+            mInvincible = true;
+            mInvincibleTimer = kInvincibilityDuration;          
+
+            
+            mHealth -= damage;
+
+            if(mHealth > 50)
+            {
+                Instantiate(PainAudio1, transform.position, Quaternion.identity);
+            }
+
+            if (mHealth > 25 && mHealth < 50)
+            {
+                Instantiate(PainAudio2, transform.position, Quaternion.identity);
+            }
+
+            if (mHealth > 0 && mHealth < 25)
+            {
+                Instantiate(PainAudio3, transform.position, Quaternion.identity);
+            }
+
+        }
     }
 
     void CheckDead()
@@ -447,14 +482,13 @@ public class Player : MonoBehaviour
         mEnemiesRemaining--;
     }
 
+   
+
     void ShovedByEnemy(Vector3 shoveInfo)
     {
         if(!mInvincible)
         {
-            mInvincible = true;
-            mInvincibleTimer = kInvincibilityDuration;
-            mHealth -= (int)shoveInfo.z;
-
+            InflictDamage((int)shoveInfo.z);
             // Get Shoved
             //mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
@@ -495,10 +529,7 @@ public class Player : MonoBehaviour
 
     void HitByBullet(int damage)
     {
-        if(!mInvincible)
-        {
-            mHealth -= damage;
-        }
+        InflictDamage(damage);        
     }
 
     void PickupOrb(int type)

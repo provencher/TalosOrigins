@@ -2,6 +2,11 @@
 using System.Collections;
 
 public class Grapple : MonoBehaviour {
+    [SerializeField]
+    GameObject grappleHitAudio;
+
+    [SerializeField]
+    GameObject grappleFireAudio;
 
     [SerializeField]
     GameObject anchor;
@@ -50,6 +55,11 @@ public class Grapple : MonoBehaviour {
 
             if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
             {
+                Instantiate(grappleFireAudio, transform.position, Quaternion.identity);
+                Instantiate(grappleHitAudio, transform.position, Quaternion.identity);
+                grappleHitAudio.GetComponent<audioPrefabController>().delay = 0.1f;               
+
+
                 hitPoint = hit.point;
                 moveHook(hit.point);
                 lineRenderer.enabled = true;

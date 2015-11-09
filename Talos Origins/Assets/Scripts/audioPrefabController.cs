@@ -3,27 +3,35 @@ using System.Collections;
 
 public class audioPrefabController : MonoBehaviour {
 
-    float timeToLive = 0.3f;
+    float timeToLive = 0.5f;
     public float delay = -1;
+
+    bool triggered = false;
 
 	// Use this for initialization
 	void Start () {
-        GetComponent<AudioSource>().Play();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if(delay > 0)
+        if(delay < 0 && !triggered)
         {
-            timeToLive += delay;
-            delay = -1;
+            triggered = true;
+            GetComponent<AudioSource>().Play();
         }
 
-        timeToLive -= Time.deltaTime;
-
-        if(timeToLive < 0)
+        if (delay > 0)
         {
-            Destroy(gameObject);
+            delay -= Time.deltaTime;
         }
+        else
+        {
+            timeToLive -= Time.deltaTime;
+
+            if (timeToLive < 0)
+            {
+                Destroy(gameObject);
+            }
+        }        
 	}
 }

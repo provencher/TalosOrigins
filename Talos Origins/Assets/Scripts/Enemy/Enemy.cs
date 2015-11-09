@@ -171,8 +171,8 @@ public class Enemy : MonoBehaviour {
         CrawlerCheckMove();
 
         
+       
             Vector2 targetDirection = lastDirection;
-            /*
 
             int d30Roll = Random.Range(1, 30);
             if (!DirectionClear(lastDirection) || d30Roll == 5)
@@ -183,14 +183,13 @@ public class Enemy : MonoBehaviour {
             {
                 targetDirection = ChooseRandomDirection();
             }
-            */
 
-            targetDirection = FindDirectionWithTarget(playerPosition);
-            targetDirection.y = 0;
             lastDirection = targetDirection;
+            targetDirection.y = 0;
 
             //Pursue Player         
             TranslateToTarget(transform.position + (Vector3)targetDirection);
+
             CrawlerFaceDirection(targetDirection);
             CrawlerUpdateAnimator();
         
@@ -537,7 +536,7 @@ public class Enemy : MonoBehaviour {
         {
             case eClass.flyer:
                 {
-                    mRigidBody2D.AddForce(shoveDir, ForceMode2D.Impulse);
+                    //mRigidBody2D.AddForce(shoveDir, ForceMode2D.Impulse);
                     break;
                 }
             default:
