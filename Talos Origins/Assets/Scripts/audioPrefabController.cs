@@ -3,7 +3,7 @@ using System.Collections;
 
 public class audioPrefabController : MonoBehaviour {
 
-    float timeToLive = 0.5f;
+    float timeToLive = 2.0f;
     public float delay = -1;
 
     bool triggered = false;
