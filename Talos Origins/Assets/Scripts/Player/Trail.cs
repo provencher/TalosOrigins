@@ -15,7 +15,7 @@ public class Trail : MonoBehaviour {
     GameObject mBreadcrumbPrefab;
     bool breadcrumbsActivated;
     int crumbCount;
-    Vector3 InitialCrumbPosition;
+    Vector3 lastCrumbPosition;
     List<GameObject> trail;
 
     // Use this for initialization
@@ -53,26 +53,41 @@ public class Trail : MonoBehaviour {
     {
         if (crumbCount == 0)
         {
-            InitialCrumbPosition = transform.position;
+            lastCrumbPosition = transform.position;
             GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, transform.position, Quaternion.identity);
             trail.Add(mBreadcrumb);
             crumbCount++;
         }
 
-        if (Vector3.Distance(InitialCrumbPosition, transform.position) > mCrumbSeperation * crumbCount)
+        if (Vector3.Distance(lastCrumbPosition, transform.position) > mCrumbSeperation )
         {
+            lastCrumbPosition = transform.position + Vector3.up;
+
             if (crumbCount < mMaxCrumbs)
             {
-                GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, transform.position, Quaternion.identity);
+                GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, lastCrumbPosition, Quaternion.identity);
                 trail.Add(mBreadcrumb);
                 Debug.Log("breadcrumb dropped");
+                crumbCount++;
             }
             else
             {
-                trail[crumbCount % mMaxCrumbs].transform.position = transform.position;
+                GameObject oldestCrumb = trail[0];
+                
+                trail.RemoveAt(0);
+                oldestCrumb.transform.position = lastCrumbPosition;
+                trail.Add(oldestCrumb);
+
+
+                //trail.Add((GameObject)Instantiate(mBreadcrumbPrefab, transform.position, Quaternion.identity));
+                Debug.Log("breadcrumb moved");
+
+                //trail[crumbCount % mMaxCrumbs].transform.position = transform.position;
             }
 
-            crumbCount++;
+       
+
+
 
         }
     }
