@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour {
     int mCurrentLevel;
     int mExpGiven;
     float mDamageModifier;
-    int mHealth;
+    public int mHealth;
 
     LayerMask ignoreLayer, defaultLayer;
 
@@ -119,7 +119,8 @@ public class Enemy : MonoBehaviour {
 
     void CheckDead()
     {
-        if(mHealth <= 0)
+        gameObject.GetComponent<EnemyHealthBar>().curHealth = mHealth;
+        if (mHealth <= 0)
         {
             NotifyOfDeath();
         }
@@ -155,10 +156,12 @@ public class Enemy : MonoBehaviour {
     }
 
     void FlyerInit()
-    {
+    {     
+
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
         mHealth = mHealth * (1 + mCurrentLevel / 20);
+        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;        
     }
     void CrawlerUpdate()
     {
@@ -211,6 +214,9 @@ public class Enemy : MonoBehaviour {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
         mHealth = mHealth * (1 + mCurrentLevel / 20);
+
+        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
+
 
 
         crawlerFacedirection = Vector2.left;
