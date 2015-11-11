@@ -9,8 +9,14 @@ public class Bullet : MonoBehaviour {
     [SerializeField]
     float mSpeed;
 
+    [SerializeField]
+    public GameObject mExplosion;
+
+
     float mDestroyTime;
     Rigidbody2D mRigidbody2D;
+
+    public bool mAlive = true;
 
     public int mDamage;
 
@@ -30,10 +36,16 @@ public class Bullet : MonoBehaviour {
 
     void CheckDeath()
     {
-        if (Time.time > mDestroyTime)
+        if (Time.time > mDestroyTime || !mAlive)
         {
-            Destroy(gameObject);
+            Explode();
         }
+    }
+
+    void Explode()
+    {
+        Instantiate(mExplosion, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 
     public void SetDirection( Vector3 direction, Vector3 playerVelocity)
@@ -73,7 +85,7 @@ public class Bullet : MonoBehaviour {
         else*/
         if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet" ||coll.gameObject.tag == "Exit")
         {
-            Destroy(gameObject);
+            Explode();           
         }        
 
     }

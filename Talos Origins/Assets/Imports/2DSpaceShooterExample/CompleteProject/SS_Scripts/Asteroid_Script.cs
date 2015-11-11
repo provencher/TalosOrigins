@@ -93,7 +93,7 @@ public class Asteroid_Script : MonoBehaviour
 		if(coll.gameObject.tag == "Bullet")
 		{
 			Instantiate (LaserGreenHit, transform.position , transform.rotation); 		//Instantiate LaserGreenHit 
-			Destroy(coll.gameObject);													//Destroy the Other (PlayerLaser)
+            coll.gameObject.GetComponent<Bullet>().mAlive = false;
 
 			//Check the Health if greater than 0
 			if(health > 0)

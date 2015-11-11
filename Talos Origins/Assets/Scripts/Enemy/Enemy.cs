@@ -591,7 +591,7 @@ public class Enemy : MonoBehaviour {
         if (coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
         {            
             Instantiate(LaserGreenHit, transform.position, transform.rotation);         //Instantiate LaserGreenHit 
-            Destroy(coll.gameObject);  
+            
 
             //Check the Health if greater than 0
             if (mHealth > 0)
@@ -599,10 +599,12 @@ public class Enemy : MonoBehaviour {
                 if (coll.gameObject.tag == "enemyBullet")
                 {
                     mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
+                    Destroy(coll.gameObject);
                 }
                 else
                 {
                     mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;
+                    coll.gameObject.GetComponent<Bullet>().mAlive = false;
                 }               
                 
             }

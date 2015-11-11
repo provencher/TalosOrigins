@@ -210,8 +210,7 @@ public class Player : MonoBehaviour
             mInvincibleTimer = kInvincibilityDuration;          
 
             
-            mHealth -= damage;          
-            Time.timeScale = 0.65f;
+            mHealth -= damage;         
 
 
             if (mHealth > 50)
@@ -235,17 +234,11 @@ public class Player : MonoBehaviour
     void CheckDead()
     {
         if(mHealth <= 0)
-        {
-            Time.timeScale = 0.45f;
-            Instantiate(PainAudio3, transform.position, Quaternion.identity);
-            new WaitForSeconds(0.3f);
-            Instantiate(PainAudio2, transform.position, Quaternion.identity);
-            new WaitForSeconds(0.2f);
-            Instantiate(PainAudio1, transform.position, Quaternion.identity);
-            new WaitForSeconds(0.2f);
-            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-
-            Time.timeScale = 0.85f;
+        {      
+            Instantiate(PainAudio3, transform.position, Quaternion.identity);           
+            Instantiate(PainAudio2, transform.position, Quaternion.identity);            
+            Instantiate(PainAudio1, transform.position, Quaternion.identity);       
+            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);     
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
     }
@@ -282,7 +275,6 @@ public class Player : MonoBehaviour
             {
                 mInvincibleTimer = 0;
                 mInvincible = false;
-                Time.timeScale = 1;
             }  
         }
     }
