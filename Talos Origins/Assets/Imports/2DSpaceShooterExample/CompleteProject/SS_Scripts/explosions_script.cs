@@ -12,11 +12,31 @@
 using UnityEngine;
 using System.Collections;
 
+
+
+
 public class explosions_script : MonoBehaviour 
 {
-	// Use this for initialization
-	void Start () 
+
+    public float timeToLive = 2.0f;
+    // Use this for initialization
+    void Start () 
 	{
 		GetComponent<AudioSource>().Play(); //Play Explosion Sound
 	}
+
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (timeToLive > 0)
+        {
+            timeToLive -= Time.deltaTime;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 }
