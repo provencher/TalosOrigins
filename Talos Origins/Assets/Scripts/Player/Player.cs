@@ -244,6 +244,8 @@ public class Player : MonoBehaviour
             Instantiate(PainAudio1, transform.position, Quaternion.identity);
             new WaitForSeconds(0.2f);
             Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+
+            Time.timeScale = 0.85f;
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
     }

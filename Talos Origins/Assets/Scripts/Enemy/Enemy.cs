@@ -151,7 +151,7 @@ public class Enemy : MonoBehaviour {
             lastDirection = targetDirection;
 
             //Pursue Player            
-            TranslateToTarget(transform.position + (Vector3)targetDirection);
+            TranslateAerialToTarget(transform.position + (Vector3)targetDirection);
         
     }
 
@@ -171,30 +171,28 @@ public class Enemy : MonoBehaviour {
             firstLoop = false;
         }
 
-        CrawlerCheckMove();
-
-        
+        CrawlerCheckMove();        
        
-            Vector2 targetDirection = lastDirection;
+        Vector2 targetDirection = lastDirection;
 
-            int d30Roll = Random.Range(1, 30);
-            if (!DirectionClear(lastDirection) || d30Roll == 5)
-            {
-                targetDirection = FindDirectionWithTarget(playerPosition);
-            }
-            else if (d30Roll == 15)
-            {
-                targetDirection = ChooseRandomDirection();
-            }
+        int d30Roll = Random.Range(1, 30);
+        if (!DirectionClear(lastDirection) || d30Roll == 5)
+        {
+            targetDirection = FindDirectionWithTarget(playerPosition);
+        }
+        else if (d30Roll == 15)
+        {
+            targetDirection = ChooseRandomDirection();
+        }
 
-            lastDirection = targetDirection;
-            targetDirection.y = 0;
+        lastDirection = targetDirection;
+        targetDirection.y = 0;
 
-            //Pursue Player         
-            TranslateToTarget(transform.position + (Vector3)targetDirection);
+        //Pursue Player         
+        TranslateGroundToTarget(transform.position + (Vector3)targetDirection);
 
-            CrawlerFaceDirection(targetDirection);
-            CrawlerUpdateAnimator();
+        CrawlerFaceDirection(targetDirection);
+        CrawlerUpdateAnimator();
         
     }
 
@@ -279,14 +277,26 @@ public class Enemy : MonoBehaviour {
         return false;
     }
 
-    void TranslateToTarget(Vector3 target)
+    void TranslateAerialToTarget(Vector3 target)
+    {    
+
+        if (target != null)
+        {
+            Vector3 direction = target - transform.position;
+            direction.z = 0;
+            //transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
+            mRigidBody2D.velocity = mRigidBody2D.velocity + (Vector2)(direction.normalized * mMoveSpeed * Time.deltaTime);
+        }
+    }
+
+    void TranslateGroundToTarget(Vector3 target)
     {
         if (target != null)
         {
             Vector3 direction = target - transform.position;
             direction.z = 0;
             transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
-        }
+        }     
     }
 
     Vector2 FindDirectionWithTarget(Vector3 target)
