@@ -92,6 +92,8 @@ public class Enemy : MonoBehaviour {
         mInRange = InTalosRange(playerPosition);
         if (mInRange)
         {
+            mRigidBody2D.isKinematic = false;
+
             // Update according to enemy class
             switch (type)
             {
@@ -116,6 +118,10 @@ public class Enemy : MonoBehaviour {
                         break;
                     }
             }
+        }
+        else
+        {
+            mRigidBody2D.isKinematic = true;
         }
     }
 

@@ -38,7 +38,7 @@ public class EnemyCoWeapon : MonoBehaviour {
 	}
     void Shoot()
     {
-        if (Time.time - lastShootTime > ShootInterval)
+        if (Time.time - lastShootTime > ShootInterval && mParent.GetComponent<Enemy>().mInRange)
         {
             Vector2 enemyFaceDirection=transform.parent.GetComponent<Enemy>().crawlerFacedirection;
             Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection* mParent.GetComponent<BoxCollider2D>().size.x/6+ Vector3.up * mParent.GetComponent<BoxCollider2D>().size.y/6;
