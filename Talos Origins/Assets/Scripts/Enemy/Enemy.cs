@@ -80,6 +80,8 @@ public class Enemy : MonoBehaviour {
 
         lastDirection = Vector2.right;
         nbTimesDied = 0;
+
+        mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
     }
 
     void FixedUpdate()
@@ -126,6 +128,15 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    void FlyerInit()
+    {
+
+        gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
+        mDamageModifier = 5;
+        mHealth = 45 + (mCurrentLevel * 5);
+        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
+    }
+
 
     void FlyerUpdate()
     {
@@ -155,14 +166,27 @@ public class Enemy : MonoBehaviour {
         
     }
 
-    void FlyerInit()
-    {     
+   
 
-        gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
+    void CrawlerInit()
+    {
+        gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = mHealth * (1 + mCurrentLevel / 20);
-        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;        
+        mHealth = 45 + (mCurrentLevel * 5);
+
+        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
+
+
+
+        crawlerFacedirection = Vector2.left;
+        //animator
+        mAnimator = GetComponent<Animator>();
+        //mAnimator.enabled = true;
+        crawlerIsWalking = true;
+        crawlerIsShooting = false;
+        crawlerIsHit = false;
     }
+
     void CrawlerUpdate()
     {
         if (firstLoop)
@@ -207,24 +231,7 @@ public class Enemy : MonoBehaviour {
             transform.rotation = Quaternion.LookRotation(Vector3.back);
         }
     }
-    void CrawlerInit()
-    {
-        gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
-        mDamageModifier = 5;
-        mHealth = mHealth * (1 + mCurrentLevel / 20);
-
-        gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
-
-
-
-        crawlerFacedirection = Vector2.left;
-        //animator
-        mAnimator = GetComponent<Animator>();
-        //mAnimator.enabled = true;
-        crawlerIsWalking = true;
-        crawlerIsShooting = false;
-        crawlerIsHit = false;
-    }
+ 
 
     void CrawlerCheckMove()
     {
@@ -599,7 +606,8 @@ public class Enemy : MonoBehaviour {
                 if (coll.gameObject.tag == "enemyBullet")
                 {
                     mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
-                    Destroy(coll.gameObject);
+                    coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;
+                    //Destroy(coll.gameObject);
                 }
                 else
                 {

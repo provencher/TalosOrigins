@@ -10,7 +10,8 @@ public class EnemyCoWeapon : MonoBehaviour {
     [SerializeField]
     GameObject mEnemyCoBulletPrefab;
 
-    Enemy mParent; 
+    Enemy mParent;
+
 
     // Use this for initialization
     void Start () {
@@ -40,7 +41,7 @@ public class EnemyCoWeapon : MonoBehaviour {
         if (Time.time - lastShootTime > ShootInterval)
         {
             Vector2 enemyFaceDirection=transform.parent.GetComponent<Enemy>().crawlerFacedirection;
-            Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection*0.5f+Vector3.up*2.0f;
+            Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection* mParent.GetComponent<BoxCollider2D>().size.x/6+ Vector3.up * mParent.GetComponent<BoxCollider2D>().size.y/6;
             Vector3 mBulletDirection = enemyFaceDirection;
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);

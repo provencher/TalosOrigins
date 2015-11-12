@@ -76,17 +76,24 @@ public class Bullet : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {       
+        if (coll.gameObject.tag == "enemyBullet")
+        {
+            coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;
+            Explode();
+        }
+        else if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "Exit")
+        {
+            Explode();
+        }
+
         /*
         if (coll.gameObject.tag == "Enemy")
         {          
             coll.gameObject.SendMessage("HitByBullet", mDamage);
             Destroy(gameObject);
         }
-        else*/
-        if (coll.gameObject.tag == "Cave" || coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet" ||coll.gameObject.tag == "Exit")
-        {
-            Explode();           
-        }        
+          
+        */
 
     }
 }

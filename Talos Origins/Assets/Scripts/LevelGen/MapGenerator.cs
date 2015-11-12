@@ -308,7 +308,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         enemies[index].SendMessage("UpdateEnemyIndex", index);
-        enemies[index].SendMessage("UpdateLevel", currentLevel);
+        //enemies[index].SendMessage("UpdateLevel", currentLevel);
     }
 
     void SpawnAllEnemies(int numToSpawn)

@@ -14,9 +14,14 @@ public class EnemyCoBullet : MonoBehaviour {
 
     public int mDamage;
 
+    public bool mHit = false;
+
+    [SerializeField]
+    public GameObject mExplosion;
 
 
-    Rigidbody2D mRigidbody2D;
+
+Rigidbody2D mRigidbody2D;
 	void Awake () {
         deadTime = Time.time + lifeTime;
         mRigidbody2D = GetComponent<Rigidbody2D>();
@@ -41,8 +46,9 @@ public class EnemyCoBullet : MonoBehaviour {
     }
     void CheckDeath()
     {
-        if (Time.time > deadTime)
+        if (Time.time > deadTime || mHit)
         {
+            Instantiate(mExplosion, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

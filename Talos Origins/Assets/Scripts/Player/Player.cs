@@ -567,6 +567,11 @@ public class Player : MonoBehaviour
             {
                 GameObject.Find("MapGenerator").SendMessage("NextLevel");
             }
+            else if(coll.gameObject.tag == "enemyBullet")
+            {
+                mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
+                coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;
+            }
             
         }
     }
