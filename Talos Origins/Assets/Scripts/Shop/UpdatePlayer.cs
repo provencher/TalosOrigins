@@ -3,10 +3,17 @@ using System.Collections;
 
 public class UpdatePlayer : MonoBehaviour {
 
+    Player PlayerRef;
+
+    void Start() {
+        PlayerRef = Player.playerRef;
+    }
+
 	public void UpdateTalosUpgrade(GameObject dropZone){
 		string name = dropZone.transform.GetChild(0).name;
-		
-		PlayerPrefs.SetInt (name, (PlayerPrefs.GetInt(name) + 1 ));
+	
+        	
+//		PlayerPrefs.SetInt (name, (PlayerPrefs.GetInt(name) + 1 ));
 		Debug.Log ("set " + dropZone.name);
 	}
 

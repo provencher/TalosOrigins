@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EquipUpgrades : MonoBehaviour {
+public class Inventory : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -10,5 +10,6 @@ public class EquipUpgrades : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+	
 	}
 }

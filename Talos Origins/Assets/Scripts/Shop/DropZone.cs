@@ -15,7 +15,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 		if (d != null) {
 			if(transform.childCount == 0 || gameObject.tag != "Player"){
 				d.parentToReturnTo = this.transform;
-
+                if(gameObject.name != "Viewport")
+                    Debug.Log(d.gameObject.name);
 			}
 		}
 	}

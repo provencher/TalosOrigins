@@ -4,7 +4,9 @@ using UnityEngine.EventSystems;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler{
 
-	public Transform parentToReturnTo = null;
+    public Transform parentToReturnTo = null;
+    [SerializeField]
+    enum upgradeType {Health, Jump, Grapple, Bullets, Shield, Breadcrumbs};
 
 	public void OnBeginDrag(PointerEventData eventData){	
 		parentToReturnTo = this.transform.parent;

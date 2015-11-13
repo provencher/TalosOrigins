@@ -80,9 +80,27 @@ public class Player : MonoBehaviour
 
     List<GroundCheck> mGroundCheckList;
     */
+  
+    public static Player playerRef;
 
 
-    void Start()
+    void Awake()
+        {
+            //Destroys any Player objects created that is not the original
+            if (playerRef == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                playerRef = this;
+            }
+            else if (playerRef != null)
+            {
+                Destroy(gameObject);
+            }
+
+       }
+
+
+        void Start()
     {
         // Get references to other components and game objects
         
@@ -574,5 +592,10 @@ public class Player : MonoBehaviour
             }
             
         }
+    }
+
+    public Player getPlayerRef()
+    {
+        return this;
     }
 }
