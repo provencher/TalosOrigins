@@ -33,28 +33,22 @@ public class Enemy : MonoBehaviour {
     bool firstLoop = true;
     public bool mInRange = false;
 
-    bool hookedGrapple = false;
-
     //For animator
     Animator mAnimator;
     //crawer
     public Vector2 crawlerFacedirection;
     bool crawlerIsWalking;
     bool crawlerIsShooting;
-    float shootingTime=1.0f;
-    float shootEndTime;
+
     bool  crawlerIsHit;
-    float hitTime = 0.5f;
-    float hitEndTime;
+
 
     [SerializeField]
     public GameObject LaserGreenHit;    //LaserGreenHit Prefab
 
     [SerializeField]
     public GameObject Explosion; 		//Explosion Prefab
-
-
-
+    
 
 
     void Start() {
@@ -74,7 +68,7 @@ public class Enemy : MonoBehaviour {
         ignoreLayer = LayerMask.NameToLayer("Ignore");
 
         mCurrentLevel = 1;
-        mMoveSpeed = 2.0f;
+        mMoveSpeed = 1.75f;
         distanceThreshold = 12f;
         mHealth = 100;
 
@@ -543,10 +537,6 @@ public class Enemy : MonoBehaviour {
         NotifyOfDeath();
     }
 
-    public void IsHooked()
-    {
-        hookedGrapple = true;
-    }
 
     void NotifyOfDeath()
     {       
