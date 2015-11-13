@@ -195,22 +195,30 @@ public class Enemy : MonoBehaviour {
             firstLoop = false;
         }
 
-        CrawlerCheckMove();        
-       
+        /*
+        if (!Grounded())
+        {
+            mRigidBody2D.gravityScale = 1;
+        }
+        else
+        {
+            mRigidBody2D.gravityScale = 0;
+        }
+        */
+
+        //CrawlerCheckMove();        
+
         Vector2 targetDirection = lastDirection;
 
         int d30Roll = Random.Range(1, 30);
         if (!DirectionClear(lastDirection) || d30Roll == 5)
         {
             targetDirection = FindDirectionWithTarget(playerPosition);
-        }
-        else if (d30Roll == 15)
-        {
-            targetDirection = ChooseRandomDirection();
-        }
+        }       
 
         lastDirection = targetDirection;
         targetDirection.y = 0;
+        
 
         //Pursue Player         
         TranslateGroundToTarget(transform.position + (Vector3)targetDirection);
@@ -242,6 +250,10 @@ public class Enemy : MonoBehaviour {
         else
         {
             crawlerIsWalking = true;
+
+
+
+
             if (FindDirectionWithTarget(playerPosition).x < 0)
             {
                 crawlerFacedirection = Vector2.left;
@@ -296,12 +308,48 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+
+    Vector2 FindGround()
+    {
+        RaycastHit2D hit = new RaycastHit2D();      
+
+        //float boxSize = GetComponent<BoxCollider2D>().size.x / 5;
+
+        foreach (Vector3 dir in possibleDirections)
+        {
+
+            //Check if clear
+            hit = Physics2D.Linecast(transform.position, transform.position + dir* 0.6f);
+            Debug.DrawLine(transform.position, transform.position + dir* 0.6f, Color.red, 2, false);
+
+            if(hit && hit.collider.tag == "Cave" || hit.collider.tag == "Asteroid")
+            {
+                return dir;
+            }                  
+        }
+
+        return Vector2.zero;    
+    }
+
+    bool Grounded()
+    {
+        return FindGround() != Vector2.zero;
+    }
+
     void TranslateGroundToTarget(Vector3 target)
     {
         if (target != null)
         {
             Vector3 direction = target - transform.position;
             direction.z = 0;
+
+            /*
+            while (!DirectionClear(direction))
+            {
+                direction = Quaternion.AngleAxis(5.0f, Vector3.forward) * direction;
+            }
+            */
+
             transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
         }     
     }
@@ -416,21 +464,23 @@ public class Enemy : MonoBehaviour {
 
         float boxSize, scaleSize;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
-            increment = 0;
+            /*
+           increment = 0;
 
-            if (DirectionIsHorizontal(direction))
-            {
-                boxSize = boxSizeX;
-                scaleSize = scaleX;
-            }
-            else
-            {
-                boxSize = boxSizeY;
-                scaleSize = scaleY;
-            }
+           if (DirectionIsHorizontal(direction))
+           {
+               boxSize = boxSizeX;
+               scaleSize = scaleX;
+           }
+           else
+           {
+               boxSize = boxSizeY;
+               scaleSize = scaleY;
+           }
 
+            
             switch (i)
             {
                 case 1:
@@ -447,15 +497,18 @@ public class Enemy : MonoBehaviour {
                     break;
             }
 
+
+             StartPosition = transform.position;
+             if (DirectionIsHorizontal(direction))
+             {
+                 StartPosition.y += increment;
+             }
+             else
+             {
+                 StartPosition.x += increment;
+             }
+              */
             StartPosition = transform.position;
-            if (DirectionIsHorizontal(direction))
-            {
-                StartPosition.y += increment;
-            }
-            else
-            {
-                StartPosition.x += increment;
-            }
 
             EndPosition = StartPosition + direction * 0.6f;
 
@@ -463,10 +516,10 @@ public class Enemy : MonoBehaviour {
             hit = Physics2D.Linecast(StartPosition, EndPosition);
             Debug.DrawLine(StartPosition, EndPosition, Color.red, 2, false);
 
-            isClear = isClear && !(hit.collider != null &&
-               (hit.collider.gameObject.tag == "Cave" ||
-               hit.collider.gameObject.tag == "Enemy" ||
-               hit.collider.gameObject.tag == "Asteroid"
+            isClear = isClear && !(hit &&
+               (hit.collider.tag == "Cave" ||
+               hit.collider.tag == "Enemy" ||
+               hit.collider.tag == "Asteroid"
                ));
 
         }
