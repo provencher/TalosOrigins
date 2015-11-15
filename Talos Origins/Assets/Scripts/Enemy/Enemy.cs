@@ -220,45 +220,19 @@ public class Enemy : MonoBehaviour {
 
         curNormal = transform.up;
         mRigidBody2D.freezeRotation = true;
+
+        surfaceNormal = ChooseRandomDirection();
+        mRigidBody2D.gravityScale = 0;
+
     }
 
     void CrawlerUpdate()
-    {
-        
-        if (Mathf.Abs(mRigidBody2D.velocity.y) <= 0.001f && !firstLoop)
-        {
-            //mRigidBody2D.isKinematic = true;
-            mRigidBody2D.gravityScale = 0;
-        }
-        
-
+    {        
         if (firstLoop)
         {
             CrawlerInit();
-            firstLoop = false;
-            secondLoop = true;
-            //mRigidBody2D.velocity = transform.right;
+            firstLoop = false;   
         }
-
-
-        /*
-         if (!Grounded())
-         {
-             mRigidBody2D.gravityScale = 1;
-         }
-         else
-         {
-             mRigidBody2D.gravityScale = 0;
-         }
-         */
-
-        //CrawlerCheckMove();        
-
-
-        //Vector2 targetDirection = lastDirection;
-
-        //targetDirection.y = 0;
-
         Vector2 targetDirection = lastDirection;
 
         int d30Roll = Random.Range(1, 30);
@@ -347,26 +321,30 @@ public class Enemy : MonoBehaviour {
         //direction.y = direction.y * 1.5f;
         if(direction.x > 0)
         {
-            direction = transform.right  + offset;
+            direction = transform.right;//+ offset;
             //CrawlerFaceDirection(Vector2.right);      
                         
         }else
         {
-            direction = -transform.right  + offset;
+            direction = -transform.right;//  + offset;
+            
             //CrawlerFaceDirection(-Vector2.right);
         }
+        direction.y *= 2;
         //transform.rotation = Quaternion.LookRotation(transform.forward);
         //direction = transform.right + offset;
         //transform.LookAt(direction);      
 
         currentPosition = transform.position;
         transform.position += direction * mMoveSpeed * Time.deltaTime;
+                
         //mRigidBody2D.velocity = direction * mMoveSpeed; //* Time.deltaTime;
 
-        CrawlerFaceDirection(direction);
+        CrawlerFaceDirection(direction);        
 
-        if ((currentPosition - transform.position).magnitude < 0.3f)
+        if ((transform.position - currentPosition).magnitude < (direction * mMoveSpeed * Time.deltaTime).magnitude)   //(currentPosition - transform.position).magnitude < 0.3f)
         {
+            //mRigidBody2D.AddForce(mRigidBody2D.mass*(3*Vector3.up + direction));
             //mRigidBody2D.velocity += (Vector2) direction * 2;
            //mRigidBody2D.AddForce(5* transform.up + 5 * transform.localScale.x * transform.right);
         }
@@ -443,6 +421,7 @@ public class Enemy : MonoBehaviour {
 
         if(mIsGrounded)
         {
+            transform.position = averagePoint + transform.up * 0.35f;
             return (averagePoint + transform.up * distGround) - transform.position;
         }
         return Vector3.zero;               
