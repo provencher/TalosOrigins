@@ -299,7 +299,7 @@ public class MapGenerator : MonoBehaviour
         Vector3 WorldPos = CoordToWorldPoint(position);
 
 
-        if (true || UnityEngine.Random.Range(0, 3) == 1)
+        if (UnityEngine.Random.Range(0, 2) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));
         }

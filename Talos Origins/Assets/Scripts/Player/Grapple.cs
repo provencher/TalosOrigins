@@ -53,7 +53,7 @@ public class Grapple : MonoBehaviour {
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection, grappleDistance);
 
-            if (hit.collider.gameObject != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
+            if (hit.collider != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
             {
                 Instantiate(grappleFireAudio, transform.position, Quaternion.identity);
                 Instantiate(grappleHitAudio, transform.position, Quaternion.identity);
