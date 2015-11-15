@@ -297,7 +297,7 @@ public class Enemy : MonoBehaviour {
         if (doubleRaycastDown(out leftInfo, out rightInfo))
         {
             //if moving left
-            if (direction.x < 0)
+            if (Vector3.SqrMagnitude(transform.right - direction) > 0)
             {
                 Vector3 leftStart = transform.position + distGround * transform.up;
                 RaycastHit2D overrideLeftHitInfo = Physics2D.Raycast(leftStart, transform.right, distEdge);
@@ -308,7 +308,7 @@ public class Enemy : MonoBehaviour {
                 }
             }
             //if moving right
-            else if (direction.x > 0)
+            else
             {
                 Vector3 rightStart = transform.position + distGround * transform.up;
                 RaycastHit2D overrideRightHitInfo = Physics2D.Raycast(rightStart, -transform.right, distEdge);
@@ -317,8 +317,7 @@ public class Enemy : MonoBehaviour {
                 {
                     rightInfo = overrideRightHitInfo;
                 }
-            }
-
+            }           
 
             // use it to update myNormal and isGrounded            
             mIsGrounded = (leftInfo.distance + rightInfo.distance)/2 <= distGround + 0.3f;//deltaGround;
@@ -333,7 +332,7 @@ public class Enemy : MonoBehaviour {
         }
 
         
-        Vector3 offset = 2 * positionOnTerrain(leftInfo, rightInfo, distGround);
+        Vector3 offset = positionOnTerrain(leftInfo, rightInfo, distGround);
         //direction.y = direction.y * 1.5f;
         if(direction.x > 0)
         {
@@ -346,13 +345,11 @@ public class Enemy : MonoBehaviour {
             //CrawlerFaceDirection(-Vector2.right);
         }
         //transform.rotation = Quaternion.LookRotation(transform.forward);
-        direction = transform.right + offset;
-        //transform.LookAt(direction);
+        //direction = transform.right + offset;
+        //transform.LookAt(direction);      
 
-       
-       
-       
-        transform.position += direction * mMoveSpeed * Time.deltaTime;
+        currentPosition = transform.position;
+        transform.position += direction * mMoveSpeed * Time.deltaTime;  
     }    
 
     void CrawlerUpdateAnimator()
