@@ -5,7 +5,7 @@ public class EnemyCoWeapon : MonoBehaviour {
 
     [SerializeField]
     float ShootInterval;
-    float lastShootTime;
+    float shootTime;
     float mRandomTime;
     [SerializeField]
     GameObject mEnemyCoBulletPrefab;
@@ -15,7 +15,8 @@ public class EnemyCoWeapon : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        mRandomTime = UnityEngine.Random.Range(5.0f, 7.0f);
+        mRandomTime = Random.Range(1, ShootInterval + 5);
+        shootTime = mRandomTime;
         mParent = transform.parent.GetComponent<Enemy>();
     }
 	
@@ -23,22 +24,22 @@ public class EnemyCoWeapon : MonoBehaviour {
 	void Update () {
 
         if (mParent.mInRange)
-        {
-            float shootTime = Time.time;
-
-            while (shootTime > mRandomTime)
-            {
-                shootTime -= mRandomTime;
-            }
-            if (shootTime < 1)
+        {       
+            if (shootTime < 0)
             {
                 Shoot();
+                mRandomTime = Random.Range(3, ShootInterval + 5);
+                shootTime = mRandomTime;
+            }
+            else
+            {
+                shootTime -= Time.deltaTime;
             }
         }       
 	}
     void Shoot()
     {
-        if (Time.time - lastShootTime > ShootInterval && mParent.GetComponent<Enemy>().mInRange)
+        if (mParent.GetComponent<Enemy>().mInRange)
         {
             Vector2 enemyFaceDirection=transform.parent.GetComponent<Enemy>().crawlerFacedirection;
             Vector3 bulletPosition = transform.parent.position+(Vector3)enemyFaceDirection* mParent.GetComponent<BoxCollider2D>().size.x/6+ Vector3.up * mParent.GetComponent<BoxCollider2D>().size.y/6;
@@ -46,10 +47,7 @@ public class EnemyCoWeapon : MonoBehaviour {
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);
             mBullet.GetComponent<EnemyCoBullet>().setDirection((Vector3)enemyFaceDirection);
-            mBullet.SendMessage("SetDamage", mParent.CalculateDamage());
-            //mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
-
-            lastShootTime = Time.time;
+            mBullet.SendMessage("SetDamage", mParent.CalculateDamage());           
         }
     }
  }
