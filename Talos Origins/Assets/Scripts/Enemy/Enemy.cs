@@ -90,33 +90,17 @@ public class Enemy : MonoBehaviour {
 
         lastDirection = Vector2.right;
         nbTimesDied = 0;
-        mBoxCollider = GetComponent<BoxCollider2D>();
-        Rect box = GetWorldBounds(mBoxCollider);
+        mBoxCollider = GetComponent<BoxCollider2D>();       
 
 
-        distGround = (box.yMin + (box.yMin - box.yMax) )/2;
-
+        distGround = mBoxCollider.siz.e
+        distEdge = (box.yMin + (box.yMin - box.yMax)) / 2;
 
         distEdge = mBoxCollider.bounds.extents.x - mBoxCollider.bounds.center.x + 1;
 
         mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
     }
-
-    public static Rect GetWorldBounds(this BoxCollider2D boxCollider2D)
-    {
-        float worldRight = boxCollider2D.transform.TransformPoint(boxCollider2D.offset + new Vector2(boxCollider2D.size.x * 0.5f, 0)).x;
-        float worldLeft = boxCollider2D.transform.TransformPoint(boxCollider2D.offset - new Vector2(boxCollider2D.size.x * 0.5f, 0)).x;
-
-        float worldTop = boxCollider2D.transform.TransformPoint(boxCollider2D.offset + new Vector2(0, boxCollider2D.size.y * 0.5f)).y;
-        float worldBottom = boxCollider2D.transform.TransformPoint(boxCollider2D.offset - new Vector2(0, boxCollider2D.size.y * 0.5f)).y;
-
-        return new Rect(
-            worldLeft,
-            worldBottom,
-            worldRight - worldLeft,
-            worldTop - worldBottom
-            );
-    }
+    
 
     void FixedUpdate()
     {
