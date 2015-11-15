@@ -277,8 +277,6 @@ public class MapGenerator : MonoBehaviour
                             numAsteroidsToSpawn--;
                         }
                     }
-                  
-
                 }
             }
             sentry--;
