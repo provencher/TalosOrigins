@@ -20,8 +20,6 @@ public class MapGenerator : MonoBehaviour
     GameObject asteroid;
     int numAsteroids;
 
-    GameObject[] spaceProps;
-    int propSpawnIndex = 0;
 
     List<GameObject> asteroids;
     List<GameObject> enemies;
@@ -78,7 +76,6 @@ public class MapGenerator : MonoBehaviour
         mapPointOccupied = new Dictionary<Coord, int>(); 
         startWidth = width;
         startHeight = height; 
-        spaceProps = Resources.LoadAll<GameObject>("SpacePrefabs");
         GenerateMap();
     }
 
@@ -125,8 +122,6 @@ public class MapGenerator : MonoBehaviour
 
         numAsteroidsToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
         numEnemiesToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
-
-        propSpawnIndex = 0;
 
         // set max values for map size
         width = Math.Min(1000, width);
@@ -282,13 +277,7 @@ public class MapGenerator : MonoBehaviour
                             numAsteroidsToSpawn--;
                         }
                     }
-
-                    if(UnityEngine.Random.Range(1, 50) == 15 && propSpawnIndex < spaceProps.Length)
-                    {
-                        Instantiate(spaceProps[propSpawnIndex], CoordToWorldPoint(tempCoord), Quaternion.identity);
-                        propSpawnIndex++;
-
-                    }
+                  
 
                 }
             }
