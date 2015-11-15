@@ -11,8 +11,12 @@ public class Enemy : MonoBehaviour {
 
     Animator mAnimController;
     Rigidbody2D mRigidBody2D;
+    BoxCollider2D mBoxCollider;
 
     public float mMoveSpeed;
+    float turnSpeed = 90;
+    float lerpSpeed = 10;
+    float deltaGround = 0.2f;
     float stepOverThreshold = 0.05f;
     public float distanceThreshold;
 
@@ -31,16 +35,28 @@ public class Enemy : MonoBehaviour {
     int mapGenIndex;
 
     bool firstLoop = true;
+    bool secondLoop = false;
     public bool mInRange = false;
+
+    float distGround, distEdge;
 
     //For animator
     Animator mAnimator;
-    //crawer
+
+    //crawler
     public Vector2 crawlerFacedirection;
     bool crawlerIsWalking;
     bool crawlerIsShooting;
-
     bool  crawlerIsHit;
+    bool crawlerIsFalling;
+
+    Vector2 curNormal = Vector2.up;
+    Vector2 surfaceNormal = Vector2.zero;
+
+    bool mIsGrounded;
+
+    int groundLayer = LayerMask.NameToLayer("Map");
+
 
 
     [SerializeField]
@@ -74,8 +90,32 @@ public class Enemy : MonoBehaviour {
 
         lastDirection = Vector2.right;
         nbTimesDied = 0;
+        mBoxCollider = GetComponent<BoxCollider2D>();
+        Rect box = GetWorldBounds(mBoxCollider);
+
+
+        distGround = (box.yMin + (box.yMin - box.yMax) )/2;
+
+
+        distEdge = mBoxCollider.bounds.extents.x - mBoxCollider.bounds.center.x + 1;
 
         mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
+    }
+
+    public static Rect GetWorldBounds(this BoxCollider2D boxCollider2D)
+    {
+        float worldRight = boxCollider2D.transform.TransformPoint(boxCollider2D.offset + new Vector2(boxCollider2D.size.x * 0.5f, 0)).x;
+        float worldLeft = boxCollider2D.transform.TransformPoint(boxCollider2D.offset - new Vector2(boxCollider2D.size.x * 0.5f, 0)).x;
+
+        float worldTop = boxCollider2D.transform.TransformPoint(boxCollider2D.offset + new Vector2(0, boxCollider2D.size.y * 0.5f)).y;
+        float worldBottom = boxCollider2D.transform.TransformPoint(boxCollider2D.offset - new Vector2(0, boxCollider2D.size.y * 0.5f)).y;
+
+        return new Rect(
+            worldLeft,
+            worldBottom,
+            worldRight - worldLeft,
+            worldTop - worldBottom
+            );
     }
 
     void FixedUpdate()
@@ -185,29 +225,44 @@ public class Enemy : MonoBehaviour {
         crawlerIsWalking = true;
         crawlerIsShooting = false;
         crawlerIsHit = false;
+
+        curNormal = transform.up;
+        mRigidBody2D.freezeRotation = true;
     }
 
     void CrawlerUpdate()
     {
+        /*
+        if (Mathf.Abs(mRigidBody2D.velocity.y) <= 0.001f)
+        {
+            mRigidBody2D.isKinematic = true;
+        }
+        */
+
         if (firstLoop)
         {
             CrawlerInit();
             firstLoop = false;
+            secondLoop = true;
+            mRigidBody2D.velocity = transform.right;
         }
 
+
+        mRigidBody2D.AddForce(-10 * mRigidBody2D.mass * curNormal);
         /*
-        if (!Grounded())
-        {
-            mRigidBody2D.gravityScale = 1;
-        }
-        else
-        {
-            mRigidBody2D.gravityScale = 0;
-        }
-        */
+         if (!Grounded())
+         {
+             mRigidBody2D.gravityScale = 1;
+         }
+         else
+         {
+             mRigidBody2D.gravityScale = 0;
+         }
+         */
 
         //CrawlerCheckMove();        
 
+        
         Vector2 targetDirection = lastDirection;
 
         int d30Roll = Random.Range(1, 30);
@@ -217,13 +272,17 @@ public class Enemy : MonoBehaviour {
         }       
 
         lastDirection = targetDirection;
-        targetDirection.y = 0;
-        
+        //targetDirection.y = 0;
 
+        CrawlerMove(targetDirection);
         //Pursue Player         
-        TranslateGroundToTarget(transform.position + (Vector3)targetDirection);
+        //TranslateGroundToTarget(transform.position + (Vector3)targetDirection);
 
-        CrawlerFaceDirection(targetDirection);
+        //MoveCrawlerMoveCrawlerAlongWalls(true);
+
+        //MoveCrawler();
+
+        //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
         
     }
@@ -239,7 +298,56 @@ public class Enemy : MonoBehaviour {
             transform.rotation = Quaternion.LookRotation(Vector3.back);
         }
     }
- 
+
+    void CrawlerMove(Vector3 direction)
+    {
+        // jump code - jump to wall or simple jump
+        //if (crawlerIsFalling) return; // abort Update while jumping to a wall
+
+       
+        /*
+        if (Input.GetButtonDown("Jump"))
+        { // jump pressed:
+            ray = new Ray(transform.position, transform.forward);
+            if (Physics.Raycast(ray, out hit, jumpRange))
+            { // wall ahead?
+                JumpToWall(hit.point, hit.normal); // yes: jump to the wall
+            }
+            else if (mIsGrounded)
+            { // no: if grounded, jump up
+                mRigidBody2D.velocity += jumpSpeed * myNormal;
+            }
+        }
+        */
+
+        // movement code - turn left/right with Horizontal axis:
+        transform.Rotate(0, direction.x * turnSpeed * Time.deltaTime, 0);
+        // update surface normal and isGrounded:
+
+
+        RaycastHit2D leftInfo, rightInfo; 
+        if (doubleRaycastDown(out leftInfo, out rightInfo))
+        { // use it to update myNormal and isGrounded
+            float distance = Mathf.Max(leftInfo.distance, rightInfo.distance);
+            mIsGrounded = distance <= distGround + deltaGround;
+            surfaceNormal = leftInfo.normal;
+        }
+        else
+        {
+            mIsGrounded = false;
+            // assume usual ground normal to avoid "falling forever"
+            surfaceNormal = Vector3.up;
+        }
+
+        curNormal = Vector3.Lerp(curNormal, surfaceNormal, lerpSpeed * Time.deltaTime);
+        // find forward direction with new myNormal:
+        Vector3 myForward = Vector3.Cross(transform.right, curNormal);
+        // align character to the new myNormal while keeping the forward direction:
+        Quaternion targetRot = Quaternion.LookRotation(myForward, curNormal);
+        transform.rotation = Quaternion.FromToRotation(curNormal, surfaceNormal);//Quaternion.Lerp(transform.rotation, targetRot, lerpSpeed * Time.deltaTime);
+        // move the character forth/back with Vertical axis:
+        transform.Translate(0, 0, direction.y * mMoveSpeed * Time.deltaTime);
+    }    
 
     void CrawlerCheckMove()
     {
@@ -308,32 +416,173 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    bool doubleRaycastDown(out RaycastHit2D leftHitInfo, out RaycastHit2D rightHitInfo)
+    {    
+        Vector2 leftStart = transform.position + distGround * transform.up + distEdge * transform.right;
+        Vector2 rightStart = transform.position + distGround * transform.up - distEdge * transform.right;
 
-    Vector2 FindGround()
-    {
-        RaycastHit2D hit = new RaycastHit2D();      
+        rightHitInfo = Physics2D.Raycast(leftStart, -transform.up, distGround/*, groundLayer*/);
+        leftHitInfo  = Physics2D.Raycast(rightStart, -transform.up, distGround/*, groundLayer*/);
 
-        //float boxSize = GetComponent<BoxCollider2D>().size.x / 5;
+        Debug.DrawLine(leftStart, (Vector2)(transform.position + transform.up * -distGround), Color.red, 2, false);
+        Debug.DrawLine(rightStart, (Vector2)(transform.position + transform.up * -distGround), Color.red, 2, false);
 
-        foreach (Vector3 dir in possibleDirections)
-        {
 
-            //Check if clear
-            hit = Physics2D.Linecast(transform.position, transform.position + dir* 0.6f);
-            Debug.DrawLine(transform.position, transform.position + dir* 0.6f, Color.red, 2, false);
 
-            if(hit && hit.collider.tag == "Cave" || hit.collider.tag == "Asteroid")
-            {
-                return dir;
-            }                  
-        }
-
-        return Vector2.zero;    
+        return rightHitInfo.collider != null && leftHitInfo.collider != null;
     }
 
-    bool Grounded()
+
+    void positionOnTerrain(RaycastHit2D leftHitInfo, RaycastHit2D rightHitInfo, float boxSizeY)
+    {      
+        
+        Vector3 averageNormal = (leftHitInfo.normal + rightHitInfo.normal) / 2;
+        Vector3 averagePoint = (leftHitInfo.point + rightHitInfo.point) / 2;
+
+        Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, averageNormal);
+        Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 90);
+        transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
+
+        currentPosition = transform.position;
+        transform.position = averagePoint + transform.up * boxSizeY;
+
+        mRigidBody2D.velocity = (transform.position - currentPosition).normalized;
+    }
+
+    void MoveCrawler()
     {
-        return FindGround() != Vector2.zero;
+
+        float boxSizeX = GetComponent<BoxCollider2D>().size.x * transform.localScale.x ;
+        float boxSizeY = GetComponent<BoxCollider2D>().size.y * transform.localScale.y ;
+        //int groundLayer = LayerMask.NameToLayer("Map");
+
+        Vector3 transformUp = transform.up;
+        Vector3 transformRight = transform.right;
+
+        RaycastHit2D leftHitInfo, rightHitInfo;
+
+        //doubleRaycastDown(out leftHitInfo, out rightHitInfo, transformUp, transformRight, boxSizeX, boxSizeY, groundLayer);
+
+        Vector2 leftStart = transform.position + boxSizeY * transformUp + boxSizeX * transformRight;
+        Vector2 rightStart = transform.position + boxSizeY * transformUp - boxSizeX * transformRight;
+
+        rightHitInfo = Physics2D.Raycast(leftStart, -transformUp, boxSizeY, groundLayer);
+        leftHitInfo = Physics2D.Raycast(rightStart, -transformUp, boxSizeY, groundLayer);
+
+        
+        if (mRigidBody2D.velocity.sqrMagnitude > 0)
+        {          
+
+            //if moving left
+            if (Vector3.Dot((transform.position - currentPosition).normalized, transform.right) >= 0)
+            {
+                leftStart = transform.position + boxSizeY * transformUp;
+                RaycastHit2D overrideLeftHitInfo = Physics2D.Raycast(leftStart, transform.right, boxSizeY, groundLayer);
+
+                if (overrideLeftHitInfo)
+                {
+                    leftHitInfo = overrideLeftHitInfo;
+                }
+            }
+            //if moving right
+            else
+            {
+                rightStart = transform.position + boxSizeY * transformUp;
+                RaycastHit2D overrideRightHitInfo = Physics2D.Raycast(rightStart, -transform.right, boxSizeY, groundLayer);
+
+                if (overrideRightHitInfo)
+                {
+                    rightHitInfo = overrideRightHitInfo;
+                }
+            }
+        }
+        
+
+        // Reposition Crawler
+        if (leftHitInfo && rightHitInfo)
+        {
+            positionOnTerrain(leftHitInfo, rightHitInfo, boxSizeY);
+        }
+        else
+        {
+            mRigidBody2D.isKinematic = false;
+        }
+    }
+    
+    /*
+    void MoveCrawlerAlongWalls(bool forward)
+    {
+        int directionModif = (forward) ? 1 : -1;
+        float boxSizeX = GetComponent<BoxCollider2D>().size.x * transform.localScale.x / 1.8f;
+        float boxSizeY = GetComponent<BoxCollider2D>().size.y  * transform.localScale.y / 1.8f;
+
+        int groundLayer = LayerMask.NameToLayer("Map");
+
+        if(crawlerIsWalking)
+        {
+            Vector2 direction = (Vector2)transform.right * directionModif * boxSizeX;
+            // Check for cave wall
+            RaycastHit2D rayHit1 = Physics2D.Raycast(transform.position, direction, boxSizeX, groundLayer);
+
+            if (rayHit1.collider != null )//&& rayHit1.gameObject.tag == "Asteroid" || rayHit1.transform.gameObject.tag == "Cave")
+            {                
+                hitNormal = rayHit1.normal;
+                crawlerIsWalking = false;
+            }
+            else
+            {
+                //mRigidBody2D.gravityScale = 1;
+                //return;
+            }
+
+            Debug.DrawLine(transform.position, (Vector2)transform.position + (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false);
+
+            // Check for no floor
+            Vector2 checkRear = (Vector2)transform.position + (-(Vector2)transform.right * directionModif * boxSizeX);
+            RaycastHit2D rayHit2 = Physics2D.Raycast(checkRear, - transform.up, boxSizeX, groundLayer);
+
+            if(rayHit2.collider != null)// && rayHit2.collider.tag == "Asteroid" || rayHit2.collider.tag == "Cave")
+            {
+                //Floor exists             
+            }
+            else
+            {
+                // Find the floor around the corner
+                Vector2 checkPos = (Vector2)transform.position  - (Vector2)transform.right * boxSizeX * directionModif + (Vector2)transform.up * -1 * boxSizeY;
+
+                RaycastHit2D rayHit3 = Physics2D.Raycast(checkPos, -transform.right * directionModif, boxSizeX, groundLayer);
+                Debug.DrawLine(checkPos, checkPos- (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false);
+                if (rayHit3.collider != null)// && rayHit3.collider.tag == "Asteroid" || rayHit3.collider.tag == "Cave")
+                {                    
+                    Debug.Log("HitNormal " + rayHit3.normal);
+                    hitNormal = rayHit3.normal;
+                    crawlerIsWalking = false;
+                }
+                Debug.DrawLine(transform.position, transform.position + transform.up * (-1) * boxSizeY, Color.red, 2, false);
+                MoveCrawler(forward);
+            }
+        }
+        else
+        {
+            curNormal = Vector2.Lerp(curNormal, hitNormal, 4.0f * Time.deltaTime);
+            Quaternion groundTilt = Quaternion.FromToRotation(Vector2.up, curNormal);
+            transform.rotation = groundTilt;
+
+            float check = (curNormal - hitNormal).sqrMagnitude;
+            if( check < 0.001)
+            {
+                groundTilt = Quaternion.FromToRotation(Vector2.up, hitNormal);
+                transform.rotation = groundTilt;
+                crawlerIsWalking = true;
+            }
+        }
+    }
+    */
+
+    void MoveCrawler(bool forward)
+    {
+        int directionModif = (forward) ? 1 : -1;
+        transform.position -= transform.right * directionModif * mMoveSpeed * Time.deltaTime;
     }
 
     void TranslateGroundToTarget(Vector3 target)
@@ -343,12 +592,7 @@ public class Enemy : MonoBehaviour {
             Vector3 direction = target - transform.position;
             direction.z = 0;
 
-            /*
-            while (!DirectionClear(direction))
-            {
-                direction = Quaternion.AngleAxis(5.0f, Vector3.forward) * direction;
-            }
-            */
+            
 
             transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
         }     
