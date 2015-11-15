@@ -347,12 +347,12 @@ public class Enemy : MonoBehaviour {
         //direction.y = direction.y * 1.5f;
         if(direction.x > 0)
         {
-            direction = transform.right + offset;
+            direction = transform.right  + offset;
             //CrawlerFaceDirection(Vector2.right);      
                         
         }else
         {
-            direction = -transform.right + offset;
+            direction = -transform.right  + offset;
             //CrawlerFaceDirection(-Vector2.right);
         }
         //transform.rotation = Quaternion.LookRotation(transform.forward);
@@ -572,12 +572,13 @@ public class Enemy : MonoBehaviour {
         float scaleY = transform.localScale.x;
 
         float boxSize, scaleSize;
+        float offset = (type == eClass.Crawler) ? 0.4f : 0;
         
         StartPosition = transform.position;
-        StartPosition.y += 0.4f;
+        StartPosition.y += offset;
 
         EndPosition = StartPosition + direction * 0.6f;
-        EndPosition.y += 0.3f;
+        EndPosition.y += offset;
 
         //Check if clear
         hit = Physics2D.Linecast(StartPosition, EndPosition);
