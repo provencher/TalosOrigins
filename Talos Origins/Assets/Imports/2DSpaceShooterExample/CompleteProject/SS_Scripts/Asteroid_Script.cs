@@ -69,9 +69,14 @@ public class Asteroid_Script : MonoBehaviour
     }
 
     Vector3 RandomVelocity(Vector3 direction)
-    {          
+    {
+        direction.x *= Random.Range(0.51f, 1.0f);
+        direction.y *= Random.Range(0.51f, 1.0f);
 
-        Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360), direction) * Vector3.up;
+        Vector3 up = transform.up * Random.Range(0.51f, 1.0f);
+
+
+        Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360), direction) * Vector3.Cross(up, transform.right);
         						//Negative Velocity to move down towards the player ship
         return v * speed;
     }

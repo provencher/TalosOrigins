@@ -74,13 +74,15 @@ public class Player : MonoBehaviour
 
     int[] orbTank;
 
+    public Attachment_WallWalker walkerScript;
+
     /*
     [SerializeField]
     LifeMeter life;
 
     List<GroundCheck> mGroundCheckList;
     */
-  
+
     public static Player playerRef;
 
 
@@ -100,7 +102,7 @@ public class Player : MonoBehaviour
        }
 
 
-        void Start()
+    void Start()
     {
         // Get references to other components and game objects
         
@@ -114,8 +116,12 @@ public class Player : MonoBehaviour
         mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
-      
- 
+        //walkerScript = GetComponent<Attachment_WallWalker>();
+        //walkerScript.USERINPUT = true;
+
+
+
+
         // UI Text
         /*exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
         enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
@@ -183,12 +189,14 @@ public class Player : MonoBehaviour
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
         FaceMouse();
         CheckGround();
-        CheckInvicible();       
-                          
+        CheckInvicible();
+
         TranslateInDirection(CheckMove());
+        //walkerScript.ApplyMovementDirection(CheckMove());
+
         TriggerMelee();
         CheckJump();
-        FaceMouse();
+        //FaceMouse();
         UpdateAnimator();
 
         /*
@@ -256,7 +264,7 @@ public class Player : MonoBehaviour
             Instantiate(PainAudio3, transform.position, Quaternion.identity);           
             Instantiate(PainAudio2, transform.position, Quaternion.identity);            
             Instantiate(PainAudio1, transform.position, Quaternion.identity);       
-            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);     
+            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);            
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
     }
@@ -308,20 +316,29 @@ public class Player : MonoBehaviour
         }
 
         mRunning = false;
-        if (Input.GetButton("Left"))
-        {
-            //transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);           
-            //FaceDirection(Vector2.left);
-            mRunning = true;
-            return Vector3.left;
-        }
-        if (Input.GetButton("Right"))
-        {
-            //transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
-            //FaceDirection(Vector2.right);            
-            mRunning = true;
-            return Vector3.right;
-        }      
+        /*
+       Vector3 dir = new Vector3();
+       dir.x = Input.GetAxis("Horizontal");
+       dir.y = Input.GetAxis("Vertical");
+       mRunning = true;
+       return dir;
+       */
+
+       if (Input.GetButton("Left"))
+       {
+           //transform.Translate(-Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);           
+           //FaceDirection(Vector2.left);
+           mRunning = true;
+           return Vector3.left;
+       }
+       if (Input.GetButton("Right"))
+       {
+           //transform.Translate(Vector3.right * mMoveSpeed * Time.deltaTime, Space.World);
+           //FaceDirection(Vector2.right);            
+           mRunning = true;
+           return Vector3.right;
+       } 
+       
 
         return Vector3.zero;
     }
@@ -352,7 +369,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            transform.rotation = Quaternion.LookRotation(Vector3.back);
+            transform.rotation = Quaternion.LookRotation(-Vector3.forward);
             mFacingDirection = Vector2.left;
         }
     }
