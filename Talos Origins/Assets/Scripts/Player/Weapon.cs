@@ -13,6 +13,9 @@ public class Weapon : MonoBehaviour {
     [SerializeField]
     GameObject mBulletPrefab;
 
+    [SerializeField]
+    GameObject shotAudio1;
+
     int mGunDamage;
 
     // Use this for initialization
@@ -86,7 +89,11 @@ public class Weapon : MonoBehaviour {
             mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
             mBullet.SendMessage("BulletDamage", mGunDamage);
 
-            lastShootTime = Time.time;           
+            lastShootTime = Time.time;
+
+            
+            Instantiate(shotAudio1, transform.position, Quaternion.identity);         
+          
         }
         
     }   

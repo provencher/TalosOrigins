@@ -39,10 +39,14 @@ public class Asteroid_Script : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-        rigidBody = GetComponent<Rigidbody2D>();
+        // rigidBody = GetComponent<Rigidbody2D>();
         //RandomVelocity(Vector3.right);
         //driftTarget = GameObject.Find("Talos");
-        rigidBody.angularVelocity = Random.Range(minTumble, maxTumble);
+        //rigidBody.angularVelocity = Random.Range(minTumble, maxTumble);
+
+        Vector3 angle = transform.eulerAngles;// = Random.Range(0, 360);
+        angle.z = Random.Range(0, 360);
+        transform.eulerAngles = angle;
     }
 
     void Update()

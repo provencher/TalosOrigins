@@ -33,6 +33,8 @@ public class MapGenerator : MonoBehaviour
     public string seed;
     public bool useRandomSeed;
 
+    public bool cycleLevel = false;
+
     [Range(0, 100)]
     public int randomFillPercent;
 
@@ -81,10 +83,12 @@ public class MapGenerator : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetButtonDown("MapGeneration"))
+        if (cycleLevel)
         {
+            cycleLevel = false;
+            currentLevel = UnityEngine.Random.Range(currentLevel/2+1, currentLevel + 5);
             ResetLevel();
-            GenerateMap();
+            GenerateMap();            
         }        
     }
 

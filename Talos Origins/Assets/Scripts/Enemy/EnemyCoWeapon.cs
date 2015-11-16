@@ -10,6 +10,9 @@ public class EnemyCoWeapon : MonoBehaviour {
     [SerializeField]
     GameObject mEnemyCoBulletPrefab;
 
+    [SerializeField]
+    GameObject shotAudio;
+
     Enemy mParent;
 
 
@@ -46,7 +49,9 @@ public class EnemyCoWeapon : MonoBehaviour {
             Vector3 mBulletDirection = enemyFaceDirection;
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);
-            mBullet.GetComponent<EnemyCoBullet>().setDirection((Vector3)enemyFaceDirection);
+            Instantiate(shotAudio, transform.position, Quaternion.identity);
+
+            mBullet.GetComponent<EnemyCoBullet>().setDirection(enemyFaceDirection);
             mBullet.SendMessage("SetDamage", mParent.CalculateDamage());           
         }
     }

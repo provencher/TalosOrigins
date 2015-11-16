@@ -64,7 +64,10 @@ public class Enemy : MonoBehaviour {
 
     [SerializeField]
     public GameObject Explosion; 		//Explosion Prefab
-    
+
+    [SerializeField]
+    public GameObject HitByShotAudio;        //Explosion Prefab
+
 
 
     void Start() {
@@ -689,8 +692,9 @@ public class Enemy : MonoBehaviour {
 
         //Excute if the object tag was equal to one of these
         if (coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
-        {            
-            Instantiate(LaserGreenHit, transform.position, transform.rotation);         //Instantiate LaserGreenHit 
+        {
+            Instantiate(HitByShotAudio, transform.position, Quaternion.identity);
+            Instantiate(LaserGreenHit, transform.position, Quaternion.identity);         //Instantiate LaserGreenHit 
             
 
             //Check the Health if greater than 0
@@ -714,7 +718,7 @@ public class Enemy : MonoBehaviour {
             //Check the Health if less or equal 0
             if (mHealth <= 0)
             {               
-                Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion   
+                Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
                 DropOrbs(5);                                                                                                     
                 NotifyOfDeath();
                 nbTimesDied++;

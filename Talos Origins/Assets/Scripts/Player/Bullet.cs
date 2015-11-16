@@ -85,6 +85,10 @@ public class Bullet : MonoBehaviour {
         {
             Explode();
         }
+        else if (coll.gameObject.tag == "Enemy")
+        {
+
+        }
 
         /*
         if (coll.gameObject.tag == "Enemy")

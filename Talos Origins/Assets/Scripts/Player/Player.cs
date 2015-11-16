@@ -15,6 +15,11 @@ public class Player : MonoBehaviour
     GameObject PainAudio3;
 
     [SerializeField]
+    GameObject jumpAudio1;
+    [SerializeField]
+    GameObject jumpAudio2;
+
+    [SerializeField]
     GameObject ExplosionPrefab;
 
     [SerializeField]
@@ -87,7 +92,10 @@ public class Player : MonoBehaviour
 
 
     void Awake()
-        {
+        {           
+
+            
+
             //Destroys any Player objects created that is not the original
             if (playerRef == null)
             {
@@ -97,8 +105,9 @@ public class Player : MonoBehaviour
             else if (playerRef != null)
             {
                 Destroy(gameObject);
-            }
+            }        
 
+        
        }
 
 
@@ -147,6 +156,8 @@ public class Player : MonoBehaviour
         mWallKickSound = audioSources[1];
         mTakeDamageSound = audioSources[2];
         */
+
+        
     }
 
     /*
@@ -167,7 +178,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        CheckDead();
+        StartCoroutine(CheckDead());
         NotifyEnemiesOfPosition();
         UpdateCameraVelocity();
         UpdateUIText();
@@ -227,7 +238,7 @@ public class Player : MonoBehaviour
 
     }
 
-    public void InflictDamage(int damage)
+    public IEnumerator InflictDamage(int damage)
     {        
 
         if (!mInvincible)
@@ -242,11 +253,13 @@ public class Player : MonoBehaviour
             if (mHealth > 50)
             {
                 Instantiate(PainAudio1, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(Time.deltaTime);
             }
 
             if (mHealth > 25 && mHealth < 50)
             {
                 Instantiate(PainAudio2, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(Time.deltaTime);
             }
 
             if (mHealth > 0 && mHealth < 25)
@@ -255,18 +268,22 @@ public class Player : MonoBehaviour
             }
 
         }
+        yield break;
     }
 
-    void CheckDead()
+    IEnumerator CheckDead()
     {
         if(mHealth <= 0)
         {      
             Instantiate(PainAudio3, transform.position, Quaternion.identity);           
             Instantiate(PainAudio2, transform.position, Quaternion.identity);            
             Instantiate(PainAudio1, transform.position, Quaternion.identity);       
-            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);            
+            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+
+            yield return new WaitForSeconds(0.3f);
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
+        yield break;
     }
 
     void CheckJump()
@@ -276,17 +293,17 @@ public class Player : MonoBehaviour
 
             mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
 
-            if(!mGrounded)
+            if(mGrounded)
+            {
+                Instantiate(jumpAudio1, transform.position, Quaternion.identity);
+            }
+            else
             {
                 mUsedDoubleJump = true;
+                Instantiate(jumpAudio2, transform.position, Quaternion.identity);
             }
         }
-        else if (mAllowWallKick && Input.GetButtonDown("Jump"))
-        {
-            mRigidBody2D.velocity = Vector2.zero;
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
-            // mWallKickSound.Play();
-        }
+      
     }
 
     void CheckInvicible()
@@ -530,7 +547,7 @@ public class Player : MonoBehaviour
     {
         if(!mInvincible)
         {
-            InflictDamage((int)shoveInfo.z);
+            StartCoroutine(InflictDamage((int)shoveInfo.z));
             // Get Shoved
             //mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
@@ -571,7 +588,7 @@ public class Player : MonoBehaviour
 
     void HitByBullet(int damage)
     {
-        InflictDamage(damage);        
+        StartCoroutine(InflictDamage(damage));        
     }
 
     void PickupOrb(int type)
