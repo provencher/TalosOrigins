@@ -249,7 +249,7 @@ public class Enemy : MonoBehaviour {
         //MoveCrawlerMoveCrawlerAlongWalls(true);
 
         //MoveCrawler();
-   
+        CrawlerFaceDirection(lastDirection);
 
         //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
@@ -329,17 +329,12 @@ public class Enemy : MonoBehaviour {
             
             //CrawlerFaceDirection(-Vector2.right);
         }
-        direction.y *= 2;
+
         //transform.rotation = Quaternion.LookRotation(transform.forward);
         //direction = transform.right + offset;
-        //transform.LookAt(direction);      
+        //transform.LookAt(direction);  
+        TranslateGroundToTarget(direction);
 
-        currentPosition = transform.position;
-        transform.position += direction * mMoveSpeed * Time.deltaTime;
-                
-        //mRigidBody2D.velocity = direction * mMoveSpeed; //* Time.deltaTime;
-
-        CrawlerFaceDirection(direction);        
 
         if ((transform.position - currentPosition).magnitude < (direction * mMoveSpeed * Time.deltaTime).magnitude)   //(currentPosition - transform.position).magnitude < 0.3f)
         {
@@ -347,7 +342,78 @@ public class Enemy : MonoBehaviour {
             //mRigidBody2D.velocity += (Vector2) direction * 2;
            //mRigidBody2D.AddForce(5* transform.up + 5 * transform.localScale.x * transform.right);
         }
-    }    
+    }
+
+    /* 
+497     void MoveCrawlerAlongWalls(bool forward) 
+498     { 
+499         int directionModif = (forward) ? 1 : -1; 
+500         float boxSizeX = GetComponent<BoxCollider2D>().size.x * transform.localScale.x / 1.8f; 
+501         float boxSizeY = GetComponent<BoxCollider2D>().size.y  * transform.localScale.y / 1.8f; 
+502  
+503         int groundLayer = LayerMask.NameToLayer("Map"); 
+504  
+505         if(crawlerIsWalking) 
+506         { 
+507             Vector2 direction = (Vector2)transform.right * directionModif * boxSizeX; 
+508             // Check for cave wall 
+509             RaycastHit2D rayHit1 = Physics2D.Raycast(transform.position, direction, boxSizeX, groundLayer); 
+510  
+511             if (rayHit1.collider != null )//&& rayHit1.gameObject.tag == "Asteroid" || rayHit1.transform.gameObject.tag == "Cave") 
+512             {                 
+513                 hitNormal = rayHit1.normal; 
+514                 crawlerIsWalking = false; 
+515             } 
+516             else 
+517             { 
+518                 //mRigidBody2D.gravityScale = 1; 
+519                 //return; 
+520             } 
+521  
+522             Debug.DrawLine(transform.position, (Vector2)transform.position + (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false); 
+523  
+524             // Check for no floor 
+525             Vector2 checkRear = (Vector2)transform.position + (-(Vector2)transform.right * directionModif * boxSizeX); 
+526             RaycastHit2D rayHit2 = Physics2D.Raycast(checkRear, - transform.up, boxSizeX, groundLayer); 
+527  
+528             if(rayHit2.collider != null)// && rayHit2.collider.tag == "Asteroid" || rayHit2.collider.tag == "Cave") 
+529             { 
+530                 //Floor exists              
+531             } 
+532             else 
+533             { 
+534                 // Find the floor around the corner 
+535                 Vector2 checkPos = (Vector2)transform.position  - (Vector2)transform.right * boxSizeX * directionModif + (Vector2)transform.up * -1 * boxSizeY; 
+536  
+537                 RaycastHit2D rayHit3 = Physics2D.Raycast(checkPos, -transform.right * directionModif, boxSizeX, groundLayer); 
+538                 Debug.DrawLine(checkPos, checkPos- (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false); 
+539                 if (rayHit3.collider != null)// && rayHit3.collider.tag == "Asteroid" || rayHit3.collider.tag == "Cave") 
+540                 {                     
+541                     Debug.Log("HitNormal " + rayHit3.normal); 
+542                     hitNormal = rayHit3.normal; 
+543                     crawlerIsWalking = false; 
+544                 } 
+545                 Debug.DrawLine(transform.position, transform.position + transform.up * (-1) * boxSizeY, Color.red, 2, false); 
+546                 MoveCrawler(forward); 
+547             } 
+548         } 
+549         else 
+550         { 
+551             curNormal = Vector2.Lerp(curNormal, hitNormal, 4.0f * Time.deltaTime); 
+552             Quaternion groundTilt = Quaternion.FromToRotation(Vector2.up, curNormal); 
+553             transform.rotation = groundTilt; 
+554  
+555             float check = (curNormal - hitNormal).sqrMagnitude; 
+556             if( check < 0.001) 
+557             { 
+558                 groundTilt = Quaternion.FromToRotation(Vector2.up, hitNormal); 
+559                 transform.rotation = groundTilt; 
+560                 crawlerIsWalking = true; 
+561             } 
+562         } 
+563     } 
+564     */
+
 
     void CrawlerUpdateAnimator()
     {
@@ -382,7 +448,6 @@ public class Enemy : MonoBehaviour {
 
     void TranslateAerialToTarget(Vector3 target)
     {    
-
         if (target != null)
         {
             Vector3 direction = target - transform.position;
@@ -432,10 +497,9 @@ public class Enemy : MonoBehaviour {
     {
         if (target != null)
         {
+            currentPosition = transform.position;
             Vector3 direction = target - transform.position;
-            direction.z = 0;
-
-            
+            direction.z = 0;          
 
             transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
         }     
@@ -550,6 +614,7 @@ public class Enemy : MonoBehaviour {
         float scaleY = transform.localScale.x;
 
         float boxSize, scaleSize;
+        /*
        if(type == eClass.Crawler)
         {
             if(direction.x > 0)
@@ -561,6 +626,7 @@ public class Enemy : MonoBehaviour {
                 direction = -transform.right;
             }
         }
+        */
         
         StartPosition = transform.position;
         //StartPosition.y += offset;
