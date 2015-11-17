@@ -146,13 +146,7 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    void FixedUpdate()
-    {
-        if (type == eClass.Crawler)
-        {
-            mRigidBody2D.AddForce(-9.81f * mRigidBody2D.mass * surfaceNormal);
-        }
-    }
+
 
     void CheckDead()
     {
@@ -246,6 +240,7 @@ public class Enemy : MonoBehaviour {
 
         lastDirection = targetDirection;
 
+        mRigidBody2D.AddForce(-9.81f * mRigidBody2D.mass * surfaceNormal);
 
         CrawlerMove(lastDirection);
         //Pursue Player         
@@ -254,6 +249,7 @@ public class Enemy : MonoBehaviour {
         //MoveCrawlerMoveCrawlerAlongWalls(true);
 
         //MoveCrawler();
+   
 
         //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
@@ -554,13 +550,23 @@ public class Enemy : MonoBehaviour {
         float scaleY = transform.localScale.x;
 
         float boxSize, scaleSize;
-        float offset = (type == eClass.Crawler) ? 0.4f : 0;
+       if(type == eClass.Crawler)
+        {
+            if(direction.x > 0)
+            {
+                direction = transform.right;
+            }
+            else
+            {
+                direction = -transform.right;
+            }
+        }
         
         StartPosition = transform.position;
-        StartPosition.y += offset;
+        //StartPosition.y += offset;
 
-        EndPosition = StartPosition + direction * 0.6f;
-        EndPosition.y += offset;
+        EndPosition = StartPosition + direction * 0.51f;
+        
 
         //Check if clear
         hit = Physics2D.Linecast(StartPosition, EndPosition);

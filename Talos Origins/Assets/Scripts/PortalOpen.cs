@@ -45,22 +45,18 @@ public class PortalOpen : MonoBehaviour {
 
     public IEnumerator DestroyPortal(bool leaving)
     {
-        portalInstance.transform.position = transform.position;
         Instantiate(portalCloseAudio, transform.position, Quaternion.identity);
         if (leaving)
         {
-            GameObject.Find("MapGenerator").GetComponent<MapGenerator>().cycleLevel = true;
-            portalInstance.transform.position = transform.position;
+            GameObject.Find("MapGenerator").GetComponent<MapGenerator>().cycleLevel = true;            
             yield return new WaitForSeconds(Time.deltaTime);
         
         }
-       
+        portalInstance.transform.position = transform.position;
         Vector3 portalScale = portalInstance.transform.localScale;
 
         while (portalScale.x > 0)
-        {
-            portalInstance.transform.position = transform.position;
-
+        {           
             portalScale.x -= 0.1f;
             portalScale.y -= 0.1f;
 
