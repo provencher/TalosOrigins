@@ -122,9 +122,13 @@ public class Grapple : MonoBehaviour {
 
     void drawLine()
     {        
-        lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -1));
-        lineRenderer.SetPosition(1, new Vector3(anchor.transform.position.x, anchor.transform.position.y, -1));        
-    }
+        try{
+			lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -1));
+    	    lineRenderer.SetPosition(1, new Vector3(anchor.transform.position.x, anchor.transform.position.y, -1));        
+		}catch(UnityException e){
+		
+		}
+	}
 
     void moveHook(Vector3 anchorPosition)
     {

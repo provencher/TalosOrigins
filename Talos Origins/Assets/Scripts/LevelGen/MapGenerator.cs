@@ -5,9 +5,10 @@ using System;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField]
+	[SerializeField]
     GameObject mTalos;
-    [SerializeField]
+
+	[SerializeField]
     GameObject mExit;
 
     [SerializeField]
@@ -34,6 +35,8 @@ public class MapGenerator : MonoBehaviour
     public bool useRandomSeed;
 
     public bool cycleLevel = false;
+
+	public bool resetLevel = false;
 
     [Range(0, 100)]
     public int randomFillPercent;
@@ -73,6 +76,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
+		mTalos = GameObject.Find("Talos");            
         asteroids = new List<GameObject>();
         enemies = new List<GameObject>();
         mapPointOccupied = new Dictionary<Coord, int>(); 
@@ -83,13 +87,20 @@ public class MapGenerator : MonoBehaviour
 
     void FixedUpdate()
     {
+//		Debug.Log ("Reset : " + resetLevel);
         if (cycleLevel)
         {
             cycleLevel = false;
             currentLevel = UnityEngine.Random.Range(currentLevel/2+1, currentLevel + 5);
             ResetLevel();
             GenerateMap();            
-        }        
+        }
+//		if(resetLevel)
+//		{
+//			resetLevel = false;
+//			ResetLevel();
+//			GenerateMap();            
+//		}
     }
 
     void ResetLevel()
@@ -101,8 +112,8 @@ public class MapGenerator : MonoBehaviour
 
     void NextLevel()
     {
-        currentLevel++;
-        ResetLevel();
+
+		ResetLevel();
         GenerateMap();
     }
 

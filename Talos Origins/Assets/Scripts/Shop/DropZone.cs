@@ -5,38 +5,47 @@ using UnityEngine.UI;
 using System;
 
 public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
-
-
+	
+	[SerializeField]
+	int DropZoneIndex;
+	
+	void OnStart(){
+		
+	}
+	
 	public void OnDrop(PointerEventData eventData)
 	{
-		GetComponent<Image> ().color = UnityEngine.Color.white;
 		Draggable d = eventData.pointerDrag.GetComponent<Draggable> ();
+		
+		GetComponent<Image> ().color = UnityEngine.Color.white;
 		d.GetComponent<Image> ().color = UnityEngine.Color.white;
-		if (d != null) {
-			if(transform.childCount == 0 || gameObject.tag != "Player"){
+		if (d != null) 
+		{
+			if(transform.childCount == 0 || gameObject.tag != "Player")
+			{
 				d.parentToReturnTo = this.transform;
-                if(gameObject.name != "Viewport")
-                    Debug.Log(d.gameObject.name);
+				Player.mUpgrades[DropZoneIndex] = d.name;
+				
 			}
 		}
 	}
-
+	
 	public void OnPointerEnter(PointerEventData eventData){
-
-        try { 
-            Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
-  
-
+		
+		try {
+			Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
+			
+			
 			if(transform.childCount == 0 || gameObject.tag != "Player"){
 				GetComponent<Image> ().color = UnityEngine.Color.green;
 			}else if(transform.childCount >= 1 && gameObject.tag == "Player"){
 				d.GetComponent<Image> ().color = UnityEngine.Color.red;
 			}
-        }
-        catch (Exception e)
-        {
-            //Do Nothing
-        }
+		}
+		catch (Exception e)
+		{
+			//Do Nothing
+		}
 	}
 	public void OnPointerExit(PointerEventData eventData){
 		GetComponent<Image> ().color = UnityEngine.Color.white;			

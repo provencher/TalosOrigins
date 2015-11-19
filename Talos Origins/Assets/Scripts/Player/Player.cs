@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -77,6 +78,9 @@ public class Player : MonoBehaviour
 
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
 
+	public static string[] mUpgrades;
+	Vector3 lastInGamePosition;
+
     int[] orbTank;
 
     public Attachment_WallWalker walkerScript;
@@ -92,10 +96,7 @@ public class Player : MonoBehaviour
 
 
     void Awake()
-        {           
-
-            
-
+    {
             //Destroys any Player objects created that is not the original
             if (playerRef == null)
             {
@@ -106,9 +107,7 @@ public class Player : MonoBehaviour
             {
                 Destroy(gameObject);
             }        
-
-        
-       }
+	}
 
 
     void Start()
@@ -125,6 +124,8 @@ public class Player : MonoBehaviour
         mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
+		mUpgrades = new string[3];
+		Trail.trailActivated = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
         //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
 
@@ -184,16 +185,19 @@ public class Player : MonoBehaviour
         UpdateUIText();
     }
 
-    void UpdateUIText()
-    {
-        GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
-        GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
-        GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
-        GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
-        GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
-        GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
-    }
- 
+	void UpdateUIText()
+	{
+		try{
+			GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
+			GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
+			GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
+			GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
+			GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
+			GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
+		}catch(Exception e){
+			//Do Nothing
+		}
+	}
 
     void Update()
     {
@@ -209,6 +213,18 @@ public class Player : MonoBehaviour
         CheckJump();
         //FaceMouse();
         UpdateAnimator();
+
+		if((Input.GetButton("Shop")) && (Application.loadedLevel == 0)){
+			Application.LoadLevel(1);
+
+		}
+
+		if(Input.GetKey(KeyCode.L)){
+			Debug.Log(mUpgrades[0]);
+			Debug.Log(mUpgrades[1]);
+			Debug.Log(mUpgrades[2]);
+			
+		}
 
         /*
         bool grounded = CheckGrounded();
@@ -583,8 +599,12 @@ public class Player : MonoBehaviour
 
     void UpdateCameraVelocity()
     {
-        GameObject.Find("Main Camera").SendMessage("PlayerVelocity", mRigidBody2D.velocity);
-    }
+		if (Application.loadedLevelName == "Proto") 
+		{
+			GameObject.Find ("Main Camera").SendMessage ("PlayerVelocity", mRigidBody2D.velocity);   
+		
+		}
+	}
 
     void HitByBullet(int damage)
     {
@@ -627,6 +647,14 @@ public class Player : MonoBehaviour
             
         }
     }
+
+	public void ReturnToGame()
+	{
+		//Used for the button in the shop
+		Application.LoadLevel (0);
+		Debug.Log (Application.loadedLevel);
+		GameObject.Find("MapGenerator").GetComponent<MapGenerator>().resetLevel = true;            
+	}
 
     public Player getPlayerRef()
     {

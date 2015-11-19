@@ -9,6 +9,11 @@ public class CameraFollow : MonoBehaviour
     float kFollowSpeed = 8f;
     float stepOverThreshold = 0.15f;
 
+	void Start()
+	{
+		mTarget = GameObject.Find("Talos").transform;            
+	}
+
     void Update ()
     {
         if(mTarget != null)

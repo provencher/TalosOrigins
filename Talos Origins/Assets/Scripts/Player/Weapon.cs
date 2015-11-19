@@ -30,8 +30,10 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        UpdateWeapon();
-        CheckFire();       
+		if (Application.loadedLevel == 0) {
+			UpdateWeapon();
+			CheckFire ();       
+		}
 	}
     void UpdateWeapon()
     {
