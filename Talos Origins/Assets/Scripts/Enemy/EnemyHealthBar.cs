@@ -19,7 +19,7 @@ public class EnemyHealthBar : MonoBehaviour
         Vector3 boxSize = gameObject.GetComponent<BoxCollider2D>().size;
         Vector3 scale = transform.localScale;
 
-        offset = new Vector3(boxSize.x / 2 * scale.x, boxSize.y /2 * scale.y, 0);
+        offset = new Vector3(0, boxSize.y /1.15f * scale.y, 0);
 
 
         healthBarLength = Screen.width / healthBarScreenRatio;       
@@ -28,14 +28,19 @@ public class EnemyHealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        AddjustCurrentHealth(0);
+        if (curHealth < maxHealth)
+        {
+            AddjustCurrentHealth(0);
+        }
     }
     
     void OnGUI()
-    {       
-        
-        Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset); 
-        GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), curHealth + "/" + maxHealth);
+    {
+        if (curHealth < maxHealth)
+        {
+            Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
+            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), curHealth + "/" + maxHealth);
+        }        
     }
 
     public void AddjustCurrentHealth(int adj)

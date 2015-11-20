@@ -26,7 +26,7 @@ public class Bullet : MonoBehaviour {
         mRigidbody2D.velocity = (mSpeed * Vector2.right);
         mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
-        mDamage = 25;
+        mDamage = 5;
 	}
 	
 	// Update is called once per frame

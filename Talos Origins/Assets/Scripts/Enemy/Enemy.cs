@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour
         mCurrentLevel = 1;
         mMoveSpeed = 1.5f;
         distanceThreshold = 12f;
-        mHealth = 100;
+        mHealth = 5;
 
         lastDirection = Vector2.right;
         nbTimesDied = 0;
@@ -172,7 +172,7 @@ public class Enemy : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
-        mHealth = 45 + (mCurrentLevel * 5);
+        mHealth = 10 + (mCurrentLevel * 6);
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
     }
 
@@ -211,7 +211,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = 45 + (mCurrentLevel * 5);
+        mHealth = 5 + (mCurrentLevel * 5);
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 

@@ -23,7 +23,7 @@ public class Weapon : MonoBehaviour {
         mMelee = false;
         mShoot = false;
         mWeapon = 2;
-        mGunDamage = 50;
+        mGunDamage = 5;
         lastShootTime = Time.time;
         mTalos = transform.parent.GetComponent<Player>();
 	}
