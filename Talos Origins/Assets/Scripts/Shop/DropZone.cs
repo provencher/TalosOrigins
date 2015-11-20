@@ -8,11 +8,11 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 	
 	[SerializeField]
 	int DropZoneIndex;
-	
-	void OnStart(){
-		
-	}
-	
+
+	string Upgrade = "Upgrade";
+
+	string CurrentUpgrade;
+
 	public void OnDrop(PointerEventData eventData)
 	{
 		Draggable d = eventData.pointerDrag.GetComponent<Draggable> ();
@@ -24,8 +24,8 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 			if(transform.childCount == 0 || gameObject.tag != "Player")
 			{
 				d.parentToReturnTo = this.transform;
-				Player.mUpgrades[DropZoneIndex] = d.name;
-				
+
+				PlayerPrefs.SetString( Upgrade + DropZoneIndex, d.gameObject.name);
 			}
 		}
 	}

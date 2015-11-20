@@ -85,6 +85,8 @@ public class Player : MonoBehaviour
 
     public Attachment_WallWalker walkerScript;
 
+	string Upgrade = "Upgrade";
+
     /*
     [SerializeField]
     LifeMeter life;
@@ -97,18 +99,17 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-            //Destroys any Player objects created that is not the original
-            if (playerRef == null)
-            {
-                DontDestroyOnLoad(gameObject);
-                playerRef = this;
-            }
-            else if (playerRef != null)
-            {
-                Destroy(gameObject);
-            }        
-	}
+//		for(int i=0; i<3; i++){
+//			mUpgrades[i] = PlayerPrefs.GetString(Upgrade + i);
+//			Debug.Log (mUpgrades[i]);
+//
+//		}
 
+		Debug.Log (PlayerPrefs.GetString("Upgrade0"));
+		Debug.Log (PlayerPrefs.GetString("Upgrade1"));
+		Debug.Log (PlayerPrefs.GetString("Upgrade2"));
+
+	}
 
     void Start()
     {
@@ -647,15 +648,7 @@ public class Player : MonoBehaviour
             
         }
     }
-
-	public void ReturnToGame()
-	{
-		//Used for the button in the shop
-		Application.LoadLevel (0);
-		Debug.Log (Application.loadedLevel);
-		GameObject.Find("MapGenerator").GetComponent<MapGenerator>().resetLevel = true;            
-	}
-
+	
     public Player getPlayerRef()
     {
         return this;
