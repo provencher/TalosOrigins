@@ -8,23 +8,23 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
 	[SerializeField]
 	enum upgradeType {Health, Jump, Grapple, Bullets, Shield, Breadcrumbs};
-	
+
 	string Upgrade = "Upgrade";
 
 	void Start()
 	{
+
+		//Check if Talos is already equipped with this upgrade
 		for(int i=0; i<3; i++){
+
 			if(gameObject.name == PlayerPrefs.GetString(Upgrade + i))
 		  	{
 				Debug.Log (gameObject.name);
 				parentToReturnTo = GameObject.Find("DropZone"+ i).transform;
 			}
 		}
-//
-//		if (parentToReturnTo = null) {
-//			parentToReturnTo = gameObject.transform.parent;
-//		}
-//
+
+		//Set the draggable to the appropriate drop zone
 		this.transform.SetParent (parentToReturnTo);
 	}
 
@@ -42,6 +42,17 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	public void OnEndDrag(PointerEventData eventData){
 		this.transform.SetParent (parentToReturnTo);
 		GetComponent<CanvasGroup> ().blocksRaycasts = true;
+
+		if(gameObject.transform.parent.name == "Viewport")
+		{
+			for(int i=0; i<3; i++){
+				
+				if(PlayerPrefs.GetString(Upgrade + i) == gameObject.name)
+				{
+					PlayerPrefs.SetString(Upgrade + i, null);
+				}
+			}
+		
+		}
 	}
-	
 }

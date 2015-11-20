@@ -99,16 +99,11 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-//		for(int i=0; i<3; i++){
-//			mUpgrades[i] = PlayerPrefs.GetString(Upgrade + i);
-//			Debug.Log (mUpgrades[i]);
-//
-//		}
+		for (int i=0; i<3; i++) {
+			mUpgrades [i] = PlayerPrefs.GetString (Upgrade + i);
+			Debug.Log (mUpgrades [i]);
 
-		Debug.Log (PlayerPrefs.GetString("Upgrade0"));
-		Debug.Log (PlayerPrefs.GetString("Upgrade1"));
-		Debug.Log (PlayerPrefs.GetString("Upgrade2"));
-
+		}
 	}
 
     void Start()
