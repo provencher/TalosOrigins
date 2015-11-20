@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour
+{
     public enum eClass { flyer, walker, runner, Crawler };
     public eClass type;
 
@@ -47,7 +48,7 @@ public class Enemy : MonoBehaviour {
     public Vector2 crawlerFacedirection;
     bool crawlerIsWalking;
     bool crawlerIsShooting;
-    bool  crawlerIsHit;
+    bool crawlerIsHit;
     bool crawlerIsFalling;
 
     Vector2 curNormal = Vector2.up;
@@ -70,7 +71,8 @@ public class Enemy : MonoBehaviour {
 
 
 
-    void Start() {
+    void Start()
+    {
         //Write Code for Modifying stats based on currentLevel
 
         //Write logic for setting enemy type
@@ -78,7 +80,7 @@ public class Enemy : MonoBehaviour {
         gameObject.tag = "Enemy";
 
         mRigidBody2D = GetComponent<Rigidbody2D>();
-        
+
 
         //Write logic for changing enemy sprite 
 
@@ -96,14 +98,14 @@ public class Enemy : MonoBehaviour {
         mBoxCollider = GetComponent<BoxCollider2D>();
 
 
-        distGround = mBoxCollider.size.y /2.2f * transform.localScale.y;
-        distEdge = mBoxCollider.size.x / 2.2f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
+        distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
+        distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
 
         //distEdge = mBoxCollider.bounds.extents.x - mBoxCollider.bounds.center.x + 1;
 
         mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
     }
-    
+
 
     void Update()
     {
@@ -146,6 +148,14 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    void FixedUpdate()
+    {
+        if (type == eClass.Crawler)
+        {           
+            // Add directional force
+            mRigidBody2D.AddForce(-9.81f * mRigidBody2D.mass * surfaceNormal);
+        }
+    }
 
 
     void CheckDead()
@@ -175,27 +185,27 @@ public class Enemy : MonoBehaviour {
             firstLoop = false;
         }
 
-        
-            Vector2 targetDirection = lastDirection;
 
-            int d30Roll = Random.Range(1, 30);
-            if (!DirectionClear(lastDirection) || d30Roll == 5)
-            {
-                targetDirection = FindDirectionWithTarget(playerPosition);               
-            }
-            else if (d30Roll == 15)
-            {
-                targetDirection = ChooseRandomDirection();
-            }
-            
-            lastDirection = targetDirection;
+        Vector2 targetDirection = lastDirection;
 
-            //Pursue Player            
-            TranslateAerialToTarget(transform.position + (Vector3)targetDirection);
-        
+        int d30Roll = Random.Range(1, 30);
+        if (!DirectionClear(lastDirection) || d30Roll == 5)
+        {
+            targetDirection = FindDirectionWithTarget(playerPosition);
+        }
+        else if (d30Roll == 15)
+        {
+            targetDirection = ChooseRandomDirection();
+        }
+
+        lastDirection = targetDirection;
+
+        //Pursue Player            
+        TranslateAerialToTarget(transform.position + (Vector3)targetDirection);
+
     }
 
-   
+
 
     void CrawlerInit()
     {
@@ -215,6 +225,8 @@ public class Enemy : MonoBehaviour {
         crawlerIsShooting = false;
         crawlerIsHit = false;
 
+        mMoveSpeed = 1.4f;
+
         curNormal = transform.up;
         mRigidBody2D.freezeRotation = true;
 
@@ -224,196 +236,146 @@ public class Enemy : MonoBehaviour {
     }
 
     void CrawlerUpdate()
-    {        
+    {
         if (firstLoop)
         {
             CrawlerInit();
-            firstLoop = false;   
+            firstLoop = false;
         }
+
+        if((transform.position - currentPosition).magnitude < 0.01f)
+        {
+            //mRigidBody2D.AddForce(Vector3.up * 0.5f);
+        }
+
         Vector2 targetDirection = lastDirection;
 
         int d30Roll = Random.Range(1, 30);
-        if (!DirectionClear(lastDirection) || d30Roll == 5)
+        if (d30Roll == 5)
         {
+
             targetDirection = FindDirectionWithTarget(playerPosition);
-        }        
 
-        lastDirection = targetDirection;
+            if (targetDirection.x > 0)
+            {
+                targetDirection = transform.right;//+ 0.1f * (Vector3)targetDirection;//+ offset;
+                                                                                    //CrawlerFaceDirection(Vector2.right);      
 
-        mRigidBody2D.AddForce(-9.81f * mRigidBody2D.mass * surfaceNormal);
+            }
+            else if (targetDirection.x < 0)
+            {
+                targetDirection = -transform.right;// + 0.1f * (Vector3)targetDirection;//  + offset;
 
-        CrawlerMove(lastDirection);
+                //CrawlerFaceDirection(-Vector2.right);
+            }
+
+            //targetDirection.y *= 1.5f;  
+
+            //direction.y *= 2;
+            CrawlerFaceDirection(targetDirection);
+        }
+
+        
+
+        
+
+
+        
+        CrawlerMove(targetDirection);
+
         //Pursue Player         
         //TranslateGroundToTarget(transform.position + (Vector3)targetDirection);
 
         //MoveCrawlerMoveCrawlerAlongWalls(true);
 
         //MoveCrawler();
-        CrawlerFaceDirection(lastDirection);
+        TranslateGroundToDirection(targetDirection);
 
         //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
+        lastDirection = targetDirection;
+    }
+
+    void CrawlerFaceDirection(Vector3 fDic)
+    {
+        // if moving right
+        
+        if (Vector3.Dot(fDic, transform.right) > 0.75f)
+        {
+            transform.localScale = new Vector3(-1 * Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
+        }
+        else if (Vector3.Dot(fDic, -transform.right) > 0.75f)
+        {
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
+        }
+        //
         
     }
 
-    void CrawlerFaceDirection(Vector2 fDic)
-    {
-        if (
-            (fDic.x > 0 && transform.localScale.x > 0) ||
-            (fDic.x < 0 && transform.localScale.x < 0)
-            )
-        {
-            transform.localScale = new Vector3(-1* transform.localScale.x, transform.localScale.y, 0);
-            //transform.rotation = Quaternion.LookRotation(transform.forward);
-        }
-        /*
-        else
-        {
-            transform.rotation = Quaternion.LookRotation(-transform.forward);
-        }
-        */
-    }
-
     void CrawlerMove(Vector3 direction)
-    {      
-        RaycastHit2D leftInfo, rightInfo; 
+    {
+        RaycastHit2D leftInfo, rightInfo;
         if (doubleRaycastDown(out leftInfo, out rightInfo))
         {
-            
-            //if moving left
-            if (Vector3.Dot(transform.right, direction) >= 0)
-            {
-                Vector3 leftStart = transform.position + distGround * transform.up;
-                RaycastHit2D overrideLeftHitInfo = Physics2D.Raycast(leftStart, transform.right, distEdge);
-
-                if (overrideLeftHitInfo.collider != null)
-                {
-                    leftInfo = overrideLeftHitInfo;
-                }
-            }
             //if moving right
-            else
+            if ((direction - transform.right).magnitude < 0.01f)
             {
-                Vector3 rightStart = transform.position + distGround * transform.up;
+                Vector3 rightStart = transform.position + 0.35f * transform.up;
                 RaycastHit2D overrideRightHitInfo = Physics2D.Raycast(rightStart, -transform.right, distEdge);
 
                 if (overrideRightHitInfo.collider != null)
                 {
                     rightInfo = overrideRightHitInfo;
                 }
-            }           
-            
+            }
+            //if moving left
+            else
+            {
+                Vector3 leftStart = transform.position + 0.35f * transform.up;
+                RaycastHit2D overrideLeftHitInfo = Physics2D.Raycast(leftStart, -transform.right, distEdge);
+
+                if (overrideLeftHitInfo.collider != null)
+                {
+                    leftInfo = overrideLeftHitInfo;
+                }
+            }
+
             // use it to update myNormal and isGrounded            
-            mIsGrounded = (leftInfo.distance + rightInfo.distance)/2 <= distGround + 0.3f;//deltaGround;
-            surfaceNormal = (leftInfo.normal + rightInfo.normal) / 2;                
+            mIsGrounded = (leftInfo.distance + rightInfo.distance) / 2 <= distGround + 0.3f;//deltaGround;
+            surfaceNormal = (leftInfo.normal + rightInfo.normal) / 2;
 
         }
         else
         {
             mIsGrounded = false;
             // assume usual ground normal to avoid "falling forever"
-            surfaceNormal = Vector3.up;
+            surfaceNormal = transform.up;
         }
 
-        
+
         Vector3 offset = positionOnTerrain(leftInfo, rightInfo, distGround);
         //direction.y = direction.y * 1.5f;
-        if(direction.x > 0)
-        {
-            direction = transform.right;//+ offset;
-            //CrawlerFaceDirection(Vector2.right);      
-                        
-        }else
-        {
-            direction = -transform.right;//  + offset;
-            
-            //CrawlerFaceDirection(-Vector2.right);
-        }
-
+       
         //transform.rotation = Quaternion.LookRotation(transform.forward);
         //direction = transform.right + offset;
-        //transform.LookAt(direction);  
-        TranslateGroundToTarget(direction);
+        //transform.LookAt(direction);      
 
+        currentPosition = transform.position;
+        //transform.position += direction * mMoveSpeed * Time.deltaTime;
+
+        //mRigidBody2D.velocity = direction * mMoveSpeed; //* Time.deltaTime;
+
+
+        
 
         if ((transform.position - currentPosition).magnitude < (direction * mMoveSpeed * Time.deltaTime).magnitude)   //(currentPosition - transform.position).magnitude < 0.3f)
         {
+
             //mRigidBody2D.AddForce(mRigidBody2D.mass*(3*Vector3.up + direction));
             //mRigidBody2D.velocity += (Vector2) direction * 2;
-           //mRigidBody2D.AddForce(5* transform.up + 5 * transform.localScale.x * transform.right);
+            //mRigidBody2D.AddForce(5* transform.up + 5 * transform.localScale.x * transform.right);
         }
     }
-
-    /* 
-497     void MoveCrawlerAlongWalls(bool forward) 
-498     { 
-499         int directionModif = (forward) ? 1 : -1; 
-500         float boxSizeX = GetComponent<BoxCollider2D>().size.x * transform.localScale.x / 1.8f; 
-501         float boxSizeY = GetComponent<BoxCollider2D>().size.y  * transform.localScale.y / 1.8f; 
-502  
-503         int groundLayer = LayerMask.NameToLayer("Map"); 
-504  
-505         if(crawlerIsWalking) 
-506         { 
-507             Vector2 direction = (Vector2)transform.right * directionModif * boxSizeX; 
-508             // Check for cave wall 
-509             RaycastHit2D rayHit1 = Physics2D.Raycast(transform.position, direction, boxSizeX, groundLayer); 
-510  
-511             if (rayHit1.collider != null )//&& rayHit1.gameObject.tag == "Asteroid" || rayHit1.transform.gameObject.tag == "Cave") 
-512             {                 
-513                 hitNormal = rayHit1.normal; 
-514                 crawlerIsWalking = false; 
-515             } 
-516             else 
-517             { 
-518                 //mRigidBody2D.gravityScale = 1; 
-519                 //return; 
-520             } 
-521  
-522             Debug.DrawLine(transform.position, (Vector2)transform.position + (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false); 
-523  
-524             // Check for no floor 
-525             Vector2 checkRear = (Vector2)transform.position + (-(Vector2)transform.right * directionModif * boxSizeX); 
-526             RaycastHit2D rayHit2 = Physics2D.Raycast(checkRear, - transform.up, boxSizeX, groundLayer); 
-527  
-528             if(rayHit2.collider != null)// && rayHit2.collider.tag == "Asteroid" || rayHit2.collider.tag == "Cave") 
-529             { 
-530                 //Floor exists              
-531             } 
-532             else 
-533             { 
-534                 // Find the floor around the corner 
-535                 Vector2 checkPos = (Vector2)transform.position  - (Vector2)transform.right * boxSizeX * directionModif + (Vector2)transform.up * -1 * boxSizeY; 
-536  
-537                 RaycastHit2D rayHit3 = Physics2D.Raycast(checkPos, -transform.right * directionModif, boxSizeX, groundLayer); 
-538                 Debug.DrawLine(checkPos, checkPos- (Vector2)transform.right * directionModif * boxSizeX, Color.red, 2, false); 
-539                 if (rayHit3.collider != null)// && rayHit3.collider.tag == "Asteroid" || rayHit3.collider.tag == "Cave") 
-540                 {                     
-541                     Debug.Log("HitNormal " + rayHit3.normal); 
-542                     hitNormal = rayHit3.normal; 
-543                     crawlerIsWalking = false; 
-544                 } 
-545                 Debug.DrawLine(transform.position, transform.position + transform.up * (-1) * boxSizeY, Color.red, 2, false); 
-546                 MoveCrawler(forward); 
-547             } 
-548         } 
-549         else 
-550         { 
-551             curNormal = Vector2.Lerp(curNormal, hitNormal, 4.0f * Time.deltaTime); 
-552             Quaternion groundTilt = Quaternion.FromToRotation(Vector2.up, curNormal); 
-553             transform.rotation = groundTilt; 
-554  
-555             float check = (curNormal - hitNormal).sqrMagnitude; 
-556             if( check < 0.001) 
-557             { 
-558                 groundTilt = Quaternion.FromToRotation(Vector2.up, hitNormal); 
-559                 transform.rotation = groundTilt; 
-560                 crawlerIsWalking = true; 
-561             } 
-562         } 
-563     } 
-564     */
-
 
     void CrawlerUpdateAnimator()
     {
@@ -426,7 +388,7 @@ public class Enemy : MonoBehaviour {
     { }
 
     void WalkerInit()
-    {    }
+    { }
 
     void RunnerUpdate()
     { }
@@ -447,7 +409,8 @@ public class Enemy : MonoBehaviour {
     }
 
     void TranslateAerialToTarget(Vector3 target)
-    {    
+    {
+
         if (target != null)
         {
             Vector3 direction = target - transform.position;
@@ -458,51 +421,49 @@ public class Enemy : MonoBehaviour {
     }
 
     bool doubleRaycastDown(out RaycastHit2D leftHitInfo, out RaycastHit2D rightHitInfo)
-    {    
-        Vector2 leftStart = transform.position + 0.2f * - transform.up + distEdge * transform.right;
-        Vector2 rightStart = transform.position + 0.2f * -transform.up - distEdge * transform.right;       
+    {
+        Vector2 leftStart = transform.position + 0.2f * -transform.up + distEdge * transform.right;
+        Vector2 rightStart = transform.position + 0.2f * -transform.up - distEdge * transform.right;
 
         rightHitInfo = Physics2D.Raycast(leftStart, -transform.up, 0.2f);
-        leftHitInfo  = Physics2D.Raycast(rightStart, -transform.up, 0.2f);
-      
-        Debug.DrawLine(leftStart, leftStart + (Vector2)transform.up *-0.2f, Color.red, 2, false);
+        leftHitInfo = Physics2D.Raycast(rightStart, -transform.up, 0.2f);
+
+        Debug.DrawLine(leftStart, leftStart + (Vector2)transform.up * -0.2f, Color.red, 2, false);
         Debug.DrawLine(rightStart, rightStart + (Vector2)transform.up * -0.2f, Color.red, 2, false);
-        
+
 
         return rightHitInfo.collider != null && leftHitInfo.collider != null;
     }
 
 
     Vector3 positionOnTerrain(RaycastHit2D leftHitInfo, RaycastHit2D rightHitInfo, float boxSizeY)
-    {      
-        
+    {
+
         Vector3 averageNormal = (leftHitInfo.normal + rightHitInfo.normal) / 2;
         Vector3 averagePoint = (leftHitInfo.point + rightHitInfo.point) / 2;
 
         Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, averageNormal);
-        Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360* Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z); 
+        Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360 * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
 
-        if(mIsGrounded)
+        if (mIsGrounded)
         {
             transform.position = averagePoint + transform.up * 0.35f;
-            return (averagePoint + transform.up * distGround) - transform.position;
+            return (averagePoint + transform.up * 0.35f) - transform.position;
         }
-        return Vector3.zero;               
+        return Vector3.zero;
     }
 
-    
 
-    void TranslateGroundToTarget(Vector3 target)
+
+    void TranslateGroundToDirection(Vector3 direction)
     {
-        if (target != null)
-        {
-            currentPosition = transform.position;
-            Vector3 direction = target - transform.position;
-            direction.z = 0;          
+        currentPosition = transform.position;
+        //Vector3 direction = target - transform.position;
+        direction.z = 0;
 
-            transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;        
-        }     
+        transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
+        
     }
 
     Vector2 FindDirectionWithTarget(Vector3 target)
@@ -597,10 +558,10 @@ public class Enemy : MonoBehaviour {
                 return -1 * lastDirection;
             }
         }
-    }   
+    }
 
     bool DirectionClear(Vector2 direction)
-    {   
+    {
 
         bool isClear = true;
         Vector2 StartPosition;
@@ -614,10 +575,9 @@ public class Enemy : MonoBehaviour {
         float scaleY = transform.localScale.x;
 
         float boxSize, scaleSize;
-        /*
-       if(type == eClass.Crawler)
+        if (type == eClass.Crawler)
         {
-            if(direction.x > 0)
+            if (direction.x > 0)
             {
                 direction = transform.right;
             }
@@ -626,13 +586,12 @@ public class Enemy : MonoBehaviour {
                 direction = -transform.right;
             }
         }
-        */
-        
+
         StartPosition = transform.position;
         //StartPosition.y += offset;
 
         EndPosition = StartPosition + direction * 0.51f;
-        
+
 
         //Check if clear
         hit = Physics2D.Linecast(StartPosition, EndPosition);
@@ -683,8 +642,8 @@ public class Enemy : MonoBehaviour {
     public float CalculateDamage()
     {
         return mDamageModifier * (1 + mCurrentLevel / 20);
-    }  
-    
+    }
+
 
     // MESSAGING FUNCTIONS   
     ////////////////////////////////////////////////////////////
@@ -711,19 +670,19 @@ public class Enemy : MonoBehaviour {
 
 
     void NotifyOfDeath()
-    {       
+    {
         // Notify Player of kill with experience gained
         GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
 
         // Notify Map Generator of index of enemy killed
         GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
 
-        
+
     }
 
     void ShovedByEnemy(Vector2 shoveDir)
     {
-        switch(type)
+        switch (type)
         {
             case eClass.flyer:
                 {
@@ -744,7 +703,7 @@ public class Enemy : MonoBehaviour {
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0,4));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 4));
         }
 
     }
@@ -758,7 +717,7 @@ public class Enemy : MonoBehaviour {
             if (coll.gameObject.tag == "Player")
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
-            }                      
+            }
         }
 
 
@@ -767,7 +726,7 @@ public class Enemy : MonoBehaviour {
         {
             Instantiate(HitByShotAudio, transform.position, Quaternion.identity);
             Instantiate(LaserGreenHit, transform.position, Quaternion.identity);         //Instantiate LaserGreenHit 
-            
+
 
             //Check the Health if greater than 0
             if (mHealth > 0)
@@ -782,24 +741,24 @@ public class Enemy : MonoBehaviour {
                 {
                     mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;
                     coll.gameObject.GetComponent<Bullet>().mAlive = false;
-                }               
-                
+                }
+
             }
-                                                                              //Decrement Health by 1
+            //Decrement Health by 1
 
             //Check the Health if less or equal 0
             if (mHealth <= 0)
-            {               
+            {
                 Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                DropOrbs(5);                                                                                                     
+                DropOrbs(5);
                 NotifyOfDeath();
                 nbTimesDied++;
 
-                if(nbTimesDied > 1)
+                if (nbTimesDied > 1)
                 {
                     Destroy(gameObject);
                 }
             }
         }
-    }   
+    }
 }
