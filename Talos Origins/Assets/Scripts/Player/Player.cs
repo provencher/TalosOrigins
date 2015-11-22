@@ -224,13 +224,6 @@ public class Player : MonoBehaviour
 
 		}
 
-		if(Input.GetKey(KeyCode.L)){
-			Debug.Log(mUpgrades[0]);
-			Debug.Log(mUpgrades[1]);
-			Debug.Log(mUpgrades[2]);
-			
-		}
-
         /*
         bool grounded = CheckGrounded();
         if (!mGrounded && grounded)
@@ -261,9 +254,9 @@ public class Player : MonoBehaviour
 
 	void OnDestroy() {
 
-		PlayerPrefs.SetInt ("Blue Orbs", orbTank[0]);
-		PlayerPrefs.SetInt ("Green Orbs", orbTank[1]);
-		PlayerPrefs.SetInt ("Red Orbs", orbTank[2]);
+		PlayerPrefs.SetInt ("Blue Orbs"	 , orbTank[0]);
+		PlayerPrefs.SetInt ("Green Orbs" , orbTank[1]);
+		PlayerPrefs.SetInt ("Red Orbs"	 , orbTank[2]);
 		PlayerPrefs.SetInt ("Yellow Orbs", orbTank[3]);
 	}
 	

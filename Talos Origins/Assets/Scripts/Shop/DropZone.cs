@@ -11,7 +11,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
 	string Upgrade = "Upgrade";
 
-	string CurrentUpgrade;
+	public string CurrentUpgrade;
 
 	public void OnDrop(PointerEventData eventData)
 	{
@@ -25,13 +25,20 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 			{
 				d.parentToReturnTo = this.transform;
 
-				if(gameObject.tag == "UpgradeSlots"){
-					PlayerPrefs.SetString( Upgrade + DropZoneIndex, d.gameObject.name);
+				if(gameObject.tag == "UpgradeSlots")
+				{
+					CurrentUpgrade = d.gameObject.name;
+					GameObject.Find("Orbs").GetComponent<ShopOrbs>().totalOrbsCount -= d.gameObject.GetComponent<Draggable>().mCost;
+				}
+				else if(gameObject.name == "Viewport")
+				{
+					GameObject.Find("Orbs").GetComponent<ShopOrbs>().totalOrbsCount += d.gameObject.GetComponent<Draggable>().mCost;
+
 				}
 			}
 		}
 	}
-	
+
 	public void OnPointerEnter(PointerEventData eventData){
 		
 		try {

@@ -17,31 +17,54 @@ public class ShopOrbs : MonoBehaviour {
 	Text YellowOrbs;
 
 	[SerializeField]
-	Text Total;
+	Text TotalOrbs;
+
+	[SerializeField]
+	Image TotalFrame;
 
 	int red, blue, green, yellow;
 
-	public int totalCount;
+	public int totalOrbsCount;
 
 	// Use this for initialization
 	void Start () {
 	
-		red = PlayerPrefs.GetInt("Red Orbs");
-		green = PlayerPrefs.GetInt("Yellow Orbs");
-		blue = PlayerPrefs.GetInt("Blue Orbs");
+		red    = PlayerPrefs.GetInt("Red Orbs");
+		green  = PlayerPrefs.GetInt("Yellow Orbs");
+		blue   = PlayerPrefs.GetInt("Blue Orbs");
 		yellow = PlayerPrefs.GetInt("Yellow Orbs");
 
+		totalOrbsCount = 5 * blue + 3 * red + 2 * green +  1 * yellow;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
-		BlueOrbs.text = blue.ToString();
-		GreenOrbs.text = green.ToString();
-		RedOrbs.text = red.ToString();
-		YellowOrbs.text = yellow.ToString();
+		BlueOrbs.text   = blue.ToString() + " (x 5)";
+		GreenOrbs.text  = green.ToString() + " (x 3)";
+		RedOrbs.text    = red.ToString() + " (x 2)";
+		YellowOrbs.text = yellow.ToString() + " (x 1)";
 
-		totalCount = red + green + blue + yellow;
-		Total.text = totalCount.ToString();
+		UpdateTotalOrbsFrame ();
+	}
+
+	void OnDestroy(){
+
+//		PlayerPrefs.SetInt (,);
+	}
+
+	void UpdateTotalOrbsFrame(){
+		
+		if (totalOrbsCount < 0) 
+		{
+			TotalFrame.color = new Color (255, 0, 0, 255);
+		} 
+		else
+		{
+			TotalFrame.color = Color.white;
+		}
+
+		TotalOrbs.text = totalOrbsCount.ToString();
+
 	}
 }
