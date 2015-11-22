@@ -91,7 +91,7 @@ public class Enemy : MonoBehaviour
         mCurrentLevel = 1;
         mMoveSpeed = 1.5f;
         distanceThreshold = 12f;
-        mHealth = 5;
+        mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 5));
 
         lastDirection = Vector2.right;
         nbTimesDied = 0;
@@ -172,7 +172,7 @@ public class Enemy : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
-        mHealth = 5 + (mCurrentLevel * Random.Range(2,10));
+        mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 15));
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
     }
 
@@ -211,7 +211,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = 5 + (mCurrentLevel * Random.Range(4, 6));
+        mHealth = Random.Range(mCurrentLevel + Random.Range(3, 5), mCurrentLevel * Random.Range(3,5));
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
