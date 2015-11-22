@@ -3,13 +3,14 @@ using System.Collections;
 
 public class audioPrefabController : MonoBehaviour {
 
-    float timeToLive = 2.0f;
+    public float timeToLive = 2.0f;
     public float delay = -1;
 
     bool triggered = false;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 	}
 	
 	// Update is called once per frame
