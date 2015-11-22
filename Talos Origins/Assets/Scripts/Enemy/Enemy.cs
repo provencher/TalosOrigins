@@ -172,7 +172,7 @@ public class Enemy : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
-        mHealth = 10 + (mCurrentLevel * 6);
+        mHealth = 5 + (mCurrentLevel * Random.Range(2,10));
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
     }
 
@@ -211,7 +211,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = 5 + (mCurrentLevel * 5);
+        mHealth = 5 + (mCurrentLevel * Random.Range(4, 6));
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
@@ -448,8 +448,8 @@ public class Enemy : MonoBehaviour
 
         if (mIsGrounded)
         {
-            transform.position = averagePoint + transform.up * 0.35f;
-            return (averagePoint + transform.up * 0.35f) - transform.position;
+            transform.position = averagePoint + transform.up * 0.33f;
+            return (averagePoint + transform.up * 0.30f) - transform.position;
         }
         return Vector3.zero;
     }
