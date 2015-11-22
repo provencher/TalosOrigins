@@ -116,11 +116,22 @@ public class Asteroid_Script : MonoBehaviour
                     GameObject.Find("Talos").GetComponent<Grapple>().unHook();
                 }
 
-				Instantiate (Explosion, transform.position , transform.rotation);       //Instantiate Explosion                                                                                                        
+                DropOrbs(Random.Range(0, currentLevel/2 + 1));
+
+                Instantiate (Explosion, transform.position , transform.rotation);       //Instantiate Explosion                                                                                                        
                 DestroyAsteroid();
 			}
 		}
 	}
+
+    void DropOrbs(int numOrbs)
+    {
+        for (int i = 0; i < numOrbs; i++)
+        {
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 1));
+        }
+
+    }
 
     public void IsHooked()
     {

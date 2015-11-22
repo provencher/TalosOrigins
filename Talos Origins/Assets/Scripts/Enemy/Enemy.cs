@@ -703,7 +703,7 @@ public class Enemy : MonoBehaviour
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 4));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 3));
         }
 
     }
@@ -750,7 +750,7 @@ public class Enemy : MonoBehaviour
             if (mHealth <= 0)
             {
                 Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                DropOrbs(5);
+                DropOrbs(Random.Range(1, mCurrentLevel / 2 + 1));
                 NotifyOfDeath();
                 nbTimesDied++;
 
