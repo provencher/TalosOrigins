@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 {
     //Vector2 velocity;
 
+	//Pain Audio
     [SerializeField]
     GameObject PainAudio1;
     [SerializeField]
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     GameObject PainAudio3;
 
+	//Jump Audio
     [SerializeField]
     GameObject jumpAudio1;
     [SerializeField]
@@ -25,11 +27,14 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     float mMoveSpeed;
+
     [SerializeField]
     float mJumpForce;
-    [SerializeField]
+    
+	[SerializeField]
     LayerMask mWhatIsGround;
-    float kGroundCheckRadius = 0.1f;
+    
+	float kGroundCheckRadius = 0.1f;
 
     // Animator booleans
     bool mRunning;
@@ -60,8 +65,8 @@ public class Player : MonoBehaviour
     AudioSource mWallKickSound;
     AudioSource mTakeDamageSound;
 
-    [SerializeField]
-    GameObject mDeathParticleEmitter;
+//    [SerializeField]
+//    GameObject mDeathParticleEmitter;
 
     int mTotalExp;
     float mMeleeTimer;
@@ -94,15 +99,12 @@ public class Player : MonoBehaviour
     List<GroundCheck> mGroundCheckList;
     */
 
-    public static Player playerRef;
-
-
     void Awake()
     {
-		for (int i=0; i<3; i++) {
-			mUpgrades [i] = PlayerPrefs.GetString (Upgrade + i);
-			Debug.Log (mUpgrades [i]);
+		mUpgrades = new string[3];
 
+		for (int i=0; i<3; i++) {
+			mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
 		}
 	}
 
@@ -120,7 +122,6 @@ public class Player : MonoBehaviour
         mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
-		mUpgrades = new string[3];
 		Trail.trailActivated = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
         //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
@@ -642,10 +643,5 @@ public class Player : MonoBehaviour
             }
             
         }
-    }
-	
-    public Player getPlayerRef()
-    {
-        return this;
     }
 }
