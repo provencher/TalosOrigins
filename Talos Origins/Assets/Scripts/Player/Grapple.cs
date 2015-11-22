@@ -37,7 +37,7 @@ public class Grapple : MonoBehaviour {
 
         if (grappleDistance == default(int))
         {
-            grappleDistance = 4;
+			grappleDistance = 4;
         }
     }
 
@@ -141,4 +141,8 @@ public class Grapple : MonoBehaviour {
         grapple.distance = distance;
         grapple.enabled = true;
     }
+
+	void setGrappleDistance(int length){
+		grappleDistance = length;
+	}
 }

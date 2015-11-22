@@ -6,7 +6,7 @@ public class Trail : MonoBehaviour {
 	
 	// Breadcrumb trailling
 	[SerializeField]
-	public static bool trailActivated;
+	public bool trailActivated;
 	[SerializeField]
 	float mCrumbSeperation;
 	[SerializeField]
@@ -18,11 +18,14 @@ public class Trail : MonoBehaviour {
 	Vector3 lastCrumbPosition;
 	List<GameObject> trail;
 	
-	// Use this for initialization
+
+	void Awake(){
+		trailActivated = false;
+	}
+
 	void Start () {
 		crumbCount = 0;
 		trail = new List<GameObject>();
-		trailActivated = false;
 	}
 	
 	// Update is called once per frame
@@ -31,6 +34,7 @@ public class Trail : MonoBehaviour {
 		{
 			BreadcrumbsHandler();
 		}
+
 		
 		if (Input.GetKeyDown(KeyCode.R))
 		{

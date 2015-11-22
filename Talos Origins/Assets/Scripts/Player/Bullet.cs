@@ -20,18 +20,27 @@ public class Bullet : MonoBehaviour {
 
     public int mDamage;
 
+	public bool mBigBullet;
+
     // Use this for initialization
     void Awake () {
         mRigidbody2D = GetComponent<Rigidbody2D>();
         mRigidbody2D.velocity = (mSpeed * Vector2.right);
         mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
+		mBigBullet = false;
         mDamage = 5;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
         CheckDeath();
+
+		if (mBigBullet) {
+			mDamage = 10;
+		} else {
+			mDamage = 5;
+		}
 	}
 
     void CheckDeath()

@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
 		for (int i=0; i<3; i++) {
 			mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
 		}
+
 	}
 
     void Start()
@@ -122,11 +123,14 @@ public class Player : MonoBehaviour
         mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
-		Trail.trailActivated = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
-        //walkerScript = GetComponent<Attachment_WallWalker>();
+
+		gameObject.GetComponent<Grapple>().grappleDistance       = (Array.Exists (mUpgrades, element => element == "Long Grapple")) ? 8 : 4;
+		gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
+		gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
+
+
+		//walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
-
-
 
 
         // UI Text
