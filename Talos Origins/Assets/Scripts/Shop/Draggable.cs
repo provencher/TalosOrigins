@@ -19,7 +19,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
 			if(gameObject.name == PlayerPrefs.GetString(Upgrade + i))
 		  	{
-				Debug.Log (gameObject.name);
 				parentToReturnTo = GameObject.Find("DropZone"+ i).transform;
 			}
 		}
@@ -41,18 +40,23 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	
 	public void OnEndDrag(PointerEventData eventData){
 		this.transform.SetParent (parentToReturnTo);
-		GetComponent<CanvasGroup> ().blocksRaycasts = true;
 
 		if(gameObject.transform.parent.name == "Viewport")
 		{
-			for(int i=0; i<3; i++){
-				
+			for(int i=0; i<= 2; i++){
+					
 				if(PlayerPrefs.GetString(Upgrade + i) == gameObject.name)
 				{
 					PlayerPrefs.SetString(Upgrade + i, null);
+
 				}
+
 			}
 		
+
 		}
+
+		GetComponent<CanvasGroup> ().blocksRaycasts = true;
+
 	}
 }

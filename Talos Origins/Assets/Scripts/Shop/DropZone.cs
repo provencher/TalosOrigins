@@ -25,7 +25,9 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 			{
 				d.parentToReturnTo = this.transform;
 
-				PlayerPrefs.SetString( Upgrade + DropZoneIndex, d.gameObject.name);
+				if(gameObject.tag == "UpgradeSlots"){
+					PlayerPrefs.SetString( Upgrade + DropZoneIndex, d.gameObject.name);
+				}
 			}
 		}
 	}
