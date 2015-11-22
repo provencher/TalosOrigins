@@ -171,6 +171,10 @@ public class Player : MonoBehaviour
 
     void InitOrbTank()
     {
+		//Blue Orb 	 = 0
+		//Green Orb  = 1
+		//Red Orb    = 2 
+		//Yellow Orb = 2
         orbTank = new int[4];
         for (int tank = 0; tank < orbTank.Length; tank++)
         {
@@ -255,7 +259,15 @@ public class Player : MonoBehaviour
 
     }
 
-    public IEnumerator InflictDamage(int damage)
+	void OnDestroy() {
+
+		PlayerPrefs.SetInt ("Blue Orbs", orbTank[0]);
+		PlayerPrefs.SetInt ("Green Orbs", orbTank[1]);
+		PlayerPrefs.SetInt ("Red Orbs", orbTank[2]);
+		PlayerPrefs.SetInt ("Yellow Orbs", orbTank[3]);
+	}
+	
+	public IEnumerator InflictDamage(int damage)
     {        
 
         if (!mInvincible)

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler{
@@ -7,7 +8,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	public Transform parentToReturnTo = null;
 
 	[SerializeField]
-	enum upgradeType {Health, Jump, Grapple, Bullets, Shield, Breadcrumbs};
+	Text Price;
+
+	[SerializeField]
+	public int mCost;
 
 	string Upgrade = "Upgrade";
 
@@ -22,6 +26,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 				parentToReturnTo = GameObject.Find("DropZone"+ i).transform;
 			}
 		}
+
+		Price.text = mCost.ToString ();
 
 		//Set the draggable to the appropriate drop zone
 		this.transform.SetParent (parentToReturnTo);
