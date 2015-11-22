@@ -34,23 +34,25 @@ public class ShopOrbs : MonoBehaviour {
 		blue   = PlayerPrefs.GetInt("Blue Orbs");
 		yellow = PlayerPrefs.GetInt("Yellow Orbs");
 
-		totalOrbsCount = 5 * blue + 3 * red + 2 * green +  1 * yellow;
+
+		totalOrbsCount = PlayerPrefs.GetInt ("Total Orbs");
+		totalOrbsCount += (5 * blue + 3 * red + 2 * green +  1 * yellow);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
-		BlueOrbs.text   = blue.ToString() + " (x 5)";
-		GreenOrbs.text  = green.ToString() + " (x 3)";
-		RedOrbs.text    = red.ToString() + " (x 2)";
-		YellowOrbs.text = yellow.ToString() + " (x 1)";
+		BlueOrbs.text   = "+" + blue.ToString() + " (x 5)";
+		GreenOrbs.text  = "+" + green.ToString() + " (x 3)";
+		RedOrbs.text    = "+" + red.ToString() + " (x 2)";
+		YellowOrbs.text = "+" + yellow.ToString() + " (x 1)";
 
 		UpdateTotalOrbsFrame ();
 	}
 
 	void OnDestroy(){
 
-//		PlayerPrefs.SetInt (,);
+		PlayerPrefs.SetInt ("Total Orbs", totalOrbsCount);
 	}
 
 	void UpdateTotalOrbsFrame(){

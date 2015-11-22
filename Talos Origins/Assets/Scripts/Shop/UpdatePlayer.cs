@@ -11,6 +11,7 @@ public class UpdatePlayer : MonoBehaviour {
 			PlayerPrefs.SetString( "Upgrade2", GameObject.Find ("DropZone2").GetComponent<DropZone>().CurrentUpgrade);
 
 			Application.LoadLevel (0);
+
 		}
 	}
 

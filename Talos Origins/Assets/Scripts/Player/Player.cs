@@ -176,10 +176,9 @@ public class Player : MonoBehaviour
 		//Red Orb    = 2 
 		//Yellow Orb = 2
         orbTank = new int[4];
-        for (int tank = 0; tank < orbTank.Length; tank++)
-        {
-            orbTank[tank] = 0;
-        }
+		for (int i=0; i < orbTank.Length; i++) {
+			orbTank[i] = 0;
+		}
     }
 
     void FixedUpdate()
@@ -258,6 +257,7 @@ public class Player : MonoBehaviour
 		PlayerPrefs.SetInt ("Green Orbs" , orbTank[1]);
 		PlayerPrefs.SetInt ("Red Orbs"	 , orbTank[2]);
 		PlayerPrefs.SetInt ("Yellow Orbs", orbTank[3]);
+		PlayerPrefs.SetInt ("Last Level" , mCurrentLevel);
 	}
 	
 	public IEnumerator InflictDamage(int damage)
