@@ -29,6 +29,8 @@ public class ShopOrbs : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		Cursor.visible = true;
+
 		red    = PlayerPrefs.GetInt("Red Orbs");
 		green  = PlayerPrefs.GetInt("Yellow Orbs");
 		blue   = PlayerPrefs.GetInt("Blue Orbs");
