@@ -21,7 +21,7 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 		d.GetComponent<Image> ().color = UnityEngine.Color.white;
 		if (d != null) 
 		{
-			if(transform.childCount == 0 || gameObject.tag != "Player")
+			if(transform.childCount == 0)
 			{
 				d.parentToReturnTo = this.transform;
 
