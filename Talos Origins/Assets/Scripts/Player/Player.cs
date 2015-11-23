@@ -33,8 +33,11 @@ public class Player : MonoBehaviour
     
 	[SerializeField]
     LayerMask mWhatIsGround;
-    
-	float kGroundCheckRadius = 0.1f;
+
+    [SerializeField]
+    Slider mHealthSlider;
+
+    float kGroundCheckRadius = 0.1f;
 
     // Animator booleans
     bool mRunning;
@@ -198,7 +201,12 @@ public class Player : MonoBehaviour
 			GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
 			GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
 			GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
-		}catch(Exception e){
+            GameObject.Find("blueOrb").GetComponent<Text>().text = "Blue Orb:" + orbTank[0];
+            GameObject.Find("greenOrb").GetComponent<Text>().text = "Green Orb:" + orbTank[1];
+            GameObject.Find("redOrb").GetComponent<Text>().text = "Red Orb:" + orbTank[2];
+            GameObject.Find("yellowOrb").GetComponent<Text>().text = "Yellow Orb:" + orbTank[3];
+        }
+        catch(Exception e){
 			//Do Nothing
 		}
 	}
@@ -269,8 +277,8 @@ public class Player : MonoBehaviour
             mInvincibleTimer = kInvincibilityDuration;          
 
             
-            mHealth -= damage;         
-
+            mHealth -= damage;
+            UpdateHealthBar(mHealth);
 
             if (mHealth > 50)
             {
@@ -652,5 +660,23 @@ public class Player : MonoBehaviour
             }
             
         }
+    }
+
+    void UpdateHealthBar(int health)
+    {
+        mHealthSlider.value = health;
+        if (health < 60)
+        {
+            mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 255, 0);
+        }
+        if (health < 30)
+        {
+            mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 0, 0);
+        }
+    }
+
+    public float GetExitDistance()
+    {
+        return (mExitLocation - transform.position).magnitude;
     }
 }
