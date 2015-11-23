@@ -202,6 +202,7 @@ public class MapGenerator : MonoBehaviour
 
             if (foundSpot)
             {
+                GameObject.FindObjectOfType<Grapple>().unHook();
                 mTalosCoord = center;
                 mTalosPos = CoordToWorldPoint(center);
                 mapPointOccupied.Add(center, 1);
