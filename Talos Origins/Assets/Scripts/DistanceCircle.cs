@@ -8,7 +8,7 @@ public class DistanceCircle : MonoBehaviour {
     float max_distance=50;
     Player mPlayer;
     Image mImage;
-    float max_size = 50.0f;
+    float max_size = 40.0f;
     
 	void Start () {
         mImage = GetComponent<Image>();
