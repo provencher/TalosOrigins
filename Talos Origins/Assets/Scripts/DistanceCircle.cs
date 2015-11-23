@@ -8,33 +8,35 @@ public class DistanceCircle : MonoBehaviour {
     float max_distance=50;
     Player mPlayer;
     Image mImage;
-    float max_size = 40.0f;
-    
+    float max_size = 35.0f;
+    float mDistanceRatio;
+
 	void Start () {
         mImage = GetComponent<Image>();
         mImage.color = Color.blue;
         mPlayer = GameObject.Find("Talos").GetComponent<Player>();
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
-        Grow();
         UpdateColor();
+        Grow();        
 	}
 
     void Grow()
     {
-        float mSize = max_size*0.75f + max_size*0.25f * Mathf.Sin(2 * Mathf.PI * Time.time);
+        float mSize = max_size * mDistanceRatio;//max_size*0.75f + max_size*0.25f * Mathf.Sin(2 * Mathf.PI * Time.time);
         GetComponent<RectTransform>().sizeDelta = new Vector2(mSize, mSize);
     }
      void UpdateColor()
     {
         float distance=mPlayer.GetExitDistance();
-        float distanceRatio = distance / max_distance;
-        if (distanceRatio > 1)
+        mDistanceRatio = distance / max_distance;
+        if (mDistanceRatio > 1)
         {
-            distanceRatio = 1;
+            mDistanceRatio = 1;
         }
-        mImage.color = new Color((int)(255 * (1 - distanceRatio)), 0, (int)(255 * distanceRatio));
+        mImage.color = new Color((int)(255 * (1 - mDistanceRatio)), 0, (int)(255 * mDistanceRatio));
     }
 }
