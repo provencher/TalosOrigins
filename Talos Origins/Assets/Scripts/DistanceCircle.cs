@@ -8,6 +8,7 @@ public class DistanceCircle : MonoBehaviour {
     float max_distance=50;
     Player mPlayer;
     Image mImage;
+    float max_size = 50.0f;
     
 	void Start () {
         mImage = GetComponent<Image>();
@@ -23,7 +24,7 @@ public class DistanceCircle : MonoBehaviour {
 
     void Grow()
     {
-        float mSize = 75 + 25 * Mathf.Sin(2 * Mathf.PI * Time.time);
+        float mSize = max_size*0.75f + max_size*0.25f * Mathf.Sin(2 * Mathf.PI * Time.time);
         GetComponent<RectTransform>().sizeDelta = new Vector2(mSize, mSize);
     }
      void UpdateColor()
