@@ -17,7 +17,7 @@ public class Orb : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        lifeTime = Random.Range(1.5f,3.0f);
+        lifeTime = Random.Range(3f,4f);
         timeToLive = lifeTime;
         player = GameObject.Find("Talos").transform;        
 	}
@@ -37,9 +37,9 @@ public class Orb : MonoBehaviour {
 
         Vector3 direction = player.position - transform.position;
 
-        if (direction.magnitude < 2.5f)
+        if (direction.magnitude < 5f)
         {
-            transform.position += direction.normalized * 2 * Time.deltaTime;
+            transform.position += direction.normalized * 4 * Time.deltaTime;
         }
     }
 	

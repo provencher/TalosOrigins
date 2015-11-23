@@ -104,9 +104,8 @@ public class Asteroid_Script : MonoBehaviour
 			Instantiate (LaserGreenHit, transform.position , transform.rotation); 		//Instantiate LaserGreenHit 
             coll.gameObject.GetComponent<Bullet>().mAlive = false;
 
-			//Check the Health if greater than 0
-			if(health > 0)
-				health--; 																//Decrement Health by 1
+			//Check the Health if greater than 0			
+			health--; 																//Decrement Health by 1
 
 			//Check the Health if less or equal 0
 			if(health <= 0)
