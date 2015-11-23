@@ -4,6 +4,30 @@ using System.Collections.Generic;
 
 public class MeshGenerator : MonoBehaviour
 {
+    [SerializeField]
+    public Material mat1;
+
+    [SerializeField]
+    public Material mat2;
+
+    [SerializeField]
+    public Material mat3;
+
+    [SerializeField]
+    public Material mat4;
+
+    [SerializeField]
+    public Material mat5;
+
+    [SerializeField]
+    public Material mat6;
+
+    [SerializeField]
+    public Material mat7;
+
+    [SerializeField]
+    public Material mat8;
+
 
     public SquareGrid squareGrid;
     public MeshFilter walls;
@@ -18,9 +42,48 @@ public class MeshGenerator : MonoBehaviour
     List<List<int>> outlines = new List<List<int>>();
     HashSet<int> checkedVertices = new HashSet<int>();
 
+    void SelectMaterial()
+    {
+        int rand = Random.Range(1, 9);
+        switch(rand)
+        {
+            case 1:
+                cave.GetComponent<MeshRenderer>().material = mat1;
+                break;
+            case 2:
+                cave.GetComponent<MeshRenderer>().material = mat2;
+                break;
+            case 3:
+                cave.GetComponent<MeshRenderer>().material = mat3;
+                break;
+            case 4:
+                cave.GetComponent<MeshRenderer>().material = mat4;
+                break;
+            case 5:
+                cave.GetComponent<MeshRenderer>().material = mat5;
+                break;
+            case 6:
+                cave.GetComponent<MeshRenderer>().material = mat6;
+                break;
+            case 7:
+                cave.GetComponent<MeshRenderer>().material = mat7;
+                break;
+            case 8:
+                cave.GetComponent<MeshRenderer>().material = mat8;
+                break;
+            default:
+                cave.GetComponent<MeshRenderer>().material = mat1;
+                break;
+
+        }
+
+
+
+    }
+
     public void GenerateMesh(int[,] map, float squareSize)
     {
-
+        
         triangleDictionary.Clear();
         outlines.Clear();
         checkedVertices.Clear();
@@ -40,6 +103,8 @@ public class MeshGenerator : MonoBehaviour
 
         Mesh mesh = new Mesh();
         cave.mesh = mesh;
+
+        SelectMaterial();
 
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
