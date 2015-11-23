@@ -649,11 +649,7 @@ public class Player : MonoBehaviour
     {
         if (coll != null)
         {
-            if (coll.gameObject.tag == "Exit")
-            {
-                GameObject.Find("MapGenerator").SendMessage("NextLevel");
-            }
-            else if(coll.gameObject.tag == "enemyBullet")
+            if(coll.gameObject.tag == "enemyBullet")
             {
                 mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
                 coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;

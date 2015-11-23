@@ -112,7 +112,7 @@ public class MapGenerator : MonoBehaviour
 
     void NextLevel()
     {
-
+        currentLevel++;
 		ResetLevel();
         GenerateMap();
     }
