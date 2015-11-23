@@ -55,11 +55,7 @@ public class Enemy : MonoBehaviour
     Vector2 surfaceNormal = Vector2.zero;
 
     bool mIsGrounded;
-
-    int groundLayer = LayerMask.NameToLayer("Map");
-
-
-
+    
     [SerializeField]
     public GameObject LaserGreenHit;    //LaserGreenHit Prefab
 
@@ -90,7 +86,7 @@ public class Enemy : MonoBehaviour
 
         mCurrentLevel = 1;
         mMoveSpeed = 1.5f;
-        distanceThreshold = 12f;
+        distanceThreshold = 15;
         mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 5));
 
         lastDirection = Vector2.right;
