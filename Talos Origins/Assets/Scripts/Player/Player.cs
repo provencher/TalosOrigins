@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
 
     // Invincibility timer
     float kInvincibilityDuration = 0.5f;
-    float mInvincibleTimer;
+    public float mInvincibleTimer;
     bool mInvincible;
 
     // Damage effects
@@ -110,6 +110,8 @@ public class Player : MonoBehaviour
 			mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
 		}
 
+        
+
 	}
 
     void Start()
@@ -132,7 +134,7 @@ public class Player : MonoBehaviour
 		gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
 
 
-		//walkerScript = GetComponent<Attachment_WallWalker>();
+        //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
 
 
@@ -160,9 +162,8 @@ public class Player : MonoBehaviour
         mLandingSound = audioSources[0];
         mWallKickSound = audioSources[1];
         mTakeDamageSound = audioSources[2];
-        */
+        */        
 
-        
     }
 
     /*
@@ -274,9 +275,8 @@ public class Player : MonoBehaviour
         if (!mInvincible)
         {
             mInvincible = true;
-            mInvincibleTimer = kInvincibilityDuration;          
+            mInvincibleTimer = kInvincibilityDuration;           
 
-            
             mHealth -= damage;
             UpdateHealthBar(mHealth);
 
@@ -338,6 +338,8 @@ public class Player : MonoBehaviour
 
     void CheckInvicible()
     {
+        float time = 0;
+
         if (mInvincible)
         {
             if (mInvincibleTimer > 0)
@@ -348,8 +350,10 @@ public class Player : MonoBehaviour
             {
                 mInvincibleTimer = 0;
                 mInvincible = false;
-            }  
-        }
+            }
+            time = mInvincibleTimer;
+        }    
+
     }
 
     Vector3 CheckMove()

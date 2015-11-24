@@ -666,9 +666,7 @@ public class Enemy : MonoBehaviour
 
 
     void NotifyOfDeath()
-    {
-        // Notify Player of kill with experience gained
-        GameObject.FindGameObjectWithTag("Player").SendMessage("KilledEnemy", CalculateEXP(mCurrentLevel));
+    {      
 
         // Notify Map Generator of index of enemy killed
         GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
