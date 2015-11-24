@@ -26,7 +26,8 @@ public class DistanceCircle : MonoBehaviour {
 
     void Grow()
     {
-        float mSize = max_size * mDistanceRatio;//max_size*0.75f + max_size*0.25f * Mathf.Sin(2 * Mathf.PI * Time.time);
+        float mSize = max_size * mDistanceRatio;
+        //mSize = max_size * mDistanceRatio + max_size * mDistanceRatio / 3 * Mathf.Sin(2 * Mathf.PI * Time.time);
         GetComponent<RectTransform>().sizeDelta = new Vector2(mSize, mSize);
     }
      void UpdateColor()
