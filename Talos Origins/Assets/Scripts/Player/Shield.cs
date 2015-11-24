@@ -21,6 +21,7 @@ public class Shield : MonoBehaviour {
             }
 
         }
+        transform.rotation = talos.transform.rotation;
         transform.position = talos.transform.position;
     }
 }
