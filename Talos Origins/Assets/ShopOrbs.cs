@@ -35,7 +35,10 @@ public class ShopOrbs : MonoBehaviour {
 		green  = PlayerPrefs.GetInt("Yellow Orbs");
 		blue   = PlayerPrefs.GetInt("Blue Orbs");
 		yellow = PlayerPrefs.GetInt("Yellow Orbs");
-
+		
+		if(totalOrbsCount < 0){
+			totalOrbsCount = 0;
+		}
 
 		totalOrbsCount = PlayerPrefs.GetInt ("Total Orbs");
 		totalOrbsCount += (5 * blue + 3 * red + 2 * green +  1 * yellow);
