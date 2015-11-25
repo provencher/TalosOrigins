@@ -37,6 +37,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     Slider mHealthSlider;
 
+	[SerializeField]
+	GameObject mShopCanvas;
+
+	[SerializeField]
+	GameObject mCanvas;
+
+	int[] orbTank;
+	string Upgrade = "Upgrade";
+	bool mShopOn;
+	public static string[] mUpgrades;
+
     float kGroundCheckRadius = 0.1f;
 
     // Animator booleans
@@ -77,24 +88,21 @@ public class Player : MonoBehaviour
     int mHealth;
     int mEnemiesKilled;
 
-
     Vector2 mShoveDirection;
 
     Vector3 mExitLocation;
     int mCurrentLevel;
     int mEnemiesRemaining;
-
+	
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
 
-	public static string[] mUpgrades;
+
+
 	Vector3 lastInGamePosition;
 
-    int[] orbTank;
 
     public Attachment_WallWalker walkerScript;
-
-	string Upgrade = "Upgrade";
-
+	
     /*
     [SerializeField]
     LifeMeter life;
@@ -116,8 +124,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+		PlayerPrefs.SetInt ("Total Orbs",10000);
         // Get references to other components and game objects
-        
         mRigidBody2D = GetComponent<Rigidbody2D>();
         mAnimator = GetComponent<Animator>();
         mWeapon = transform.FindChild("Weapon").GetComponent<Weapon>();
@@ -128,10 +136,8 @@ public class Player : MonoBehaviour
         mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
-
-		gameObject.GetComponent<Grapple>().grappleDistance       = (Array.Exists (mUpgrades, element => element == "Long Grapple")) ? 8 : 4;
-		gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
-		gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
+		mShopOn = false;
+		mShopCanvas.SetActive (false);
 
 
         //walkerScript = GetComponent<Attachment_WallWalker>();
@@ -227,9 +233,16 @@ public class Player : MonoBehaviour
         //FaceMouse();
         UpdateAnimator();
 
-		if((Input.GetButton("Shop")) && (Application.loadedLevel == 0)){
-			Application.LoadLevel(1);
+		if((Input.GetButtonDown("Shop"))){
 
+			if(mShopOn)
+			{
+				UpdatePlayer();
+			}
+			else
+			{
+				EnterShop();
+			}
 		}
 
         /*
@@ -260,15 +273,6 @@ public class Player : MonoBehaviour
 
     }
 
-	void OnDestroy() {
-
-		PlayerPrefs.SetInt ("Blue Orbs"	 , orbTank[0]);
-		PlayerPrefs.SetInt ("Green Orbs" , orbTank[1]);
-		PlayerPrefs.SetInt ("Red Orbs"	 , orbTank[2]);
-		PlayerPrefs.SetInt ("Yellow Orbs", orbTank[3]);
-		PlayerPrefs.SetInt ("Last Level" , mCurrentLevel);
-	}
-	
 	public IEnumerator InflictDamage(int damage)
     {        
 
@@ -674,6 +678,42 @@ public class Player : MonoBehaviour
             mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 0, 0);
         }
     }
+
+	public void UpdatePlayer()
+	{
+		if(GameObject.Find ("Orbs").GetComponent<ShopOrbs>().totalOrbsCount >= 0){
+			PlayerPrefs.SetString( "Upgrade0", GameObject.Find ("DropZone0").GetComponent<DropZone>().CurrentUpgrade);
+			PlayerPrefs.SetString( "Upgrade1", GameObject.Find ("DropZone1").GetComponent<DropZone>().CurrentUpgrade);
+			PlayerPrefs.SetString( "Upgrade2", GameObject.Find ("DropZone2").GetComponent<DropZone>().CurrentUpgrade);
+			
+			mCanvas.SetActive(true);
+			mShopCanvas.SetActive(false);
+			mShopOn = false;
+
+			for (int i=0; i<3; i++) {
+				mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
+			}
+
+			Debug.Log (mUpgrades[0]);
+
+			gameObject.GetComponent<Grapple>().grappleDistance       = (Array.Exists (mUpgrades, element => element == "Long Grapple")) ? 8 : 4;
+			gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
+			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
+
+		}
+	}
+
+	void EnterShop()
+	{
+		PlayerPrefs.SetInt ("Blue Orbs"	 , orbTank[0]);
+		PlayerPrefs.SetInt ("Green Orbs" , orbTank[1]);
+		PlayerPrefs.SetInt ("Red Orbs"	 , orbTank[2]);
+		PlayerPrefs.SetInt ("Yellow Orbs", orbTank[3]);
+		
+		mCanvas.SetActive(false);
+		mShopCanvas.SetActive(true);
+		mShopOn = true;
+	}
 
     public float GetExitDistance()
     {

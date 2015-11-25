@@ -141,7 +141,7 @@ public class Grapple : MonoBehaviour {
         grapple.distance = distance;
         grapple.enabled = true;
     }
-
+	
 	void setGrappleDistance(int length){
 		grappleDistance = length;
 	}

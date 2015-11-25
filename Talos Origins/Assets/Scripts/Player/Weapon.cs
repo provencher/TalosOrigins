@@ -51,25 +51,27 @@ public class Weapon : MonoBehaviour {
 
     void CheckFire()
     {
-        if (Input.GetAxis("Fire1")>0)
-        {
-            if (mWeapon == 1)
-            {
-                mMelee = true;
-                mShoot = false;
-            }
-            if (mWeapon == 2)
-            {
-                mShoot = true;
-                mMelee = false;
-                Shoot();
-            }
-        }
-        else
-        {
-            mMelee = false;
-            mShoot = false;
-        }
+		if(GameObject.Find ("Canvas") != null){
+	        if (Input.GetAxis("Fire1")>0)
+    	    {
+        	    if (mWeapon == 1)
+            	{
+                	mMelee = true;
+                	mShoot = false;
+            	}
+            	if (mWeapon == 2)
+	           		{
+	                mShoot = true;
+	                mMelee = false;
+	                Shoot();
+	            }
+	        }
+	        else
+	        {
+	            mMelee = false;
+	            mShoot = false;
+	        }
+		}
     }
 
     void Shoot()

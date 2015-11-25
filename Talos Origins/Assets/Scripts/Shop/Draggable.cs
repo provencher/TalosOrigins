@@ -17,7 +17,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
 	void Start()
 	{
-
 		//Check if Talos is already equipped with this upgrade
 		for(int i=0; i<3; i++){
 
@@ -45,8 +44,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	}
 	
 	public void OnEndDrag(PointerEventData eventData){
+	
 		this.transform.SetParent (parentToReturnTo);
-
 		if(gameObject.transform.parent.name == "Viewport")
 		{
 			for(int i=0; i<= 2; i++){

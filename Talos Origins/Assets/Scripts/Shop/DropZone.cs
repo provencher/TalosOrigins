@@ -13,6 +13,14 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
 	public string CurrentUpgrade;
 
+	void Update(){
+		if (transform.childCount == 0) {
+			CurrentUpgrade = "";
+		} else if (gameObject.name == "Viewport"){
+			Debug.Log(CurrentUpgrade);
+		}
+	}
+
 	public void OnDrop(PointerEventData eventData)
 	{
 		Draggable d = eventData.pointerDrag.GetComponent<Draggable> ();
@@ -21,22 +29,25 @@ public class DropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 		d.GetComponent<Image> ().color = UnityEngine.Color.white;
 		if (d != null) 
 		{
-			if(transform.childCount == 0)
+			if(transform.childCount == 0 || DropZoneIndex == 10)
 			{
 				d.parentToReturnTo = this.transform;
 
 				if(gameObject.tag == "UpgradeSlots")
 				{
-					CurrentUpgrade = d.gameObject.name;
+					CurrentUpgrade = d.name;
 					GameObject.Find("Orbs").GetComponent<ShopOrbs>().totalOrbsCount -= d.gameObject.GetComponent<Draggable>().mCost;
 				}
 				else if(gameObject.name == "Viewport")
 				{
 					GameObject.Find("Orbs").GetComponent<ShopOrbs>().totalOrbsCount += d.gameObject.GetComponent<Draggable>().mCost;
-
 				}
 			}
 		}
+	}
+
+	void OnDisable(){
+		PlayerPrefs.SetString( "Upgrade" + DropZoneIndex, CurrentUpgrade);
 	}
 
 	public void OnPointerEnter(PointerEventData eventData){
