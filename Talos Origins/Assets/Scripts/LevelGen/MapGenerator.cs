@@ -147,8 +147,14 @@ public class MapGenerator : MonoBehaviour
 
         numAsteroidsToSpawn = densityModifer * (width / levelScale + levelScale / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
         numEnemiesToSpawn = (densityModifer * (width / levelScale + levelScale / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)))/3;
-        randomFillPercent = (int)Mathf.Round(Mathf.Clamp(standardFillPercent, 51, UnityEngine.Random.Range(52, standardFillPercent * densityModifer))); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
+        randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
         bossRound = false;
+
+        if(randomFillPercent < 48)
+        {
+            width = Mathf.CeilToInt(width * 0.85f);
+            height = Mathf.CeilToInt(height * 0.85f);
+        }
 
 
         //DISABLED BOSSES
@@ -239,6 +245,7 @@ public class MapGenerator : MonoBehaviour
     {
         bool exitFound = false;
         int startIndex = allRooms.Count - 1;
+        List<Coord> exits = new List<Coord>();
 
         Coord tempCoord = new Coord(0, 0);
         int offset = 3;
@@ -252,11 +259,13 @@ public class MapGenerator : MonoBehaviour
                     tempCoord = new Coord(j, i);
                     if (CheckForFit(tempCoord, offset, offset))
                     {
+                        exits.Add(tempCoord);
                         exitFound = true;
-                        break;
+                        break;                      
                     }
+                   
                 }
-                if(exitFound)
+                if (exitFound)
                 {
                     break;
                 }
@@ -266,6 +275,8 @@ public class MapGenerator : MonoBehaviour
 
         if (exitFound)
         {
+            //Coord Exit = exits[(UnityEngine.Random.Range(0, exits.Count - 1))];
+
             mExitPos = CoordToWorldPoint(tempCoord);
             mExitCoord = tempCoord;
         }
@@ -477,7 +488,7 @@ public class MapGenerator : MonoBehaviour
                 if ((tempCord.tileX > 1) && ((tempCord.tileX) < width - 1)
                     && ((tempCord.tileY > 1) && (tempCord.tileY < height - 1)))
                 {
-                    if (!(map[tempCord.tileX, tempCord.tileY] == 0))
+                    if ((map[tempCord.tileX, tempCord.tileY] != 0))
                     {
                         return false;
                     }
