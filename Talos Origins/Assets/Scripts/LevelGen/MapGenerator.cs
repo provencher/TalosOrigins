@@ -75,6 +75,7 @@ public class MapGenerator : MonoBehaviour
 
     public bool bossRound = false;
 
+    public int levelScale = 1;
 
 
     int[,] map;
@@ -135,23 +136,29 @@ public class MapGenerator : MonoBehaviour
             currentLevel = 1;
         }
 
+        levelScale = UnityEngine.Random.Range(1, currentLevel + 1 / levelScale);
+
         width = ++startWidth;
         height = ++startHeight;
 
-        width = startWidth + 3 * currentLevel;
-        height = startHeight + 3 * currentLevel;
+        int densityModifer = 3;// UnityEngine.Random.Range((currentLevel / levelScale) + 1, 2*(currentLevel / levelScale) + 1);
 
-        numAsteroidsToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
-        numEnemiesToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
-        randomFillPercent = standardFillPercent;
+        width = startWidth + levelScale * currentLevel / densityModifer;
+        height = startHeight + levelScale * currentLevel / densityModifer;
+
+        numAsteroidsToSpawn =  densityModifer * (width/ levelScale + levelScale/ densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
+        numEnemiesToSpawn = densityModifer *  (width / levelScale + levelScale/ densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
+        randomFillPercent = standardFillPercent * 1 / UnityEngine.Random.Range(1, levelScale / densityModifer) + 1;
         bossRound = false;
+
+
 
         if (currentLevel%10 == 0)
         {
             bossRound = true;
             randomFillPercent = bossFillPercent;       
             numEnemiesToSpawn = currentLevel / 10;
-            width = 5* currentLevel / 2;
+            width = 5* levelScale * densityModifer;
             height = 25;
         }     
 
@@ -243,7 +250,7 @@ public class MapGenerator : MonoBehaviour
 
             foreach (Coord pos in coordsInRoom)
             {
-                if (CheckForFit(pos, 1, 1))
+                if (CheckForFit(pos, 2, 2))
                 {
                     center = pos;
                     exitFound = true;
@@ -292,7 +299,7 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Asteroid
                     if (UnityEngine.Random.Range(1, 30) == 15 && numEnemiesToSpawn > 0)
                     {
-                        if (CheckForFit(tempCoord, 1, 1))
+                        if (CheckForFit(tempCoord, 1 + (int)Math.Round((double) (levelScale / 4)), 2 + (int)Math.Round((double)(levelScale / 4))))
                         {
                             SpawnEnemyAtPosition(enemiesSpawned, tempCoord);
                             mapPointOccupied.Add(tempCoord, 3);
@@ -303,7 +310,7 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Enemy
                     if (UnityEngine.Random.Range(1, 30) == 15 && numAsteroidsToSpawn > 0)
                     {
-                        if (CheckForFit(tempCoord, 1, 1))
+                        if (CheckForFit(tempCoord, 1 + (int)Math.Round((double)(levelScale / 4)), 2 + (int)Math.Round((double)(levelScale / 4))))
                         {
                             SpawnAsteroidAtPosition(asteroidsSpawned, tempCoord);
                             mapPointOccupied.Add(tempCoord, 4);
@@ -339,13 +346,15 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
-            if (bossRound)
-            {
-                enemies[index].GetComponent<Enemy>().isBoss = true;
-            }
+            enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));  
         }
 
+        if (bossRound)
+        {
+            enemies[index].GetComponent<Enemy>().isBoss = true;
+        }
+
+        enemies[index].transform.localScale *= 1+( 1 /UnityEngine.Random.Range(1, levelScale));
         enemies[index].SendMessage("UpdateEnemyIndex", index);      
         //enemies[index].SendMessage("UpdateLevel", currentLevel);
     }
@@ -496,13 +505,24 @@ public class MapGenerator : MonoBehaviour
         bool clear = true;       
 
         int value;
-        mapPointOccupied.TryGetValue(pos, out value);
-        if(value > 0)
-        {
-            clear = false;
-        }       
 
-        return
+        // Check for obstacles
+        for(int i = 0; i < offSetX; i++)
+        {
+            for (int j = 0; j < offSetY; j++)
+            {
+                mapPointOccupied.TryGetValue(pos, out value);
+                if (value > 0)
+                {
+                    clear = false;
+                    break;
+                }
+            }
+        }      
+            
+          
+      //Map Clear
+      clear = 
             clear
             //In map Range
             && ((pos.tileX - offSetX) > 0) && ((pos.tileX + offSetX) < width)
@@ -515,6 +535,14 @@ public class MapGenerator : MonoBehaviour
             && (map[pos.tileX - offSetX, pos.tileY - offSetY] == 0)
             //Lower Right
             && (map[pos.tileX + offSetX, pos.tileY - offSetY] == 0);
+
+
+        if(clear)
+        {
+
+        }
+
+        return clear;
     }
 
 

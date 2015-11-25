@@ -178,10 +178,12 @@ public class Enemy : MonoBehaviour
             mDamageModifier *= 2;
             mMoveSpeed *= 2;
 
-            distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
-            distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
-
+        
         }
+
+        distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
+        distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
+
     }
 
 
@@ -246,10 +248,12 @@ public class Enemy : MonoBehaviour
             transform.localScale *= 10;       
             mHealth *= 10;
             mDamageModifier *= 2;
-            distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
-            distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
+
 
         }
+
+        distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
+        distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
     }
 
     void CrawlerUpdate()
@@ -337,7 +341,7 @@ public class Enemy : MonoBehaviour
             //if moving right
             if ((direction - transform.right).magnitude < 0.01f)
             {
-                Vector3 rightStart = transform.position + 0.35f * transform.up;
+                Vector3 rightStart = transform.position + transform.localScale.y * 1.75f * transform.up;
                 RaycastHit2D overrideRightHitInfo = Physics2D.Raycast(rightStart, -transform.right, distEdge);
 
                 if (overrideRightHitInfo.collider != null)
@@ -348,7 +352,7 @@ public class Enemy : MonoBehaviour
             //if moving left
             else
             {
-                Vector3 leftStart = transform.position + 0.35f * transform.up;
+                Vector3 leftStart = transform.position + transform.localScale.y * 1.75f * transform.up;
                 RaycastHit2D overrideLeftHitInfo = Physics2D.Raycast(leftStart, -transform.right, distEdge);
 
                 if (overrideLeftHitInfo.collider != null)
@@ -358,7 +362,7 @@ public class Enemy : MonoBehaviour
             }
 
             // use it to update myNormal and isGrounded            
-            mIsGrounded = (leftInfo.distance + rightInfo.distance) / 2 <= distGround + 0.3f;//deltaGround;
+            mIsGrounded = (leftInfo.distance + rightInfo.distance) / 2 <= distGround + transform.localScale.x * 1.5f;//deltaGround;
             surfaceNormal = (leftInfo.normal + rightInfo.normal) / 2;
 
         }
@@ -439,14 +443,14 @@ public class Enemy : MonoBehaviour
 
     bool doubleRaycastDown(out RaycastHit2D leftHitInfo, out RaycastHit2D rightHitInfo)
     {
-        Vector2 leftStart = transform.position + 0.2f * -transform.up + distEdge * transform.right;
-        Vector2 rightStart = transform.position + 0.2f * -transform.up - distEdge * transform.right;
+        Vector2 leftStart = transform.position + transform.localScale.y  * -transform.up + distEdge * transform.right;
+        Vector2 rightStart = transform.position + transform.localScale.y  * -transform.up - distEdge * transform.right;
 
-        rightHitInfo = Physics2D.Raycast(leftStart, -transform.up, 0.2f);
-        leftHitInfo = Physics2D.Raycast(rightStart, -transform.up, 0.2f);
+        rightHitInfo = Physics2D.Raycast(leftStart, -transform.up, transform.localScale.y);
+        leftHitInfo = Physics2D.Raycast(rightStart, -transform.up, transform.localScale.y);
 
-        Debug.DrawLine(leftStart, leftStart + (Vector2)transform.up * -0.2f, Color.red, 2, false);
-        Debug.DrawLine(rightStart, rightStart + (Vector2)transform.up * -0.2f, Color.red, 2, false);
+        Debug.DrawLine(leftStart, leftStart + (Vector2)transform.up * -transform.localScale.y, Color.red, 2, false);
+        Debug.DrawLine(rightStart, rightStart + (Vector2)transform.up * -transform.localScale.y, Color.red, 2, false);
 
 
         return rightHitInfo.collider != null && leftHitInfo.collider != null;
@@ -465,7 +469,7 @@ public class Enemy : MonoBehaviour
 
         if (mIsGrounded)
         {
-            transform.position = averagePoint + transform.up * 0.33f;
+            transform.position = averagePoint + transform.up * transform.localScale.y * 1.65f;
             return (averagePoint + transform.up * 0.30f) - transform.position;
         }
         return Vector3.zero;
