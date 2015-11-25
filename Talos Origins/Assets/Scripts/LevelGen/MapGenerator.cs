@@ -215,40 +215,40 @@ public class MapGenerator : MonoBehaviour
 
         int offset = 4;
         /*
-        while (!foundSpot || offset > 0)
-        {
-            for (int i = height  + 1; i < height; i++)
-            {
-                for (int j = width + 1; j < width; j++)
-                {
-                    tempCoord = new Coord(j, i);
-                    if (CheckForFit(tempCoord, offset, offset))
-                    {
-                        foundSpot = true;
-                        break;
-                    }
-                }
-                if (foundSpot)
-                {
-                    break;
-                }
-            }
-            offset--;
-        }
-        */
+       while (!foundSpot || offset > 0)
+       {
+           for (int i = height  + 1; i < height; i++)
+           {
+               for (int j = width + 1; j < width; j++)
+               {
+                   tempCoord = new Coord(j, i);
+                   if (CheckForFit(tempCoord, offset, offset))
+                   {
+                       foundSpot = true;
+                       break;
+                   }
+               }
+               if (foundSpot)
+               {
+                   break;
+               }
+           }
+           offset--;
+       }
+       */
 
-        for (int i = 1; i < height && !foundSpot; i++)
-        {
-            for (int j = 1; j < width && !foundSpot; j++)
-            {
-                tempCoord = new Coord(j, i);
-                if (CheckForFit(tempCoord, 2, 2))
-                {
-                    foundSpot = true;
-                }
-            }
-        }
-
+       for (int i = 1; i < height && !foundSpot; i++)
+       {
+           for (int j = 1; j < width && !foundSpot; j++)
+           {
+               tempCoord = new Coord(j, i);
+               if (CheckForFit(tempCoord, 1, 1))
+               {
+                   foundSpot = true;
+               }
+           }
+       }
+       
         if (foundSpot)
         {
             GameObject.Find("Talos").GetComponent<Grapple>().unHook();
@@ -264,7 +264,7 @@ public class MapGenerator : MonoBehaviour
         int startIndex = allRooms.Count - 1;
 
         Coord tempCoord = new Coord(0, 0);
-        int offset = 4;
+        int offset = 3;
 
         while (!exitFound || offset > 0)
         {
@@ -322,7 +322,7 @@ public class MapGenerator : MonoBehaviour
                     if (UnityEngine.Random.Range(1, 30) == 15 && numEnemiesToSpawn > 0)
                     {
                         float scaleModifier = UnityEngine.Random.Range((int)Math.Round((double)(levelScale / 4)) / 2, Mathf.Max(2, levelScale) + (int)Math.Round((double)(levelScale / 4)));
-                        int roundedScale = (int)(1 + Mathf.Max(Mathf.Round(scaleModifier), 1));
+                        int roundedScale = (int)(Mathf.Min(4, Mathf.Max(Mathf.Round(scaleModifier), 1)));
 
                         if (CheckForFit(tempCoord, roundedScale, roundedScale))
                         {
@@ -336,7 +336,7 @@ public class MapGenerator : MonoBehaviour
                     if (UnityEngine.Random.Range(1, 30) == 15 && numAsteroidsToSpawn > 0)
                     {
                         float scaleModifier = UnityEngine.Random.Range((int)Math.Round((double)(levelScale / 4)) / 2, Mathf.Max(2, levelScale) + (int)Math.Round((double)(levelScale / 4)));
-                        int roundedScale = (int)(1 +  Mathf.Max(Mathf.Round(scaleModifier), 1));
+                        int roundedScale = (int)(Mathf.Min(4, Mathf.Max(Mathf.Round(scaleModifier), 1)));
 
                         if (CheckForFit(tempCoord, roundedScale, roundedScale))
                         {
