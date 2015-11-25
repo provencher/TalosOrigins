@@ -40,6 +40,8 @@ public class MapGenerator : MonoBehaviour
 
     [Range(0, 100)]
     public int randomFillPercent;
+    int bossFillPercent = 35;
+    int standardFillPercent;
 
     [Range(1, 10)]
     public int hallWayRadius;
@@ -71,6 +73,9 @@ public class MapGenerator : MonoBehaviour
 
     Dictionary<Coord, int> mapPointOccupied;
 
+    public bool bossRound = false;
+
+
 
     int[,] map;
 
@@ -81,7 +86,8 @@ public class MapGenerator : MonoBehaviour
         enemies = new List<GameObject>();
         mapPointOccupied = new Dictionary<Coord, int>(); 
         startWidth = width;
-        startHeight = height; 
+        startHeight = height;
+        standardFillPercent = randomFillPercent;
         GenerateMap();
     }
 
@@ -137,6 +143,18 @@ public class MapGenerator : MonoBehaviour
 
         numAsteroidsToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
         numEnemiesToSpawn = width/2 + 2 * UnityEngine.Random.Range(1, enemyModifier + currentLevel);
+        randomFillPercent = standardFillPercent;
+        bossRound = false;
+
+        if (currentLevel%10 == 0)
+        {
+            bossRound = true;
+            randomFillPercent = bossFillPercent;       
+            numEnemiesToSpawn = currentLevel / 10;
+            width = 5* currentLevel / 2;
+            height = 25;
+        }     
+
 
         // set max values for map size
         width = Math.Min(1000, width);
@@ -315,16 +333,20 @@ public class MapGenerator : MonoBehaviour
     {
         Vector3 WorldPos = CoordToWorldPoint(position);
 
-        if (UnityEngine.Random.Range(0, 3) == 1)
+        if (!bossRound && UnityEngine.Random.Range(0, 3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));
         }
         else
         {
             enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
+            if (bossRound)
+            {
+                enemies[index].GetComponent<Enemy>().isBoss = true;
+            }
         }
 
-        enemies[index].SendMessage("UpdateEnemyIndex", index);
+        enemies[index].SendMessage("UpdateEnemyIndex", index);      
         //enemies[index].SendMessage("UpdateLevel", currentLevel);
     }
 
@@ -364,7 +386,7 @@ public class MapGenerator : MonoBehaviour
     void KilledEnemy(int index)
     {
         if (index < enemies.Count - 1)
-        {
+        {            
             Destroy(enemies[index]);
         }
     }
@@ -450,8 +472,19 @@ public class MapGenerator : MonoBehaviour
         mTalos.SendMessage("StartPos", mTalosPos);
         mTalos.SendMessage("TotalEnemies", enemies.Count);
         mTalos.SendMessage("CurrentLevel", currentLevel);
-        mTalos.SendMessage("ExitPos", mExitPos);
-        mExit.SendMessage("NewExit", mExitPos);
+        
+        if(bossRound)
+        {
+            Vector3 TempExit = mExitPos;
+            TempExit.x += width;
+            mTalos.SendMessage("ExitPos", TempExit);
+            mExit.SendMessage("NewExit", TempExit);
+        }
+        else
+        {
+            mTalos.SendMessage("ExitPos", mExitPos);
+            mExit.SendMessage("NewExit", mExitPos);
+        }
     }
 
 

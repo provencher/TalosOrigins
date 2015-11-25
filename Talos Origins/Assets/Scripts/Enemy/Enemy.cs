@@ -65,6 +65,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     public GameObject HitByShotAudio;        //Explosion Prefab
 
+    public bool isBoss = false;
 
 
     void Start()
@@ -98,8 +99,7 @@ public class Enemy : MonoBehaviour
         distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
 
         //distEdge = mBoxCollider.bounds.extents.x - mBoxCollider.bounds.center.x + 1;
-
-        mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
+        mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;     
     }
 
 
@@ -170,6 +170,18 @@ public class Enemy : MonoBehaviour
         mDamageModifier = 5;
         mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 15));
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
+
+        if(isBoss)
+        {
+            transform.localScale *= 8;            
+            mHealth *= 10;
+            mDamageModifier *= 2;
+            mMoveSpeed *= 2;
+
+            distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
+            distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
+
+        }
     }
 
 
@@ -229,6 +241,15 @@ public class Enemy : MonoBehaviour
         surfaceNormal = ChooseRandomDirection();
         mRigidBody2D.gravityScale = 0;
 
+        if (isBoss)
+        {
+            transform.localScale *= 10;       
+            mHealth *= 10;
+            mDamageModifier *= 2;
+            distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
+            distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
+
+        }
     }
 
     void CrawlerUpdate()
@@ -586,7 +607,7 @@ public class Enemy : MonoBehaviour
         StartPosition = transform.position;
         //StartPosition.y += offset;
 
-        EndPosition = StartPosition + direction * 0.51f;
+        EndPosition = StartPosition + direction * transform.localScale.magnitude / 2;
 
 
         //Check if clear
@@ -629,11 +650,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    int CalculateEXP(int level)
-    {
-        return 50 * (int)(1 + level / 2);
-    }
-
     // Each level, enemies do an extra 5% damage
     public float CalculateDamage()
     {
@@ -666,7 +682,13 @@ public class Enemy : MonoBehaviour
 
 
     void NotifyOfDeath()
-    {      
+    {
+
+        if (isBoss)
+        {
+            GameObject.Find("Talos").SendMessage("ExitPos", transform.position);
+            GameObject.Find("Exit").SendMessage("NewExit", transform.position);
+        }
 
         // Notify Map Generator of index of enemy killed
         GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
@@ -695,15 +717,19 @@ public class Enemy : MonoBehaviour
 
     void DropOrbs(int numOrbs)
     {
+        if(isBoss)
+        {
+            numOrbs *= mCurrentLevel;
+        }
+
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 3));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 4));
         }
 
     }
 
 
-    //Shove Player and provide him with damage and direction
     void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll != null)
@@ -712,47 +738,54 @@ public class Enemy : MonoBehaviour
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
             }
+            else if(isBoss && coll.gameObject.tag == "Asteroid")
+            {
+                coll.gameObject.GetComponent<Asteroid_Script>().DestroyAsteroid();
+            }        
+            else if(coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
+            {
+                Instantiate(HitByShotAudio, transform.position, Quaternion.identity);
+                Instantiate(LaserGreenHit, transform.position, Quaternion.identity);         //Instantiate LaserGreenHit 
+
+
+                //Check the Health if greater than 0
+                if (mHealth > 0)
+                {
+                    if (coll.gameObject.tag == "enemyBullet")
+                    {
+                        mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
+                        coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;
+                        //Destroy(coll.gameObject);
+                    }
+                    else
+                    {
+                        mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;
+                        coll.gameObject.GetComponent<Bullet>().mAlive = false;
+                    }
+
+                }
+                //Decrement Health by 1
+
+                //Check the Health if less or equal 0
+                if (mHealth <= 0)
+                {
+                    Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
+                    DropOrbs(Random.Range(1, mCurrentLevel / 2 + 1));
+                    NotifyOfDeath();
+                    nbTimesDied++;
+
+                    if (nbTimesDied > 1)
+                    {
+                        Destroy(gameObject);
+                    }
+                }
+            }
         }
 
-
-        //Excute if the object tag was equal to one of these
-        if (coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
-        {
-            Instantiate(HitByShotAudio, transform.position, Quaternion.identity);
-            Instantiate(LaserGreenHit, transform.position, Quaternion.identity);         //Instantiate LaserGreenHit 
+        
 
 
-            //Check the Health if greater than 0
-            if (mHealth > 0)
-            {
-                if (coll.gameObject.tag == "enemyBullet")
-                {
-                    mHealth -= coll.gameObject.GetComponent<EnemyCoBullet>().mDamage;
-                    coll.gameObject.GetComponent<EnemyCoBullet>().mHit = true;
-                    //Destroy(coll.gameObject);
-                }
-                else
-                {
-                    mHealth -= coll.gameObject.GetComponent<Bullet>().mDamage;
-                    coll.gameObject.GetComponent<Bullet>().mAlive = false;
-                }
-
-            }
-            //Decrement Health by 1
-
-            //Check the Health if less or equal 0
-            if (mHealth <= 0)
-            {
-                Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                DropOrbs(Random.Range(1, mCurrentLevel / 2 + 1));
-                NotifyOfDeath();
-                nbTimesDied++;
-
-                if (nbTimesDied > 1)
-                {
-                    Destroy(gameObject);
-                }
-            }
-        }
+       
+        
     }
 }

@@ -32,7 +32,7 @@ public class EnemyCoBullet : MonoBehaviour
     {
         deadTime = Time.time + lifeTime;        
         mAnimator = GetComponent<Animator>();
-        createTime = Time.time;
+        createTime = Time.time;               
     }
 
     // Update is called once per frame
@@ -62,6 +62,11 @@ public class EnemyCoBullet : MonoBehaviour
     void SetDamage(int damage)
     {
         mDamage = 2 * damage;
+    }
+
+    public void SetBossBullet()
+    {
+        transform.localScale *= 8;
     }
 
     void OnCollisionEnter2D(Collision2D coll)

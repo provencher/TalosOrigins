@@ -109,15 +109,7 @@ public class Asteroid_Script : MonoBehaviour
 
 			//Check the Health if less or equal 0
 			if(health <= 0)
-			{
-                if(hookedGrapple)
-                {
-                    GameObject.Find("Talos").GetComponent<Grapple>().unHook();
-                }
-
-                DropOrbs(Random.Range(0, currentLevel/2 + 1));
-
-                Instantiate (Explosion, transform.position , transform.rotation);       //Instantiate Explosion                                                                                                        
+			{                                                                                                                    
                 DestroyAsteroid();
 			}
 		}
@@ -127,7 +119,7 @@ public class Asteroid_Script : MonoBehaviour
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 1));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
         }
 
     }
@@ -137,8 +129,17 @@ public class Asteroid_Script : MonoBehaviour
         hookedGrapple = true;
     }
 
-    void DestroyAsteroid()
+    public void DestroyAsteroid()
     {
+        if (hookedGrapple)
+        {
+            GameObject.Find("Talos").GetComponent<Grapple>().unHook();
+        }
+
+        DropOrbs(Random.Range(0, currentLevel / 2 + 1));
+
+        Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion    
+
         GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
     }
     
