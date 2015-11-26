@@ -124,7 +124,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-		PlayerPrefs.SetInt ("Total Orbs",10000);
         // Get references to other components and game objects
         mRigidBody2D = GetComponent<Rigidbody2D>();
         mAnimator = GetComponent<Animator>();
@@ -314,11 +313,11 @@ public class Player : MonoBehaviour
             Instantiate(PainAudio1, transform.position, Quaternion.identity);       
             Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
 
-			PlayerPrefs.GetInt("Red Orbs", 0);
-			PlayerPrefs.GetInt("Green Orbs", 0);
-			PlayerPrefs.GetInt("Blue Orbs", 0);
-			PlayerPrefs.GetInt("Yellow Orbs", 0);
-			PlayerPrefs.SetInt ("Total Orbs", 0);
+			PlayerPrefs.SetInt("Red Orbs", 0);
+			PlayerPrefs.SetInt("Green Orbs", 0);
+			PlayerPrefs.SetInt("Blue Orbs", 0);
+			PlayerPrefs.SetInt("Yellow Orbs", 0);
+			PlayerPrefs.SetInt ("Total Orbs",0);
 
             yield return new WaitForSeconds(0.3f);
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
