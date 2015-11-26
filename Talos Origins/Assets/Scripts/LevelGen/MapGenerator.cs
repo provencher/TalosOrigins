@@ -356,32 +356,22 @@ public class MapGenerator : MonoBehaviour
         if (UnityEngine.Random.Range(0, 3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));       
-            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 1, 2);
+            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 0.6f, 1.5f);
         }
         else
         {
             enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
             enemies[enemies.Count - 1].transform.localScale *= scale;
-
         }
-
 
         if (bossRound)
         {
             enemies[enemies.Count - 1].GetComponent<Enemy>().isBoss = true;
         }
-
-
         
         enemies[enemies.Count - 1].SendMessage("UpdateEnemyIndex", enemies.Count - 1);
-
-
-
-
         //enemies[index].SendMessage("UpdateLevel", currentLevel);
-    }
-
-    
+    }   
 
 
 
@@ -479,8 +469,8 @@ public class MapGenerator : MonoBehaviour
             {
                 tempCord.tileY = pos.tileY + j;
 
-                if ((tempCord.tileX > 1) && ((tempCord.tileX) < width - 1)
-                    && ((tempCord.tileY > 1) && (tempCord.tileY < height - 1)))
+                if ((tempCord.tileX > 1) && ((tempCord.tileX) < (width - 1))
+                    && ((tempCord.tileY > 1) && (tempCord.tileY < (height - 1))))
                 {
                     if ((map[tempCord.tileX, tempCord.tileY] != 0))
                     {
