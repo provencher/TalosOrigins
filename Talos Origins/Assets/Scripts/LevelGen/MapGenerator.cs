@@ -225,7 +225,7 @@ public class MapGenerator : MonoBehaviour
            for (int j = 1; j < width && !foundSpot; j++)
            {
                tempCoord = new Coord(j, i);
-               if (CheckForFit(tempCoord, 1, 1))
+               if (CheckForFit(tempCoord, 1, 1, false))
                {
                    foundSpot = true;
                }
@@ -246,39 +246,34 @@ public class MapGenerator : MonoBehaviour
         bool exitFound = false;
         int startIndex = allRooms.Count - 1;
         List<Coord> exits = new List<Coord>();
+        float largestDistance = 0;
+        int largestIndex = 0;
 
-        Coord tempCoord = new Coord(0, 0);
-        int offset = 3;
-
-        while (!exitFound || offset > 0)
+        Coord tempCoord = new Coord(0, 0);        
+        for (int i = 1; i < height; i++)
         {
-            for (int i = height/2 +1; i < height; i++)
+            for (int j = 1; j < width; j++)
             {
-                for (int j = 1; j < width; j++)
-                {
-                    tempCoord = new Coord(j, i);
-                    if (CheckForFit(tempCoord, offset, offset))
+                tempCoord = new Coord(j, i);
+                if (CheckForFit(tempCoord, 2, 2, false))
+                {                    
+                    if (tempCoord.sqrtdistance(mTalosCoord) > largestDistance)
                     {
                         exits.Add(tempCoord);
                         exitFound = true;
-                        break;                      
-                    }
-                   
-                }
-                if (exitFound)
-                {
-                    break;
-                }
-            }
-            offset--;
+                        largestDistance = tempCoord.sqrtdistance(mTalosCoord);
+                        largestIndex = exits.Count - 1;                        
+                    }                                   
+                }                   
+            }        
         }
+     
 
         if (exitFound)
         {
-            //Coord Exit = exits[(UnityEngine.Random.Range(0, exits.Count - 1))];
-
-            mExitPos = CoordToWorldPoint(tempCoord);
-            mExitCoord = tempCoord;
+            Coord exit = exits[UnityEngine.Random.Range(Mathf.CeilToInt((exits.Count - 1)/2), (exits.Count - 1))];           
+            mExitPos = CoordToWorldPoint(exit);
+            mExitCoord = exit;
         }
     }
 
@@ -298,8 +293,7 @@ public class MapGenerator : MonoBehaviour
         Coord tempCoord;
         int sentry = 3;
 
-        float maxScale = Mathf.Clamp(currentLevel / 4 + 1, 0.75f, 6);
-
+        float maxScale = Mathf.Clamp(currentLevel / 16 + 1, 0.75f, 4);
 
         while (numEnemiesToSpawn > 0 && numAsteroidsToSpawn > 0 && sentry > 0)
         {
@@ -312,10 +306,10 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Asteroid
                     if (UnityEngine.Random.Range(1, 30) == 15 && numEnemiesToSpawn > 0)
                     {
-                        float scaleModifier = UnityEngine.Random.Range(0.5f, maxScale);
+                        float scaleModifier = UnityEngine.Random.Range(0.65f, maxScale + 1);
                         int roundedScale = Mathf.CeilToInt(scaleModifier);
 
-                        if (CheckForFit(tempCoord, roundedScale, roundedScale))
+                        if (CheckForFit(tempCoord, roundedScale, roundedScale, true))
                         {
                             SpawnEnemyAtPosition(enemies.Count - 1, tempCoord, scaleModifier);
                             //mapPointOccupied.Add(tempCoord, 3);
@@ -326,10 +320,10 @@ public class MapGenerator : MonoBehaviour
                     //Spawn Enemy
                     if (UnityEngine.Random.Range(1, 30) == 15 && numAsteroidsToSpawn > 0)
                     {
-                        float scaleModifier = UnityEngine.Random.Range(0.75f, maxScale);
+                        float scaleModifier = UnityEngine.Random.Range(0.75f, maxScale + 1);
                         int roundedScale = Mathf.CeilToInt(scaleModifier);
 
-                        if (CheckForFit(tempCoord, roundedScale, roundedScale))
+                        if (CheckForFit(tempCoord, roundedScale, roundedScale, true))
                         {
                             SpawnAsteroidAtPosition(asteroids.Count - 1, tempCoord, scaleModifier);
                             //mapPointOccupied.Add(tempCoord, 4);
@@ -472,7 +466,7 @@ public class MapGenerator : MonoBehaviour
     ////////////////////////////////////////////////////////////////////////////////////  
 
     // Check if each corner of the sprite fits in the tile
-    bool CheckForFit(Coord pos, int offSetX, int offSetY)
+    bool CheckForFit(Coord pos, int offSetX, int offSetY, bool markAsOccupied)
     {
         Coord tempCord = pos;
 
@@ -504,20 +498,22 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        for (int i = -offSetX; i <= offSetX; i++)
+        if (markAsOccupied)
         {
-            for (int j = -offSetY; j <= offSetY; j++)
+            for (int i = -offSetX; i <= offSetX; i++)
             {
-                tempCord.tileX = pos.tileX + i;
-                tempCord.tileY = pos.tileY + j;
-                if (!mapPointOccupied.ContainsKey(tempCord))
+                for (int j = -offSetY; j <= offSetY; j++)
                 {
-                    mapPointOccupied.Add(tempCord, 2);
+                    tempCord.tileX = pos.tileX + i;
+                    tempCord.tileY = pos.tileY + j;
+                    if (!mapPointOccupied.ContainsKey(tempCord))
+                    {
+                        mapPointOccupied.Add(tempCord, 2);
+                    }
                 }
+
             }
-
         }
-
 
         return true;
     }
@@ -909,6 +905,11 @@ public class MapGenerator : MonoBehaviour
             return Math.Abs(tileX) + Math.Abs(tileY);
         }
 
+        public float sqrtdistance(Coord otherTile)
+        {
+            return Mathf.Sqrt(Mathf.Pow((tileX - otherTile.tileX), 2) + Mathf.Pow((tileY - otherTile.tileY), 2));
+        }
+
         public int CompareTo(Coord otherTile)
         {
             // equal
@@ -919,6 +920,7 @@ public class MapGenerator : MonoBehaviour
             // larger
             else if ((tileX > otherTile.tileX && tileY > otherTile.tileY))
             {
+
                 return 1;
             }
             else
