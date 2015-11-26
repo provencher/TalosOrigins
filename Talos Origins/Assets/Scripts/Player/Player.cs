@@ -687,8 +687,7 @@ public class Player : MonoBehaviour
 			mShopCanvas.SetActive(false);
 			mShopOn = false;
 
-			Debug.Log("Player grapple: " + PlayerPrefs.GetInt("Grapple"));
-			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Breadcrumbs"));
+			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
 //			gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
 //			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
 
