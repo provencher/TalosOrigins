@@ -356,7 +356,7 @@ public class MapGenerator : MonoBehaviour
         if (UnityEngine.Random.Range(0, 3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));       
-            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 0.6f, 1.5f);
+            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 0.65f, 1.15f);
         }
         else
         {
