@@ -27,12 +27,12 @@ public class ShopOrbs : MonoBehaviour {
 	public int totalOrbsCount;
 
 	// Use this for initialization
-	void Start () {
+	void OnEnable () {
 	
 		Cursor.visible = true;
 
 		red    = PlayerPrefs.GetInt("Red Orbs");
-		green  = PlayerPrefs.GetInt("Yellow Orbs");
+		green  = PlayerPrefs.GetInt("Green Orbs");
 		blue   = PlayerPrefs.GetInt("Blue Orbs");
 		yellow = PlayerPrefs.GetInt("Yellow Orbs");
 
@@ -45,7 +45,6 @@ public class ShopOrbs : MonoBehaviour {
 			totalOrbsCount = 0;
 		}
 
-		totalOrbsCount = PlayerPrefs.GetInt ("Total Orbs");
 		totalOrbsCount += (5 * blue + 3 * red + 2 * green +  1 * yellow);
 	}
 	
