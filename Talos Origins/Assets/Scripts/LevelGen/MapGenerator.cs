@@ -134,26 +134,33 @@ public class MapGenerator : MonoBehaviour
         int densityModifer = 3;// UnityEngine.Random.Range((currentLevel / levelScale) + 1, 2*(currentLevel / levelScale) + 1);
 
         width = (int) Mathf.Round((startWidth + levelScale * currentLevel / densityModifer)*0.65f);
-        height = (int) Mathf.Round(((startHeight + levelScale * 0.65f * currentLevel / densityModifer) * 0.80f));
+       
+
+        randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
+
+        if (randomFillPercent < 48)
+        {
+            width = Mathf.CeilToInt(width * 0.85f);            
+        }
+        // set max values for map size
+        width = Math.Min(250, width);
+        height = width / 2;
+
 
         //Reset Level Parameters
-        mapPointOccupied = new Dictionary<Coord, int>();
+        mapPointOccupied = new Dictionary<Coord, int>();    
         GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
         GameObject.Find("Talos").GetComponent<Trail>().ResetTrail();
 
         //enemies = new List<GameObject>();
         //asteroids = new List<GameObject>();
 
-        numAsteroidsToSpawn = densityModifer * (width / levelScale + levelScale / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
-        numEnemiesToSpawn = (densityModifer * (width / levelScale + levelScale / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)))/3;
-        randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
+        numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
+        numEnemiesToSpawn = (densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)))/3;
         bossRound = false;
 
-        if(randomFillPercent < 48)
-        {
-            width = Mathf.CeilToInt(width * 0.85f);
-            height = Mathf.CeilToInt(height * 0.85f);
-        }
+        numAsteroidsToSpawn =  Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
+        numEnemiesToSpawn = Mathf.Clamp(numEnemiesToSpawn, 1, 300);
 
 
         //DISABLED BOSSES
@@ -167,9 +174,7 @@ public class MapGenerator : MonoBehaviour
         }
 
 
-        // set max values for map size
-        width = Math.Min(400, width);
-        height = Math.Min(400, height);
+       
     }
 
 
@@ -205,7 +210,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         MeshGenerator meshGen = GetComponent<MeshGenerator>();
-        meshGen.GenerateMesh(borderedMap, 1);
+        meshGen.GenerateMesh(borderedMap, 1.01f);
 
         SpawnEverything();
         MessageHandling();
