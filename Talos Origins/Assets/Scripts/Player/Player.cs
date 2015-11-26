@@ -682,23 +682,15 @@ public class Player : MonoBehaviour
 	public void UpdatePlayer()
 	{
 		if(GameObject.Find ("Orbs").GetComponent<ShopOrbs>().totalOrbsCount >= 0){
-			PlayerPrefs.SetString( "Upgrade0", GameObject.Find ("DropZone0").GetComponent<DropZone>().CurrentUpgrade);
-			PlayerPrefs.SetString( "Upgrade1", GameObject.Find ("DropZone1").GetComponent<DropZone>().CurrentUpgrade);
-			PlayerPrefs.SetString( "Upgrade2", GameObject.Find ("DropZone2").GetComponent<DropZone>().CurrentUpgrade);
 			
 			mCanvas.SetActive(true);
 			mShopCanvas.SetActive(false);
 			mShopOn = false;
 
-			for (int i=0; i<3; i++) {
-				mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
-			}
-
-			Debug.Log (mUpgrades[0]);
-
-			gameObject.GetComponent<Grapple>().grappleDistance       = (Array.Exists (mUpgrades, element => element == "Long Grapple")) ? 8 : 4;
-			gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
-			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
+			Debug.Log("Player grapple: " + PlayerPrefs.GetInt("Grapple"));
+			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Breadcrumbs"));
+//			gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
+//			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
 
 		}
 	}

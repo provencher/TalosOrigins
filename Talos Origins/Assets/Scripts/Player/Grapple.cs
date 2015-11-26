@@ -20,6 +20,7 @@ public class Grapple : MonoBehaviour {
     public bool grapplehooked;
 
     public int grappleDistance;
+	private int grappleLevel;
 
     GameObject hookedObject = null;
     Vector3 hitPoint;
@@ -34,10 +35,11 @@ public class Grapple : MonoBehaviour {
         grapple.enabled = false;
         grapple.connectedBody = anchor.gameObject.GetComponent<Rigidbody2D>();
         grapplehooked = false;
+		grappleLevel = PlayerPrefs.GetInt ("Grapple");
 
         if (grappleDistance == default(int))
         {
-			grappleDistance = 4;
+			setGrappleDistance();
         }
     }
 
@@ -52,9 +54,9 @@ public class Grapple : MonoBehaviour {
             targetDirection = (targetPosition - transform.position).normalized;          
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, targetDirection, grappleDistance);
-
-            if (hit.collider.gameObject != null && hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid")
-            {
+            
+			if (hit != default(RaycastHit2D) && (hit.collider.gameObject.tag == "Cave" || hit.collider.gameObject.tag == "Asteroid"))
+        	{
                 Instantiate(grappleFireAudio, transform.position, Quaternion.identity);
                 Instantiate(grappleHitAudio, transform.position, Quaternion.identity);
                 grappleHitAudio.GetComponent<audioPrefabController>().delay = 0.1f;               
@@ -76,9 +78,8 @@ public class Grapple : MonoBehaviour {
                 {
                     hookedObject = null;                    
                 }
-            }                
-
-        }
+			}
+		}
 
         UpdateAnchor();
 
@@ -142,7 +143,14 @@ public class Grapple : MonoBehaviour {
         grapple.enabled = true;
     }
 	
-	void setGrappleDistance(int length){
-		grappleDistance = length;
+	void setGrappleDistance(){
+		grappleDistance = 4 + grappleLevel;
 	}
+
+	public void setGrappleLevel(int level)
+	{
+		grappleLevel = level;
+		setGrappleDistance ();
+	}
+
 }

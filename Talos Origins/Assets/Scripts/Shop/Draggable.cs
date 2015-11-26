@@ -3,65 +3,84 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler{
-	
-	public Transform parentToReturnTo = null;
+public class Draggable : MonoBehaviour{
 
 	[SerializeField]
 	Text Price;
 
 	[SerializeField]
+	Text Level;
+
+	[SerializeField]
 	public int mCost;
 
-	string Upgrade = "Upgrade";
-
+	int currentUpgradeLevel;
+	int originalLevel;
+	
 	void Start()
 	{
-		//Check if Talos is already equipped with this upgrade
-		for(int i=0; i<3; i++){
+		originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);
 
-			if(gameObject.name == PlayerPrefs.GetString(Upgrade + i))
-		  	{
-				parentToReturnTo = GameObject.Find("DropZone"+ i).transform;
-			}
-		}
+		SetText ();
 
-		Price.text = mCost.ToString ();
+	}	
 
-		//Set the draggable to the appropriate drop zone
-		this.transform.SetParent (parentToReturnTo);
-	}
-
-	public void OnBeginDrag(PointerEventData eventData){	
-		GetComponent<CanvasGroup> ().blocksRaycasts = false;
-		parentToReturnTo = this.transform.parent;
-		this.transform.SetParent (this.transform.parent.parent);
-		
+	void OnDisable(){
+		PlayerPrefs.SetInt( gameObject.name, currentUpgradeLevel);
 	}
 	
-	public void OnDrag(PointerEventData eventData){
-		gameObject.transform.position = eventData.position;
-	}
-	
-	public void OnEndDrag(PointerEventData eventData){
-	
-		this.transform.SetParent (parentToReturnTo);
-		if(gameObject.transform.parent.name == "Viewport")
+
+	public void LevelUpClick ()
+	{
+
+		int totalOrbs = GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount;
+//		Debug.Log (totalOrbs);
+
+		if (totalOrbs > mCost || currentUpgradeLevel <= 10)
 		{
-			for(int i=0; i<= 2; i++){
-					
-				if(PlayerPrefs.GetString(Upgrade + i) == gameObject.name)
-				{
-					PlayerPrefs.SetString(Upgrade + i, null);
-
-				}
-
-			}
-		
+			currentUpgradeLevel++;
+			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= mCost;
+			SetText();
 
 		}
-
-		GetComponent<CanvasGroup> ().blocksRaycasts = true;
-
 	}
+
+	public void CancelLevelUp ()
+	{
+		if(currentUpgradeLevel != originalLevel)
+		{
+			currentUpgradeLevel --;
+			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += mCost;
+			SetText();
+		}
+	
+	}
+
+	void SetText()
+	{
+		Level.text = "Level " + currentUpgradeLevel;
+		Price.text = mCost.ToString ();
+	}
+//
+//	public void OnEndDrag(PointerEventData eventData){
+//	
+//		this.transform.SetParent (parentToReturnTo);
+//		if(gameObject.transform.parent.name == "Viewport")
+//		{
+//			for(int i=0; i<= 2; i++){
+//					
+//				if(PlayerPrefs.GetString(Upgrade + i) == gameObject.name)
+//				{
+//					PlayerPrefs.SetString(Upgrade + i, null);
+//
+//				}
+//
+//			}
+//		
+//
+//		}
+//
+//		GetComponent<CanvasGroup> ().blocksRaycasts = true;
+//
+//	}
 }
