@@ -119,7 +119,7 @@ public class Asteroid_Script : MonoBehaviour
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 4));
         }
 
     }

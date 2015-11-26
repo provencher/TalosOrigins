@@ -207,6 +207,14 @@ public class Enemy : MonoBehaviour
         {
             targetDirection = ChooseRandomDirection();
         }
+        if (Vector3.Dot(targetDirection, transform.right) > 0.75f)
+        {
+            transform.localScale = new Vector3( Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
+        }
+        else if (Vector3.Dot(targetDirection, -transform.right) > 0.75f)
+        {
+            transform.localScale = new Vector3(-1 * Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
+        }
 
         lastDirection = targetDirection;
 
@@ -611,7 +619,7 @@ public class Enemy : MonoBehaviour
         StartPosition = transform.position;
         //StartPosition.y += offset;
 
-        EndPosition = StartPosition + direction * transform.localScale.magnitude / 2;
+        EndPosition = StartPosition + direction * transform.localScale.magnitude * mBoxCollider.size.y / 2;
 
 
         //Check if clear
@@ -728,7 +736,7 @@ public class Enemy : MonoBehaviour
 
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 4));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
         }
 
     }

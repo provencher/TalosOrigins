@@ -21,7 +21,7 @@ public class EnemyHealthBar : MonoBehaviour
         Vector3 boxSize = gameObject.GetComponent<BoxCollider2D>().size;
         Vector3 scale = transform.localScale;        
 
-        offset = new Vector3(-boxSize.x /1.5f * scale.x, boxSize.y /1.15f * scale.y, 0);
+        offset = new Vector3(-boxSize.x * scale.x / 2, boxSize.y * scale.y / 1.15f, 0);
         healthBarLength = Screen.width / healthBarScreenRatio;
         isBoss = gameObject.GetComponent<Enemy>().isBoss;
     }    

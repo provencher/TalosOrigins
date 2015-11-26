@@ -21,10 +21,8 @@ public class Weapon : MonoBehaviour {
     int mGunDamage;
 
     // Use this for initialization
-    void Start () {       
-        mMelee = false;
-        mShoot = false;
-        mWeapon = 2;
+    void Start () {   
+        mShoot = false; 
         mGunDamage = 5;
         lastShootTime = Time.time;
         mTalos = transform.parent.GetComponent<Player>();
@@ -32,43 +30,21 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Application.loadedLevel == 0) {
-			UpdateWeapon();
+		if (Application.loadedLevel == 0) {			
 			CheckFire ();       
 		}
 	}
-    void UpdateWeapon()
-    {
-        if (Input.GetButtonDown("Sword"))
-        {
-            mWeapon = 1;
-        }
-        if (Input.GetButtonDown("Gun"))
-        {
-            mWeapon = 2;
-        }
-    }
 
     void CheckFire()
     {
 		if(GameObject.Find ("Canvas") != null){
 	        if (Input.GetAxis("Fire1")>0)
-    	    {
-        	    if (mWeapon == 1)
-            	{
-                	mMelee = true;
-                	mShoot = false;
-            	}
-            	if (mWeapon == 2)
-	           		{
-	                mShoot = true;
-	                mMelee = false;
-	                Shoot();
-	            }
+    	    {       	            
+	            mShoot = true;	                
+	            Shoot();	        
 	        }
 	        else
-	        {
-	            mMelee = false;
+	        {	          
 	            mShoot = false;
 	        }
 		}

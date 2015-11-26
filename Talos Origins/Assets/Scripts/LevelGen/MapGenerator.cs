@@ -21,7 +21,6 @@ public class MapGenerator : MonoBehaviour
     GameObject asteroid;
     int numAsteroids;
 
-
     List<GameObject> asteroids;
     List<GameObject> enemies;
 
@@ -215,28 +214,29 @@ public class MapGenerator : MonoBehaviour
     void PlaceTalosInRoom()
     {
         bool foundSpot = false;
-        int startIndex = allRooms.Count - 1;
-
-        Coord tempCoord = new Coord(0, 0);
-
-       
-       for (int i = 1; i < height && !foundSpot; i++)
-       {
-           for (int j = 1; j < width && !foundSpot; j++)
-           {
-               tempCoord = new Coord(j, i);
-               if (CheckForFit(tempCoord, 1, 1, false))
-               {
-                   foundSpot = true;
-               }
-           }
-       }
-       
-        if (foundSpot)
+        foreach (Room room in allRooms)
         {
-            GameObject.Find("Talos").GetComponent<Grapple>().unHook();
-            mTalosCoord = tempCoord;
-            mTalosPos = CoordToWorldPoint(tempCoord);
+            List<Coord> coordsInRoom = room.tiles;
+            Coord center = new Coord();
+
+            foreach (Coord pos in coordsInRoom)
+            {
+                if (CheckForFit(pos, 1, 1, true))
+                {
+                    center = pos;
+                    foundSpot = true;
+                    break;
+                }
+            }
+
+            if (foundSpot)
+            {
+                GameObject.FindObjectOfType<Grapple>().unHook();
+                mTalosCoord = center;
+                mTalosPos = CoordToWorldPoint(center);
+                //mapPointOccupied.Add(center, 1);
+                break;
+            }
         }
 
     }
@@ -303,11 +303,11 @@ public class MapGenerator : MonoBehaviour
                 {
                     tempCoord = new Coord(j, i);
 
-                    //Spawn Asteroid
+                    //Spawn Enemy
                     if (UnityEngine.Random.Range(1, 30) == 15 && numEnemiesToSpawn > 0)
                     {
-                        float scaleModifier = UnityEngine.Random.Range(0.65f, maxScale + 1);
-                        int roundedScale = Mathf.CeilToInt(scaleModifier);
+                        float scaleModifier = UnityEngine.Random.Range(0.6f, maxScale + 1);
+                        int roundedScale = Math.Max(Mathf.CeilToInt(Mathf.Clamp(scaleModifier,0, 4)) - 1, 1);
 
                         if (CheckForFit(tempCoord, roundedScale, roundedScale, true))
                         {
@@ -317,11 +317,11 @@ public class MapGenerator : MonoBehaviour
                             numEnemiesToSpawn--;
                         }
                     }
-                    //Spawn Enemy
+                    //Spawn Asteroid
                     if (UnityEngine.Random.Range(1, 30) == 15 && numAsteroidsToSpawn > 0)
                     {
-                        float scaleModifier = UnityEngine.Random.Range(0.75f, maxScale + 1);
-                        int roundedScale = Mathf.CeilToInt(scaleModifier);
+                        float scaleModifier = UnityEngine.Random.Range(0.6f, maxScale + 1);
+                        int roundedScale = Math.Max(Mathf.CeilToInt(Mathf.Clamp(scaleModifier, 0, 4)) - 1, 1);
 
                         if (CheckForFit(tempCoord, roundedScale, roundedScale, true))
                         {
@@ -356,7 +356,7 @@ public class MapGenerator : MonoBehaviour
         if (UnityEngine.Random.Range(0, 3) == 1)
         {
             enemies.Add((GameObject)Instantiate(enemyCo, WorldPos, Quaternion.identity));       
-            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 0.65f, 1.15f);
+            enemies[enemies.Count - 1].transform.localScale *= Mathf.Clamp(scale, 0.5f, 1.0f);
         }
         else
         {
@@ -458,7 +458,7 @@ public class MapGenerator : MonoBehaviour
     // Check if each corner of the sprite fits in the tile
     bool CheckForFit(Coord pos, int offSetX, int offSetY, bool markAsOccupied)
     {
-        Coord tempCord = pos;
+        Coord tempCord = new Coord();
 
         // Check for obstacles
         for (int i = -offSetX; i <= offSetX; i++)
@@ -468,23 +468,13 @@ public class MapGenerator : MonoBehaviour
             for (int j = -offSetY; j <= offSetY; j++)
             {
                 tempCord.tileY = pos.tileY + j;
-
-                if ((tempCord.tileX > 1) && ((tempCord.tileX) < (width - 1))
-                    && ((tempCord.tileY > 1) && (tempCord.tileY < (height - 1))))
-                {
-                    if ((map[tempCord.tileX, tempCord.tileY] != 0))
-                    {
-                        return false;
-                    }
-                    else if (mapPointOccupied.ContainsKey(tempCord))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+               
+                if (!IsInMapRange(tempCord.tileX, tempCord.tileY)
+                    || (map[tempCord.tileX, tempCord.tileY] != 0) 
+                    || mapPointOccupied.ContainsKey(tempCord))
+                {                    
+                    return false;                                  
+                }               
             }
         }
 
