@@ -755,7 +755,7 @@ public class Enemy : MonoBehaviour
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
             }
-            else if(isBoss && coll.gameObject.tag == "Asteroid")
+            else if(mScaleValue > 3 && coll.gameObject.tag == "Asteroid")
             {
                 coll.gameObject.GetComponent<Asteroid_Script>().DestroyAsteroid();
             }        
