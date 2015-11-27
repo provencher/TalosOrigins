@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
     void Awake()
 	{
 		//TODO: Delete this once main menu has been created
-		//PlayerPrefs.DeleteAll ();
+//		PlayerPrefs.DeleteAll ();
 	}
 
     void Start()
@@ -716,6 +716,19 @@ public class Player : MonoBehaviour
 
 		}
 	}
+
+	 public void ShopCancelClick()
+	{
+		foreach (Transform child in GameObject.Find ("Viewport").transform)
+		{
+			child.GetComponent<Draggable>().CancelLevelUp();
+		}
+
+		mCanvas.SetActive(true);
+		mShopCanvas.SetActive(false);
+		mShopOn = false;
+	 }
+
 
 	void EnterShop()
 	{
