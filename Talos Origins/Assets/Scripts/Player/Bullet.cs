@@ -11,8 +11,7 @@ public class Bullet : MonoBehaviour {
 
     [SerializeField]
     public GameObject mExplosion;
-
-
+	
     float mDestroyTime;
     Rigidbody2D mRigidbody2D;
 
@@ -20,27 +19,30 @@ public class Bullet : MonoBehaviour {
 
     public int mDamage;
 
-	public bool mBigBullet;
-
+	int DamageLevel;
+	int FireRateLevel;
+	
     // Use this for initialization
     void Awake () {
         mRigidbody2D = GetComponent<Rigidbody2D>();
         mRigidbody2D.velocity = (mSpeed * Vector2.right);
         mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
-		mBigBullet = false;
-        mDamage = 5;
+		DamageLevel = PlayerPrefs.GetInt ("Big Bullets");
+		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
+
+		if (DamageLevel == 0) {
+			mDamage = 2;
+		} else {
+			mDamage = 3 + FireRateLevel;
+		}
+
 	}
 
 	// Update is called once per frame
 	void Update () {
         CheckDeath();
-
-		if (mBigBullet) {
-			mDamage = 10;
-		} else {
-			mDamage = 5;
-		}
+		
 	}
 
     void CheckDeath()

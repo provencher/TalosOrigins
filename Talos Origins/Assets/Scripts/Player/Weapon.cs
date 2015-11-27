@@ -70,7 +70,6 @@ public class Weapon : MonoBehaviour {
             GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, bulletPosition, Quaternion.identity);            
             mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
             mBullet.SendMessage("BulletDamage", mGunDamage);
-			mBullet.GetComponent<Bullet>().mBigBullet = mBigBulletOn;
 
             lastShootTime = Time.time;
 
