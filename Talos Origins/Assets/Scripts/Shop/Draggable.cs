@@ -12,7 +12,9 @@ public class Draggable : MonoBehaviour{
 	Text Level;
 
 	[SerializeField]
-	public int mCost;
+	int mCost;
+
+	int cost;
 
 	int currentUpgradeLevel;
 	int originalLevel;
@@ -21,6 +23,7 @@ public class Draggable : MonoBehaviour{
 	{
 		originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);
 		SetText();
+		cost = mCost + currentUpgradeLevel * (mCost/5);
 
 	}	
 
@@ -32,11 +35,12 @@ public class Draggable : MonoBehaviour{
 
 	public void LevelUpClick ()
 	{
-		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > mCost && currentUpgradeLevel <= 10)
+		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost && currentUpgradeLevel <= 10)
 		{
 			currentUpgradeLevel++;
-			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= mCost;
+			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= cost;
 			SetText();
+			cost = mCost + currentUpgradeLevel * (mCost/5);
 		}
 	}
 
@@ -45,7 +49,8 @@ public class Draggable : MonoBehaviour{
 		if(currentUpgradeLevel != originalLevel)
 		{
 			currentUpgradeLevel --;
-			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += mCost;
+			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += cost;
+			cost = mCost + currentUpgradeLevel * (mCost/5);
 			SetText();
 		}
 	
@@ -54,6 +59,6 @@ public class Draggable : MonoBehaviour{
 	void SetText()
 	{
 		Level.text = "Level " + currentUpgradeLevel;
-		Price.text = mCost.ToString ();
+		Price.text = cost.ToString ();
 	}
 }
