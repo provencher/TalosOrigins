@@ -100,6 +100,8 @@ public class Player : MonoBehaviour
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
 
 	int healthPackLevel;
+	int shieldLevel;
+	float shieldUpgradeIndex;
 
 	Vector3 lastInGamePosition;
 
@@ -122,23 +124,27 @@ public class Player : MonoBehaviour
     void Start()
     {
         // Get references to other components and game objects
-        mRigidBody2D = GetComponent<Rigidbody2D>();
-        mAnimator = GetComponent<Animator>();
-        mWeapon = transform.FindChild("Weapon").GetComponent<Weapon>();
+        mRigidBody2D 	 = GetComponent<Rigidbody2D>();
+        mAnimator 		 = GetComponent<Animator>();
+        mWeapon 		 = transform.FindChild("Weapon").GetComponent<Weapon>();
         mFacingDirection = Vector2.right;
-        mTotalExp = 0;
-        mMeleeTimer = 0;
-        mShoveDirection = Vector2.zero;
+        mTotalExp 		 = 0;
+        mMeleeTimer 	 = 0;
+        mShoveDirection  = Vector2.zero;
         mInvincibleTimer = 0;
         InitOrbTank();
 		mShopOn = false;
 		mShopCanvas.SetActive (false);
-		jumpLevel = PlayerPrefs.GetInt ("Jump");
-		healthPackLevel = PlayerPrefs.GetInt ("Health Pack");
-		jumpLevelIndex = 1f + 0.1f * jumpLevel;
-		mHealth = 100 + (healthPackLevel * 10);
+
+		// Set the Upgrades
+		jumpLevel 		   = PlayerPrefs.GetInt ("Jump");
+		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
+		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
+		jumpLevelIndex 	   = 1f + (jumpLevel * 0.1f);
+		shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
+		mHealth 		   = 100 + (healthPackLevel * 10);
 		UpdateHealthBar(mHealth);
-		
+
 
         //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
@@ -279,7 +285,7 @@ public class Player : MonoBehaviour
         if (!mInvincible)
         {
             mInvincible = true;
-            mInvincibleTimer = kInvincibilityDuration;           
+            mInvincibleTimer = kInvincibilityDuration * shieldUpgradeIndex;           
 
             mHealth -= damage;
             UpdateHealthBar(mHealth);
@@ -677,9 +683,7 @@ public class Player : MonoBehaviour
     }
 
     void UpdateHealthBar(int health)
-	{
-		Debug.Log (healthPackLevel);
-	
+	{	
 		mHealthSlider.maxValue = 100 + (healthPackLevel * 10);
 
         mHealthSlider.value = health;
@@ -705,7 +709,11 @@ public class Player : MonoBehaviour
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
 			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
 			jumpLevel = PlayerPrefs.GetInt("Jump");
+			healthPackLevel = PlayerPrefs.GetInt("Health Pack");
+			shieldLevel = PlayerPrefs.GetInt("Shield");
+			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
 			UpdateHealthBar(mHealth);
+
 		}
 	}
 
