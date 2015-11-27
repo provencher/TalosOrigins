@@ -20,26 +20,23 @@ public class Draggable : MonoBehaviour{
 	void OnEnable()
 	{
 		originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);
-
 		SetText();
 
 	}	
 
-	void OnDisable(){
+	void OnDisable()
+	{
 		PlayerPrefs.SetInt( gameObject.name, currentUpgradeLevel);
 	}
 	
 
 	public void LevelUpClick ()
 	{
-
-
 		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > mCost && currentUpgradeLevel <= 10)
 		{
 			currentUpgradeLevel++;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= mCost;
 			SetText();
-
 		}
 	}
 
@@ -59,26 +56,4 @@ public class Draggable : MonoBehaviour{
 		Level.text = "Level " + currentUpgradeLevel;
 		Price.text = mCost.ToString ();
 	}
-//
-//	public void OnEndDrag(PointerEventData eventData){
-//	
-//		this.transform.SetParent (parentToReturnTo);
-//		if(gameObject.transform.parent.name == "Viewport")
-//		{
-//			for(int i=0; i<= 2; i++){
-//					
-//				if(PlayerPrefs.GetString(Upgrade + i) == gameObject.name)
-//				{
-//					PlayerPrefs.SetString(Upgrade + i, null);
-//
-//				}
-//
-//			}
-//		
-//
-//		}
-//
-//		GetComponent<CanvasGroup> ().blocksRaycasts = true;
-//
-//	}
 }
