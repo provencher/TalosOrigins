@@ -21,15 +21,12 @@ public class Trail : MonoBehaviour {
 	Vector3 lastCrumbPosition;
 	List<GameObject> trail;
 	int trailLevel;
-	
-
-	void Awake(){
-		trailActivated = false;
-	}
 
 	void Start () {
 		crumbCount = 0;
 		trail = new List<GameObject>();
+		trailLevel = PlayerPrefs.GetInt ("Breadcrumbs");
+		trailActivated = trailLevel == 0 ? false: true;
 	}
 	
 	// Update is called once per frame
@@ -39,7 +36,6 @@ public class Trail : MonoBehaviour {
 			BreadcrumbsHandler();
 			maxCrumbsWithLevel =  mMaxCrumbs + (trailLevel * 5);
 		}
-
 		
 		if (Input.GetKeyDown(KeyCode.R))
 		{
@@ -49,12 +45,14 @@ public class Trail : MonoBehaviour {
 	
 	public void ResetTrail()
 	{
-		trailActivated = false; 
-		
-		foreach (GameObject crumb in trail)
-		{
-			//housekeeping
-			Destroy(crumb);
+		trailActivated = !trailActivated; 
+
+		if(!trailActivated){
+			foreach (GameObject crumb in trail)
+			{
+				//housekeeping
+				Destroy(crumb);
+			}
 		}        
 	}
 	
@@ -88,6 +86,7 @@ public class Trail : MonoBehaviour {
 
 			}
 		}
+
 	}
 
 	public void SetTrailLevel(int level)
