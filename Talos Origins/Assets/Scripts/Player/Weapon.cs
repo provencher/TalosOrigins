@@ -8,15 +8,17 @@ public class Weapon : MonoBehaviour {
     int mWeapon;// 1: sword; 2:gun;
     Player mTalos;
     [SerializeField]
-    float ShootInterval;
+    float mShootInterval;
     float lastShootTime;
     [SerializeField]
     GameObject mBulletPrefab;
 
+	float shootIntervalWithLevel;
+
+	int FireRateLevel;
+
     [SerializeField]
     GameObject shotAudio1;
-
-	public bool mBigBulletOn;
 
     int mGunDamage;
 
@@ -26,6 +28,10 @@ public class Weapon : MonoBehaviour {
         mGunDamage = 5;
         lastShootTime = Time.time;
         mTalos = transform.parent.GetComponent<Player>();
+
+		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
+		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel); 
+		
 	}
 	
 	// Update is called once per frame
@@ -52,7 +58,7 @@ public class Weapon : MonoBehaviour {
 
     void Shoot()
     {
-        if (Time.time - lastShootTime > ShootInterval)
+        if (Time.time - lastShootTime > shootIntervalWithLevel)
         {
             Vector3 bulletPosition = transform.position + mTalos.mFacingDirection.x * Vector3.right * 0.4f;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -78,5 +84,12 @@ public class Weapon : MonoBehaviour {
           
         }
         
-    }   
+    }
+
+	public void SetRateOfFireLevel(int Level)
+	{
+		this.FireRateLevel = Level;
+		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel); 
+
+	}
 }

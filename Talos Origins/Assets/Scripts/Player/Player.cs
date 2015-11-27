@@ -111,15 +111,9 @@ public class Player : MonoBehaviour
     */
 
     void Awake()
-    {
-		mUpgrades = new string[3];
-
-		for (int i=0; i<3; i++) {
-			mUpgrades[i] = PlayerPrefs.GetString (Upgrade + i);
-		}
-
-        
-
+	{
+		//TODO: Delete this once main menu has been created
+		PlayerPrefs.DeleteAll ();
 	}
 
     void Start()
@@ -694,8 +688,7 @@ public class Player : MonoBehaviour
 
 			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
-//			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
-
+			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
 		}
 	}
 

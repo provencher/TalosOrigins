@@ -29,12 +29,11 @@ public class Bullet : MonoBehaviour {
         mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
 		DamageLevel = PlayerPrefs.GetInt ("Big Bullets");
-		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
 
 		if (DamageLevel == 0) {
 			mDamage = 2;
 		} else {
-			mDamage = 3 + FireRateLevel;
+			mDamage = 3 + DamageLevel;
 		}
 
 	}

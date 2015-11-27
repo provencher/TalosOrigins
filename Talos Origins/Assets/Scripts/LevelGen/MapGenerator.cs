@@ -438,7 +438,6 @@ public class MapGenerator : MonoBehaviour
 
     void MessageHandling()
     {
-        Debug.Log("Talos Start Position: " + mTalosPos.ToString());
         mTalos.SendMessage("StartPos", mTalosPos);
         mTalos.SendMessage("TotalEnemies", enemies.Count);
         mTalos.SendMessage("CurrentLevel", currentLevel);
