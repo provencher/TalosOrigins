@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -43,6 +44,8 @@ public class Enemy : MonoBehaviour
 
     float distGround, distEdge;
 
+    List<int> collectedOrbs;
+
     //For animator
     Animator mAnimator;
 
@@ -73,7 +76,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         //Write Code for Modifying stats based on currentLevel
-
+        collectedOrbs = new List<int>();
         //Write logic for setting enemy type
         //type = eClass.flyer;
         gameObject.tag = "Enemy";
@@ -739,9 +742,15 @@ public class Enemy : MonoBehaviour
             numOrbs *= mCurrentLevel;
         }
 
-        for (int i = 0; i < numOrbs; i++)
+        for (int i = 0; i < numOrbs + collectedOrbs.Count; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
+            if (i < numOrbs)
+            {
+                gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
+            }else
+            {
+                gameObject.GetComponentInParent<OrbController>().SpawnOrb(collectedOrbs[i - numOrbs]);
+            }
         }
 
     }
@@ -755,9 +764,10 @@ public class Enemy : MonoBehaviour
             {
                 coll.gameObject.SendMessage("ShovedByEnemy", new Vector3(lastDirection.x, lastDirection.y, CalculateDamage()));
             }
-            else if(mScaleValue > 3 && coll.gameObject.tag == "Asteroid")
-            {
-                coll.gameObject.GetComponent<Asteroid_Script>().DestroyAsteroid();
+            else if(false && coll.gameObject.tag == "Orb")
+            {                
+                collectedOrbs.Add(coll.gameObject.GetComponent<Orb>().type);
+                coll.gameObject.GetComponent<Orb>().pickedUp = true;
             }        
             else if(coll.gameObject.tag == "Bullet" || coll.gameObject.tag == "enemyBullet")
             {

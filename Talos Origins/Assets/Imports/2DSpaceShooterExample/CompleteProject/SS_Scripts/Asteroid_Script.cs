@@ -87,8 +87,23 @@ public class Asteroid_Script : MonoBehaviour
     //Called when the Trigger entered
     void OnCollisionEnter2D(Collision2D coll)
     {
-		//Excute if the object tag was equal to one of these
-		if(coll.gameObject.tag == "Bullet")
+        if (coll.gameObject.tag == "Enemy")
+        {
+            if (coll.gameObject.GetComponent<Enemy>().type == Enemy.eClass.flyer)
+            {
+                health -= Mathf.CeilToInt(coll.gameObject.GetComponent<Enemy>().mScaleValue);
+                //Check the Health if less or equal 0
+                if (health <= 0)
+                {
+                    DestroyAsteroid();
+                }
+            }
+
+
+        }
+
+        //Excute if the object tag was equal to one of these
+        else if (coll.gameObject.tag == "Bullet")
 		{
 			Instantiate (LaserGreenHit, transform.position , transform.rotation); 		//Instantiate LaserGreenHit 
             coll.gameObject.GetComponent<Bullet>().mAlive = false;
@@ -102,6 +117,7 @@ public class Asteroid_Script : MonoBehaviour
                 DestroyAsteroid();
 			}
 		}
+        
 	}
 
     void DropOrbs(int numOrbs)
