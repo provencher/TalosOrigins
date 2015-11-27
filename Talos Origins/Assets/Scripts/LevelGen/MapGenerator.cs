@@ -373,7 +373,7 @@ public class MapGenerator : MonoBehaviour
         {
             enemies[enemies.Count - 1].GetComponent<Enemy>().isBoss = true;
         }
-        
+        enemies[enemies.Count - 1].GetComponent<Enemy>().mScaleValue = scale;
         enemies[enemies.Count - 1].SendMessage("UpdateEnemyIndex", enemies.Count - 1);
         //enemies[index].SendMessage("UpdateLevel", currentLevel);
     }   
@@ -409,6 +409,7 @@ public class MapGenerator : MonoBehaviour
             enemies.Add((GameObject)Instantiate(tempEnemy, WorldPos, Quaternion.identity));
         }
         */
+        asteroids[asteroids.Count - 1].GetComponent<Asteroid_Script>().mScaleValue = scale;
         asteroids[asteroids.Count - 1].transform.localScale *= scale;
         asteroids[asteroids.Count - 1].SendMessage("UpdateAsteroidIndex", asteroids.Count - 1);
         asteroids[asteroids.Count - 1].SendMessage("UpdateLevel", currentLevel);

@@ -32,6 +32,8 @@ public class Enemy : MonoBehaviour
 
     int nbTimesDied;
 
+    public float mScaleValue = 1;
+
     // Retain index of enemy to properly handle destruction
     int mapGenIndex;
 
@@ -168,7 +170,10 @@ public class Enemy : MonoBehaviour
 
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
         mDamageModifier = 5;
-        mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 15));
+        //mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 15));
+
+        mHealth = Mathf.CeilToInt(mScaleValue * Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(3, 8)));
+
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
         if(isBoss)
@@ -229,7 +234,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = Random.Range(mCurrentLevel + Random.Range(3, 5), mCurrentLevel * Random.Range(3,5));
+        mHealth = Mathf.CeilToInt(mScaleValue * Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(3,5)));
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
@@ -782,7 +787,7 @@ public class Enemy : MonoBehaviour
                 if (mHealth <= 0)
                 {
                     Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                    DropOrbs(Random.Range(1, mCurrentLevel / 2 + 1));
+                    DropOrbs(Random.Range(1, Mathf.CeilToInt(mCurrentLevel / 2 + mScaleValue)));
                     NotifyOfDeath();
                     nbTimesDied++;
 

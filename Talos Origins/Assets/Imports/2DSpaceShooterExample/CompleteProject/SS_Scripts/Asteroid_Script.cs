@@ -19,7 +19,7 @@ public class Asteroid_Script : MonoBehaviour
 	public float maxTumble; 			//Maximum Speed of the angular velocity
 	public float minTumble; 			//Minimum Speed of the angular velocity
 	public float speed; 				//Asteroid Speed
-	public int health; 					//Asteroid Health (how much hit can it take)
+	public int health = 2; 					//Asteroid Health (how much hit can it take)
 	public GameObject LaserGreenHit; 	//LaserGreenHit Prefab
 	public GameObject Explosion; 		//Explosion Prefab
 	public int ScoreValue; 				//How much the Asteroid give score after explosion
@@ -34,11 +34,14 @@ public class Asteroid_Script : MonoBehaviour
     GameObject driftTarget;
 
     bool hookedGrapple = false;
+
+    public float mScaleValue = 1;
+    bool init = false;
    
 
 	// Use this for initialization
 	void Start () 
-	{
+	{        
         // rigidBody = GetComponent<Rigidbody2D>();
         //RandomVelocity(Vector3.right);
         //driftTarget = GameObject.Find("Talos");
@@ -51,25 +54,11 @@ public class Asteroid_Script : MonoBehaviour
 
     void Update()
     {
-        if (false)
+        if(!init)
         {
-            if ((driftTarget.transform.position - transform.position).magnitude > 500)
-            {
-                DestroyAsteroid();
-            }
-            else
-            {
-                if (switchTime >= 0)
-                {
-                    //rigidBody.velocity = RandomVelocity(Vector3.right);
-                    switchTime = Random.Range(5, 10);
-                }
-                else
-                {
-                    switchTime -= Time.deltaTime;
-                }
-            }
-        }      
+            health = Mathf.CeilToInt(2 * mScaleValue);
+            init = true;
+        }       
     }
 
     Vector3 RandomVelocity(Vector3 direction)
@@ -83,7 +72,7 @@ public class Asteroid_Script : MonoBehaviour
         Vector3 v = Quaternion.AngleAxis(Random.Range(0.0f, 360), direction) * Vector3.Cross(up, transform.right);
         						//Negative Velocity to move down towards the player ship
         return v * speed;
-    }
+    }   
 
     void UpdateAsteroidIndex(int ind)
     {
@@ -136,7 +125,7 @@ public class Asteroid_Script : MonoBehaviour
             GameObject.Find("Talos").GetComponent<Grapple>().unHook();
         }
 
-        DropOrbs(Random.Range(0, currentLevel / 2 + 1));
+        DropOrbs(Random.Range(0, Mathf.CeilToInt(currentLevel / 2 + mScaleValue)));
 
         Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion    
 
