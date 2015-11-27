@@ -11,12 +11,16 @@ public class Trail : MonoBehaviour {
 	float mCrumbSeperation;
 	[SerializeField]
 	int mMaxCrumbs;
+
+	int maxCrumbsWithLevel;
+
 	[SerializeField]
 	GameObject mBreadcrumbPrefab;
 	bool breadcrumbsActivated;
 	int crumbCount;
 	Vector3 lastCrumbPosition;
 	List<GameObject> trail;
+	int trailLevel;
 	
 
 	void Awake(){
@@ -30,9 +34,10 @@ public class Trail : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (trailActivated)
+		if (trailActivated && trailLevel > 1)
 		{
 			BreadcrumbsHandler();
+			maxCrumbsWithLevel =  mMaxCrumbs + (trailLevel * 5);
 		}
 
 		
@@ -67,11 +72,10 @@ public class Trail : MonoBehaviour {
 		{
 			lastCrumbPosition = transform.position + Vector3.up;
 			
-			if (crumbCount < mMaxCrumbs)
+			if (crumbCount < maxCrumbsWithLevel)
 			{
 				GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, lastCrumbPosition, Quaternion.identity);
 				trail.Add(mBreadcrumb);
-				Debug.Log("breadcrumb dropped");
 				crumbCount++;
 			}
 			else
@@ -81,19 +85,14 @@ public class Trail : MonoBehaviour {
 				trail.RemoveAt(0);
 				oldestCrumb.transform.position = lastCrumbPosition;
 				trail.Add(oldestCrumb);
-				
-				
-				//trail.Add((GameObject)Instantiate(mBreadcrumbPrefab, transform.position, Quaternion.identity));
-				Debug.Log("breadcrumb moved");
-				
-				//trail[crumbCount % mMaxCrumbs].transform.position = transform.position;
+
 			}
-			
-			
-			
-			
-			
 		}
+	}
+
+	public void SetTrailLevel(int level)
+	{
+		this.trailLevel = level;
 	}
 	
 }

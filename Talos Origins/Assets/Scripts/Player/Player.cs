@@ -693,7 +693,7 @@ public class Player : MonoBehaviour
 			mShopOn = false;
 
 			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
-//			gameObject.GetComponent<Trail>().trailActivated    		 = (Array.Exists (mUpgrades, element => element == "Breadcrumbs")) ? true : false;
+			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
 //			gameObject.GetComponentInChildren<Weapon>().mBigBulletOn = (Array.Exists (mUpgrades, element => element == "Big Bullets")) ? true : false;
 
 		}
