@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
 	
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
 
-
+	int healthPackLevel;
 
 	Vector3 lastInGamePosition;
 
@@ -129,13 +129,16 @@ public class Player : MonoBehaviour
         mTotalExp = 0;
         mMeleeTimer = 0;
         mShoveDirection = Vector2.zero;
-        mHealth = 100;
         mInvincibleTimer = 0;
         InitOrbTank();
 		mShopOn = false;
 		mShopCanvas.SetActive (false);
 		jumpLevel = PlayerPrefs.GetInt ("Jump");
+		healthPackLevel = PlayerPrefs.GetInt ("Health Pack");
 		jumpLevelIndex = 1f + 0.1f * jumpLevel;
+		mHealth = 100 + (healthPackLevel * 10);
+		UpdateHealthBar(mHealth);
+		
 
         //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
@@ -674,7 +677,11 @@ public class Player : MonoBehaviour
     }
 
     void UpdateHealthBar(int health)
-    {
+	{
+		Debug.Log (healthPackLevel);
+	
+		mHealthSlider.maxValue = 100 + (healthPackLevel * 10);
+
         mHealthSlider.value = health;
         if (health < 60)
         {
@@ -698,6 +705,7 @@ public class Player : MonoBehaviour
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
 			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
 			jumpLevel = PlayerPrefs.GetInt("Jump");
+			UpdateHealthBar(mHealth);
 		}
 	}
 
