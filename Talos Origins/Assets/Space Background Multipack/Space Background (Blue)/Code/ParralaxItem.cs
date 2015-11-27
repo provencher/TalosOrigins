@@ -23,7 +23,7 @@ class ParralaxItem : MonoBehaviour
 
     Vector3 GenerateDirection()
     {
-        return (Talos.transform.position - transform.position).normalized * 0.1f * primes[Random.Range(0, primes.Length) - 1] / 500 * minDirection.magnitude;
+        return (Talos.transform.position - transform.position).normalized * 0.1f * primes[Random.Range(0, primes.Length - 1) ] / 500 * minDirection.magnitude;
     }
 
     void Update()
@@ -34,7 +34,7 @@ class ParralaxItem : MonoBehaviour
 
         if (Time.time % 31 == 0)
         {
-            if (Time.time % primes[Random.Range(0, primes.Length) - 1] == 0)
+            if (Time.time % primes[Random.Range(0, primes.Length - 1) ] == 0)
             {
                 direction = GenerateDirection();
                 direction.z = 0;
