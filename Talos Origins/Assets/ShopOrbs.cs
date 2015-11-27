@@ -63,6 +63,11 @@ public class ShopOrbs : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateTotalOrbsFrame ();
+
+		if(Input.GetKeyDown(KeyCode.Backslash))
+		{
+			totalOrbsCount += 1000;
+		}
 	}
 
 	void OnDisable(){
