@@ -12,6 +12,8 @@ class ParralaxItem : MonoBehaviour
     Vector3 direction;
     GameObject Talos;
 
+    int[] primes = { 53, 97, 193, 389, 769, 1543 };
+
     void Start()
     {
         Talos = GameObject.Find("Talos");
@@ -25,8 +27,11 @@ class ParralaxItem : MonoBehaviour
 
         if(Time.time % 31 == 0)
         {
-            direction = (Talos.transform.position - transform.position).normalized * 0.1f;
-            direction.z = 0;
+            if(Time.time % primes[Random.Range(0, primes.Length)- 1] == 0)
+            {
+                direction = (Talos.transform.position - transform.position).normalized * 0.1f * primes[Random.Range(0, primes.Length) - 1]/100;
+                direction.z = 0;
+            }            
         }
 
     }
