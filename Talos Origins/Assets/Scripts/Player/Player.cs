@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
     void Awake()
 	{
 		//TODO: Delete this once main menu has been created
-		PlayerPrefs.DeleteAll ();
+		//PlayerPrefs.DeleteAll ();
 	}
 
     void Start()
@@ -646,6 +646,11 @@ public class Player : MonoBehaviour
             {
                 //Pickup orb                
                 PickupOrb(other.gameObject.GetComponent<Orb>().type);
+                if(other.gameObject.GetComponent<Orb>().type == 0)
+                {
+                    mHealth += 5;
+                }
+
                 //Destroy orb
                 other.gameObject.GetComponent<Orb>().pickedUp = true;
             }

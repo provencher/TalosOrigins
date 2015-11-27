@@ -125,7 +125,7 @@ public class Asteroid_Script : MonoBehaviour
             GameObject.Find("Talos").GetComponent<Grapple>().unHook();
         }
 
-        DropOrbs(Random.Range(0, Mathf.CeilToInt(currentLevel / 2 + mScaleValue)));
+        DropOrbs(Random.Range(1, Mathf.CeilToInt(mScaleValue) + 1));
 
         Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion    
 
