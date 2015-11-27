@@ -30,7 +30,10 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     float mJumpForce;
-    
+	
+	float jumpLevelIndex;
+	int jumpLevel;
+
 	[SerializeField]
     LayerMask mWhatIsGround;
 
@@ -131,7 +134,8 @@ public class Player : MonoBehaviour
         InitOrbTank();
 		mShopOn = false;
 		mShopCanvas.SetActive (false);
-
+		jumpLevel = PlayerPrefs.GetInt ("Jump");
+		jumpLevelIndex = 1f + 0.1f * jumpLevel;
 
         //walkerScript = GetComponent<Attachment_WallWalker>();
         //walkerScript.USERINPUT = true;
@@ -323,8 +327,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && (mGrounded || !mUsedDoubleJump))
         {           
-
-            mRigidBody2D.AddForce(Vector2.up * mJumpForce, ForceMode2D.Impulse);
+			mRigidBody2D.AddForce(Vector2.up * mJumpForce * jumpLevelIndex, ForceMode2D.Impulse);
 
             if(mGrounded)
             {
@@ -694,6 +697,7 @@ public class Player : MonoBehaviour
 			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
 			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
+			jumpLevel = PlayerPrefs.GetInt("Jump");
 		}
 	}
 
