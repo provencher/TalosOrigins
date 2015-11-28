@@ -110,7 +110,7 @@ public class MeshGenerator : MonoBehaviour
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
 
-        int tileAmount = 5;
+        int tileAmount = 10;
         Vector2[] uvs = new Vector2[vertices.Count];
         for (int i = 0; i < vertices.Count; i++)
         {
