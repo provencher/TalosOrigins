@@ -12,7 +12,7 @@ class ParralaxItem : MonoBehaviour
     Vector3 direction;
     public GameObject Talos;
 
-    int[] primes = { 53, 97, 193, 389, 769, 1543 };
+    int[] primes = { 53, 97, 193, 389};
 
     void Start()
     {
@@ -23,7 +23,7 @@ class ParralaxItem : MonoBehaviour
 
     Vector3 GenerateDirection()
     {
-        Vector3 dir = (Talos.transform.position - transform.position).normalized * 0.1f * minDirection.magnitude / 500;
+        Vector3 dir = (Talos.transform.position - transform.position).normalized * 0.1f * minDirection.magnitude / 300;
         dir.x *= Random.Range(-primes[Random.Range(0, primes.Length - 1)]/2, primes[Random.Range(0, primes.Length - 1)]/2);
         dir.y *= Random.Range(-primes[Random.Range(0, primes.Length - 1)]/2, primes[Random.Range(0, primes.Length - 1)]/2);
         return dir;

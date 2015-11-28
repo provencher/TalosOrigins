@@ -4,7 +4,7 @@ using System.Collections;
 public class Exit : MonoBehaviour {
 
     public Vector3 startScale;
-    int[] primes = { 53, 97, 193, 389, 769, 1543 };
+    int[] primes = { 53, 97, 193, 389 };
 
     void NewExit(Vector3 position)
     {

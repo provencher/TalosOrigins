@@ -105,6 +105,8 @@ public class Player : MonoBehaviour
 
 	Vector3 lastInGamePosition;
 
+    public bool RESETUPGRADES = true;
+
 
     public Attachment_WallWalker walkerScript;
 	
@@ -117,9 +119,19 @@ public class Player : MonoBehaviour
 
     void Awake()
 	{
-		//TODO: Delete this once main menu has been created
-//		PlayerPrefs.DeleteAll ();
-	}
+        //Removes all upgrades
+        if (RESETUPGRADES)
+        {
+            Draggable[] upgrades = GameObject.FindObjectsOfType<Draggable>();
+            foreach (Draggable upgrade in upgrades)
+            {
+                upgrade.resetStat = true;
+            }
+
+            // Disable so upgrades persist on death
+            RESETUPGRADES = false;
+        }
+    }
 
     void Start()
     {
