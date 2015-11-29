@@ -15,4 +15,9 @@ public class LoadGameSCript : MonoBehaviour {
 
         Application.LoadLevel(1);
     }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }

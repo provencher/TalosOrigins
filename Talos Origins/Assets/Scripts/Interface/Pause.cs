@@ -42,7 +42,7 @@ public class Pause : MonoBehaviour {
         OnPauseGame();
     }
 
-    void resumeGame()
+    public void resumeGame()
     {
         Object[] objects = FindObjectsOfType(typeof(GameObject));
         foreach (GameObject go in objects)

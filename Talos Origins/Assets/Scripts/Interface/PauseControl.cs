@@ -45,6 +45,7 @@ public class PauseControl : MonoBehaviour {
 
     public void GoToMainMenu(int number)
     {
+        Cursor.visible = true;
         Application.LoadLevel(number);
         pausePanel.SetActive(false);
     }
