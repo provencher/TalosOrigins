@@ -71,10 +71,8 @@ public class ShopOrbs : MonoBehaviour {
 	}
 
 	void OnDisable(){
-
 		PlayerPrefs.SetInt ("Total Orbs", totalOrbsCount);
 		Cursor.visible = false;
-
 	}
 
 	void UpdateTotalOrbsFrame(){

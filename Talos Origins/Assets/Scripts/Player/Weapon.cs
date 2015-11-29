@@ -36,7 +36,7 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Application.loadedLevel == 0) {			
+		if (Application.loadedLevelName == "Proto") {			
 			CheckFire ();       
 		}
 	}

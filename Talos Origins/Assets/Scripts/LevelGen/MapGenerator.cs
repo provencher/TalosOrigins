@@ -79,6 +79,11 @@ public class MapGenerator : MonoBehaviour
 
     int[,] map;
 
+    void Awake()
+    {
+        currentLevel = PlayerPrefs.GetInt("currentLevel", 1);
+    }
+
     void Start()
     {
         mTalos = GameObject.Find("Talos");
@@ -125,6 +130,9 @@ public class MapGenerator : MonoBehaviour
         {
             currentLevel = 1;
         }
+
+        // Save Current Level
+        PlayerPrefs.SetInt("currentLevel", currentLevel);
 
         levelScale = UnityEngine.Random.Range(1, 3);
 

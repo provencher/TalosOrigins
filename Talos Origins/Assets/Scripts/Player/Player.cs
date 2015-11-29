@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
     void Awake()
 	{
         //Removes all upgrades
-        if (RESETUPGRADES)
+        if (PlayerPrefs.GetInt("resetGame") == 1)
         {
             Draggable[] upgrades = GameObject.FindObjectsOfType<Draggable>();
             foreach (Draggable upgrade in upgrades)
@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
             }
 
             // Disable so upgrades persist on death
-            RESETUPGRADES = false;
+            PlayerPrefs.SetInt("resetGame", 0);
         }
     }
 
@@ -339,6 +339,7 @@ public class Player : MonoBehaviour
 			PlayerPrefs.SetInt ("Total Orbs",0);
 
             yield return new WaitForSeconds(0.3f);
+            PlayerPrefs.SetInt("Total Orbs", 0);
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
         yield break;
@@ -646,8 +647,7 @@ public class Player : MonoBehaviour
     {
 		if (Application.loadedLevelName == "Proto") 
 		{
-			GameObject.Find ("Main Camera").SendMessage ("PlayerVelocity", mRigidBody2D.velocity);   
-		
+			GameObject.Find ("Main Camera").SendMessage ("PlayerVelocity", mRigidBody2D.velocity);   		
 		}
 	}
 
