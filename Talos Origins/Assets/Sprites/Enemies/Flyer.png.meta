@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 73ef4b77d696a4b4d946c037790864f1
-timeCreated: 1448551711
+timeCreated: 1448828868
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -66,130 +66,60 @@ TextureImporter:
     - name: Flyer_0
       rect:
         serializedVersion: 2
-        x: 1484
-        y: 1080
-        width: 5
-        height: 5
+        x: 0
+        y: 555.5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Flyer_1
       rect:
         serializedVersion: 2
-        x: 47
-        y: 886
-        width: 14
-        height: 21
+        x: 589
+        y: 555.5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Flyer_2
       rect:
         serializedVersion: 2
-        x: 103
-        y: 552
-        width: 354
-        height: 493
+        x: 1178
+        y: 555.5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Flyer_3
       rect:
         serializedVersion: 2
-        x: 661
-        y: 550
-        width: 414
-        height: 484
+        x: 0
+        y: .5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Flyer_4
       rect:
         serializedVersion: 2
-        x: 1220
-        y: 614
-        width: 412
-        height: 459
+        x: 589
+        y: .5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Flyer_5
       rect:
         serializedVersion: 2
-        x: 1039
-        y: 807
-        width: 9
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_6
-      rect:
-        serializedVersion: 2
-        x: 1370
-        y: 528
-        width: 5
-        height: 5
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_7
-      rect:
-        serializedVersion: 2
-        x: 47
-        y: 340
-        width: 31
-        height: 59
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_8
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 0
-        width: 298
-        height: 493
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_9
-      rect:
-        serializedVersion: 2
-        x: 471
-        y: 334
-        width: 5
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_10
-      rect:
-        serializedVersion: 2
-        x: 624
-        y: 0
-        width: 432
-        height: 482
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_11
-      rect:
-        serializedVersion: 2
-        x: 1227
-        y: 62
-        width: 412
-        height: 459
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Flyer_12
-      rect:
-        serializedVersion: 2
-        x: 651
-        y: 255
-        width: 9
-        height: 16
+        x: 1178
+        y: .5
+        width: 589.666687
+        height: 555.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
