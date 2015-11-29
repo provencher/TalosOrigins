@@ -236,12 +236,12 @@ public class Enemy : MonoBehaviour
         //Pursue Player            
         TranslateAerialToTarget(transform.position + (Vector3)targetDirection);
 
-        if (targetDirection.y > 0)
+        if (gameObject.GetComponent<Rigidbody2D>().velocity.y > 0)
         {
             flyerIsMovingUp = true;
             flyerIsMovingDown = false;
         }
-        if (targetDirection.y < 0)
+        if (gameObject.GetComponent<Rigidbody2D>().velocity.y < 0)
         {
             flyerIsMovingDown = true;
             flyerIsMovingUp = false;
