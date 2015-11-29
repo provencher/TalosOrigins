@@ -222,13 +222,14 @@ public class Enemy : MonoBehaviour
         {
             targetDirection = ChooseRandomDirection();
         }
-        if (Vector3.Dot(targetDirection, transform.right) > 0.75f)
-        {
-            transform.localScale = new Vector3( Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
-        }
-        else if (Vector3.Dot(targetDirection, -transform.right) > 0.75f)
+
+        if (Vector3.Dot(mRigidBody2D.velocity, transform.right) > 0.75f)
         {
             transform.localScale = new Vector3(-1 * Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
+        }
+        else if (Vector3.Dot(mRigidBody2D.velocity, -transform.right) > 0.75f)
+        {
+            transform.localScale = new Vector3( Mathf.Abs(transform.localScale.x), transform.localScale.y, 0);
         }
 
         lastDirection = targetDirection;
