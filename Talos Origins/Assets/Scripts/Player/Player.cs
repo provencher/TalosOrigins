@@ -672,7 +672,7 @@ public class Player : MonoBehaviour
             {
                 //Pickup orb                
                 PickupOrb(other.gameObject.GetComponent<Orb>().type);
-                if(other.gameObject.GetComponent<Orb>().type == 0)
+                if(other.gameObject.GetComponent<Orb>().type == 3)
                 {
                     //mHealth += 5;
                     //mHealthSlider.value = mHealth;
