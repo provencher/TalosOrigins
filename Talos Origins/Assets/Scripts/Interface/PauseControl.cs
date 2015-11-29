@@ -3,12 +3,13 @@ using System.Collections;
 
 public class PauseControl : MonoBehaviour {
 
+    public GameObject pausePanel;
     public bool paused;
 
 	// Use this for initialization
 	void Start () {
         paused = false;
-
+        pausePanel.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -22,6 +23,7 @@ public class PauseControl : MonoBehaviour {
         if (Input.GetButtonDown("Pause"))
         {
             paused = true;
+            pausePanel.SetActive(true);
         }
 
         if (paused)
@@ -38,10 +40,12 @@ public class PauseControl : MonoBehaviour {
     public void ResumeGame()
     {
         paused = false;
+        pausePanel.SetActive(false);
     }
 
     public void GoToMainMenu(int number)
     {
         Application.LoadLevel(number);
+        pausePanel.SetActive(false);
     }
 }
