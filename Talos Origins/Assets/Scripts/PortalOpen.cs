@@ -83,4 +83,10 @@ public class PortalOpen : MonoBehaviour {
             coolDownTime -= Time.deltaTime;
         }
 	}
+
+    float getCoolTime()
+    {
+        return coolDownTime;
+    }
+
 }
