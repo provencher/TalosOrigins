@@ -9,6 +9,9 @@ public class Grapple : MonoBehaviour {
     GameObject grappleFireAudio;
 
     [SerializeField]
+    GameObject grappleReelAudio;
+
+    [SerializeField]
     GameObject anchor;
 
     [SerializeField]
@@ -94,6 +97,7 @@ public class Grapple : MonoBehaviour {
 
             if (Input.GetButton("Up"))
             {
+                Instantiate(grappleReelAudio, transform.position, Quaternion.identity);
                 grapple.distance -= grapple.distance * 0.01f;
             }
             else if (Input.GetButton("Down"))
@@ -118,6 +122,7 @@ public class Grapple : MonoBehaviour {
         grapple.enabled = false;
         hitPoint = Vector3.zero;
         hookedObject = null;
+        grapplehooked = false;
     }
 
 
