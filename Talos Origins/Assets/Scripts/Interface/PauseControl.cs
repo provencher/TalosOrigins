@@ -22,10 +22,16 @@ public class PauseControl : MonoBehaviour {
     {
         if (Input.GetButtonDown("Pause"))
         {
-            paused = true;
-            pausePanel.SetActive(true);
+            if(paused)
+            {
+                paused = false;              
+            }
+            else
+            {
+                paused = true;                
+            }           
         }
-
+        pausePanel.SetActive(paused);
         if (paused)
         {
             Time.timeScale = 0;
