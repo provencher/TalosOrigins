@@ -121,6 +121,7 @@ public class MapGenerator : MonoBehaviour
 
     void ResetGame()
     {
+        Cursor.visible = true;
         Application.LoadLevel(0);
     }
 

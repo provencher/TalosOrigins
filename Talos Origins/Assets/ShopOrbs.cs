@@ -35,7 +35,7 @@ public class ShopOrbs : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable () {
 	
-		Cursor.visible = true;
+		//Cursor.visible = true;
 
 		redDiff = PlayerPrefs.GetInt ("Red Orbs") - red;
 		greenDiff = PlayerPrefs.GetInt ("Green Orbs") - green;
