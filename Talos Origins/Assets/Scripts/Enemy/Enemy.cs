@@ -311,7 +311,7 @@ public class Enemy : MonoBehaviour
             //direction.y *= 2;
             CrawlerFaceDirection(targetDirection);
         }
-
+     
         
 
         
@@ -331,6 +331,13 @@ public class Enemy : MonoBehaviour
         //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
         lastDirection = targetDirection;
+
+        int d80Roll = Random.Range(0, 80);
+        if (Time.time % d80Roll == 31)
+        {
+            //transform.up = -transform.up;
+            transform.rotation = Quaternion.FromToRotation(transform.up, -transform.up);
+        }
     }
 
     void CrawlerFaceDirection(Vector3 fDic)
@@ -623,6 +630,8 @@ public class Enemy : MonoBehaviour
                 direction = -transform.right;
             }
         }
+
+        
 
         StartPosition = transform.position;
         //StartPosition.y += offset;

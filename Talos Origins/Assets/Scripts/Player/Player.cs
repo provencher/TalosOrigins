@@ -325,7 +325,9 @@ public class Player : MonoBehaviour
 
     IEnumerator CheckDead()
     {
-        if(mHealth <= 0)
+        
+
+        if (mHealth <= 0)
         {      
             Instantiate(PainAudio3, transform.position, Quaternion.identity);           
             Instantiate(PainAudio2, transform.position, Quaternion.identity);            
@@ -672,12 +674,13 @@ public class Player : MonoBehaviour
                 PickupOrb(other.gameObject.GetComponent<Orb>().type);
                 if(other.gameObject.GetComponent<Orb>().type == 0)
                 {
-                    mHealth += 5;
+                    //mHealth += 5;
+                    //mHealthSlider.value = mHealth;
+                    UpdateHealthBar(mHealth += 5);
                 }
 
                 //Destroy orb
-                other.gameObject.GetComponent<Orb>().pickedUp = true;
-            }
+                other.gameObject.GetComponent<Orb>().pickedUp = true;            }
         }
     }
 
