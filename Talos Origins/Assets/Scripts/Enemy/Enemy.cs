@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
 
     //For animator
     Animator mAnimator;
+    Animator AnimatorFlyer;
 
     //crawler
     public Vector2 crawlerFacedirection;
@@ -55,6 +56,9 @@ public class Enemy : MonoBehaviour
     bool crawlerIsShooting;
     bool crawlerIsHit;
     bool crawlerIsFalling;
+
+    bool flyerIsMovingUp;
+    bool flyerIsMovingDown;
 
     Vector2 curNormal = Vector2.up;
     Vector2 surfaceNormal = Vector2.zero;
@@ -192,6 +196,9 @@ public class Enemy : MonoBehaviour
         distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
         distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
 
+        AnimatorFlyer = GetComponent<Animator>();
+        flyerIsMovingUp = false;
+        flyerIsMovingDown = false;
     }
 
 
@@ -229,6 +236,18 @@ public class Enemy : MonoBehaviour
         //Pursue Player            
         TranslateAerialToTarget(transform.position + (Vector3)targetDirection);
 
+        if (targetDirection.y > 0)
+        {
+            flyerIsMovingUp = true;
+            flyerIsMovingDown = false;
+        }
+        if (targetDirection.y < 0)
+        {
+            flyerIsMovingDown = true;
+            flyerIsMovingUp = false;
+        }
+
+        FlyerUpdateAnimator();
     }
 
 
@@ -427,7 +446,11 @@ public class Enemy : MonoBehaviour
         mAnimator.SetBool("isShooting", crawlerIsShooting);
         mAnimator.SetBool("isHit", crawlerIsHit);
     }
-
+    void FlyerUpdateAnimator()
+    {
+        AnimatorFlyer.SetBool("isMovingUp", flyerIsMovingUp);
+        AnimatorFlyer.SetBool("isMovingDown", flyerIsMovingDown);
+    }
     void WalkerUpdate()
     { }
 
