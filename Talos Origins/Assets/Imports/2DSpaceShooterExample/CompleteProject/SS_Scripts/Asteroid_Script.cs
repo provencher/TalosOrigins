@@ -52,13 +52,19 @@ public class Asteroid_Script : MonoBehaviour
         transform.eulerAngles = angle;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if(!init)
         {
             health = Mathf.CeilToInt(2 * mScaleValue);
             init = true;
         }       
+
+
+        if(health <=0)
+        {
+            DestroyAsteroid();
+        }
     }
 
     Vector3 RandomVelocity(Vector3 direction)
