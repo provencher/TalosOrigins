@@ -69,12 +69,20 @@ public class Draggable : MonoBehaviour{
 		{
             Instantiate(ButtonAudio, transform.position, Quaternion.identity);
             currentUpgradeLevel --;
+			cost = cost - (lastCost.Pop()/ 2);
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += cost;
-			cost = cost - (lastCost.Peek()/ 2);
-			lastCost.Pop();
 			SetText();
 		}
 	
+	}
+
+	public void CancelShop(){
+
+		while(currentUpgradeLevel != originalLevel)
+		{
+			CancelLevelUp();
+		}
+		
 	}
 
 	void SetCost(){
