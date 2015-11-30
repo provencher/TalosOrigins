@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
 
 	int[] orbTank;
 	string Upgrade = "Upgrade";
-	bool mShopOn;
+	public bool mShopOn;
 	public static string[] mUpgrades;
 
     float kGroundCheckRadius = 0.1f;
@@ -152,10 +152,16 @@ public class Player : MonoBehaviour
 		jumpLevel 		   = PlayerPrefs.GetInt ("Jump");
 		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
 		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
-		jumpLevelIndex 	   = 1f + (jumpLevel * 0.1f);
-		shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
+		jumpLevelIndex 	   = 1f + (Mathf.Log(jumpLevel)/ Mathf.Log (5));
+		shieldUpgradeIndex = 1f + (Mathf.Log(shieldUpgradeIndex)/ Mathf.Log (5));
 		mHealth 		   = 100 + (healthPackLevel * 10);
+//		mHealth 		   = (int)(100f + (Mathf.Log((float)healthPackLevel) * 10f));
 		UpdateHealthBar(mHealth);
+//
+//		jumpLevelIndex 	   = 1f + (Mathf.Log(jumpLevel)/ Mathf.Log (5));
+//		shieldUpgradeIndex = 1f + (Mathf.Log(shieldUpgradeIndex)/ Mathf.Log (5));
+//		mHealth 		   = (int)(100f + (Mathf.Log((float)healthPackLevel) * 10f));
+
 
 
         //walkerScript = GetComponent<Attachment_WallWalker>();
@@ -251,11 +257,11 @@ public class Player : MonoBehaviour
         //FaceMouse();
         UpdateAnimator();
 
-		if((Input.GetButtonDown("Shop"))){
+		if((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused){
 
 			if(mShopOn)
 			{
-				UpdatePlayer();
+				ShopCancelClick();
 			}
 			else
 			{
@@ -742,7 +748,7 @@ public class Player : MonoBehaviour
 	{
 		foreach (Transform child in GameObject.Find ("Viewport").transform)
 		{
-			child.GetComponent<Draggable>().CancelLevelUp();
+			child.GetComponent<Draggable>().CancelShop();
 		}
 
 		mCanvas.SetActive(true);
