@@ -20,7 +20,7 @@ public class PauseControl : MonoBehaviour {
 
     void PauseGame()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause") && !GameObject.Find("Talos").GetComponent<Player>().mShopOn)
         {
             if(paused)
             {
