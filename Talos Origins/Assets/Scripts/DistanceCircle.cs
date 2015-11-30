@@ -5,7 +5,7 @@ using System.Collections;
 public class DistanceCircle : MonoBehaviour {
 
 	// Use this for initialization
-    float max_distance=50;
+    float max_distance=70;
     Player mPlayer;
     Image mImage;
     float max_size = 35.0f;
@@ -33,11 +33,14 @@ public class DistanceCircle : MonoBehaviour {
      void UpdateColor()
     {
         float distance=mPlayer.GetExitDistance();
+
         mDistanceRatio = distance / max_distance;
         if (mDistanceRatio > 1)
         {
             mDistanceRatio = 1;
         }
+
         mImage.color = new Color((int)(255 * (1 - mDistanceRatio)), 0, (int)(255 * mDistanceRatio));
+
     }
 }
