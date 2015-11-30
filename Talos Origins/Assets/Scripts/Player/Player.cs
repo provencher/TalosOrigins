@@ -351,7 +351,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && (mGrounded || !mUsedDoubleJump))
         {           
-			mRigidBody2D.AddForce(Vector2.up * mJumpForce * jumpLevelIndex, ForceMode2D.Impulse);
+			mRigidBody2D.AddForce(Vector2.up * mJumpForce * (1f + (PlayerPrefs.GetInt("Jump") * 0.1f)), ForceMode2D.Impulse);
 
             if(mGrounded)
             {
@@ -724,12 +724,15 @@ public class Player : MonoBehaviour
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
 			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
 			jumpLevel = PlayerPrefs.GetInt("Jump");
-			healthPackLevel = PlayerPrefs.GetInt("Health Pack");
+            jumpLevelIndex = 1f + (jumpLevel * 0.1f);
+
+            healthPackLevel = PlayerPrefs.GetInt("Health Pack");
 			shieldLevel = PlayerPrefs.GetInt("Shield");
 			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-			UpdateHealthBar(mHealth);
+			UpdateHealthBar(mHealth);        
+          
 
-		}
+        }
 	}
 
 	 public void ShopCancelClick()
