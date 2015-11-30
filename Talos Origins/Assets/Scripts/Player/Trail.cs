@@ -22,11 +22,14 @@ public class Trail : MonoBehaviour {
 	List<GameObject> trail;
 	int trailLevel;
 
+	bool crumbNearBy;
+
 	void Start () {
 		crumbCount = 0;
 		trail = new List<GameObject>();
 		trailLevel = PlayerPrefs.GetInt ("Breadcrumbs");
 		trailActivated = trailLevel == 0 ? false: true;
+		crumbNearBy = false;
 	}
 	
 	// Update is called once per frame
@@ -58,32 +61,45 @@ public class Trail : MonoBehaviour {
 	
 	void BreadcrumbsHandler()
 	{
-		if (crumbCount == 0)
-		{
+		if (crumbCount == 0) {
 			lastCrumbPosition = transform.position;
-			GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, transform.position, Quaternion.identity);
-			trail.Add(mBreadcrumb);
+			GameObject mBreadcrumb = (GameObject)Instantiate (mBreadcrumbPrefab, transform.position, Quaternion.identity);
+			trail.Add (mBreadcrumb);
 			crumbCount++;
-		}
-		
-		if (Vector3.Distance(lastCrumbPosition, transform.position) > mCrumbSeperation )
-		{
-			lastCrumbPosition = transform.position + Vector3.up;
-			
-			if (crumbCount < maxCrumbsWithLevel)
-			{
-				GameObject mBreadcrumb = (GameObject)Instantiate(mBreadcrumbPrefab, lastCrumbPosition, Quaternion.identity);
-				trail.Add(mBreadcrumb);
-				crumbCount++;
-			}
-			else
-			{
-				GameObject oldestCrumb = trail[0];
-				
-				trail.RemoveAt(0);
-				oldestCrumb.transform.position = lastCrumbPosition;
-				trail.Add(oldestCrumb);
+		} else {
 
+			foreach (GameObject crumb in trail) 
+			{
+				if (Vector3.Distance (crumb.transform.position, transform.position) < mCrumbSeperation)
+				{
+					crumbNearBy = true;
+					break;
+				}
+				else
+				{
+					crumbNearBy = false;
+				}
+			}
+		
+			if (!crumbNearBy) 
+			{
+				lastCrumbPosition = transform.position + Vector3.up;
+			
+				if (crumbCount < maxCrumbsWithLevel) 
+				{
+					GameObject mBreadcrumb = (GameObject)Instantiate (mBreadcrumbPrefab, lastCrumbPosition, Quaternion.identity);
+					trail.Add (mBreadcrumb);
+					crumbCount++;
+				} 
+				else
+				{
+					GameObject oldestCrumb = trail [0];
+				
+					trail.RemoveAt (0);
+					oldestCrumb.transform.position = lastCrumbPosition;
+					trail.Add (oldestCrumb);
+
+				}
 			}
 		}
 
