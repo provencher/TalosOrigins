@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     float stepOverThreshold = 0.05f;
     public float distanceThreshold;
 
+    int staticPositionCounter = 0;
+
     int mCurrentLevel;
     int mExpGiven;
     float mDamageModifier;
@@ -76,7 +78,7 @@ public class Enemy : MonoBehaviour
 
     public bool isBoss = false;
 
-
+    
     void Start()
     {
         //Write Code for Modifying stats based on currentLevel
@@ -188,10 +190,10 @@ public class Enemy : MonoBehaviour
             transform.localScale *= 8;            
             mHealth *= 10;
             mDamageModifier *= 2;
-            mMoveSpeed *= 2;
-
-        
+            mMoveSpeed *= 2;       
         }
+
+        mRigidBody2D.mass *= mScaleValue;
 
         distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
         distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
@@ -284,6 +286,8 @@ public class Enemy : MonoBehaviour
         surfaceNormal = ChooseRandomDirection();
         mRigidBody2D.gravityScale = 0;
 
+        mRigidBody2D.mass *= mScaleValue;
+
         if (isBoss)
         {
             transform.localScale *= 10;       
@@ -305,12 +309,10 @@ public class Enemy : MonoBehaviour
             firstLoop = false;
         }
 
-        if((transform.position - currentPosition).magnitude < 0.01f)
-        {
-            //mRigidBody2D.AddForce(Vector3.up * 0.5f);
-        }
 
-        Vector2 targetDirection = lastDirection;
+        Vector2 targetDirection = (DirectionClear(lastDirection)? lastDirection : -lastDirection);
+        
+
 
         int d30Roll = Random.Range(1, 30);
         if (d30Roll == 5)
@@ -332,17 +334,23 @@ public class Enemy : MonoBehaviour
             }
 
             //targetDirection.y *= 1.5f;  
+            /*
+            if (staticPositionCounter > 50)
+            {
+                targetDirection = -targetDirection;
+                staticPositionCounter = 0;
+            }
+            */
 
             //direction.y *= 2;
-            CrawlerFaceDirection(targetDirection);
+            
         }
-     
-        
 
-        
+        CrawlerFaceDirection(targetDirection);
+        crawlerFacedirection = targetDirection;
 
 
-        
+
         CrawlerMove(targetDirection);
 
         //Pursue Player         
@@ -353,16 +361,12 @@ public class Enemy : MonoBehaviour
         //MoveCrawler();
         TranslateGroundToDirection(targetDirection);
 
+      
+
+
         //CrawlerFaceDirection(targetDirection);
         CrawlerUpdateAnimator();
         lastDirection = targetDirection;
-
-        int d80Roll = Random.Range(0, 80);
-        if (Time.time % d80Roll == 31)
-        {
-            //transform.up = -transform.up;
-            transform.rotation = Quaternion.FromToRotation(transform.up, -transform.up);
-        }
     }
 
     void CrawlerFaceDirection(Vector3 fDic)
@@ -647,25 +651,12 @@ public class Enemy : MonoBehaviour
         float boxSizeY = GetComponent<BoxCollider2D>().size.x;
         float scaleY = transform.localScale.x;
 
-        float boxSize, scaleSize;
-        if (type == eClass.Crawler)
-        {
-            if (direction.x > 0)
-            {
-                direction = transform.right;
-            }
-            else
-            {
-                direction = -transform.right;
-            }
-        }
-
-        
+        float boxSize, scaleSize;        
 
         StartPosition = transform.position;
         //StartPosition.y += offset;
 
-        EndPosition = StartPosition + direction * transform.localScale.magnitude * mBoxCollider.size.y / 2;
+        EndPosition = StartPosition + direction * transform.localScale.magnitude * mBoxCollider.size.y / 1.65f;
 
 
         //Check if clear

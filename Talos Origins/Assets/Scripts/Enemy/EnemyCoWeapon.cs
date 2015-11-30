@@ -46,7 +46,7 @@ public class EnemyCoWeapon : MonoBehaviour {
         {
             Vector2 enemyFaceDirection=transform.parent.GetComponent<Enemy>().crawlerFacedirection;
             Vector3 bulletPosition = transform.parent.position + (Vector3)enemyFaceDirection * mParent.GetComponent<BoxCollider2D>().size.x * mParent.transform.localScale.x / 1.2f + Vector3.up * mParent.GetComponent<BoxCollider2D>().size.y * mParent.transform.localScale.x / 1.2f;
-            Vector3 mBulletDirection = enemyFaceDirection;
+            Vector3 mBulletDirection = (Vector3)enemyFaceDirection + transform.parent.transform.up * transform.parent.GetComponent<Enemy>().mScaleValue;
 
             GameObject mBullet = (GameObject)Instantiate(mEnemyCoBulletPrefab, bulletPosition, Quaternion.identity);
             Instantiate(shotAudio, transform.position, Quaternion.identity);

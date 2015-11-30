@@ -12,6 +12,8 @@ class ParralaxItem : MonoBehaviour
     Vector3 direction;
     public GameObject Talos;
 
+    float timeCounter = 0;
+
     int[] primes = { 53, 97, 193, 389};
 
     void Start()
@@ -33,9 +35,9 @@ class ParralaxItem : MonoBehaviour
     {
         transform.position += direction * Time.deltaTime;
         transform.Rotate(rotationAxis, rotationSpeed * Time.deltaTime);
+        timeCounter += Time.deltaTime;
 
-
-        if (Time.time % 31 == 0)
+        if (timeCounter % 31 == 0)
         {
             if (Time.time % primes[Random.Range(0, primes.Length - 1) ] == 0)
             {

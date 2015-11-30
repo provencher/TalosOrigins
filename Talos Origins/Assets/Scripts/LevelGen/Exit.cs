@@ -6,6 +6,9 @@ public class Exit : MonoBehaviour {
     public Vector3 startScale;
     int[] primes = { 53, 97, 193, 389 };
 
+    float timeCounter = 0;
+
+
     void NewExit(Vector3 position)
     {
         
@@ -16,7 +19,8 @@ public class Exit : MonoBehaviour {
 
     void Update()
     {
-        transform.localScale = startScale  + startScale  / 3 * Mathf.Sin(2 * Mathf.PI * Time.time) / primes[Random.Range(0, primes.Length - 1)] / 50;
+        timeCounter += Time.deltaTime;
+        transform.localScale = startScale  + startScale  / 3 * Mathf.Sin(2 * Mathf.PI * timeCounter) / primes[Random.Range(0, primes.Length - 1)] / 50;
     }
     void OnCollisionEnter2D(Collision2D coll)
     {
