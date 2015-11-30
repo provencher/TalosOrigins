@@ -5,18 +5,6 @@ using UnityEngine.UI;
 public class ShopOrbs : MonoBehaviour {
 	
 	[SerializeField]
-	Text BlueOrbs;
-
-	[SerializeField]
-	Text RedOrbs;
-	
-	[SerializeField]
-	Text GreenOrbs;
-	
-	[SerializeField]
-	Text YellowOrbs;
-
-	[SerializeField]
 	Text TotalOrbs;
 
 	[SerializeField]
@@ -46,11 +34,6 @@ public class ShopOrbs : MonoBehaviour {
 		green  = PlayerPrefs.GetInt("Green Orbs");
 		blue   = PlayerPrefs.GetInt("Blue Orbs");
 		yellow = PlayerPrefs.GetInt("Yellow Orbs");
-
-		BlueOrbs.text   = blue.ToString() + " (x 5)";
-		GreenOrbs.text  = green.ToString() + " (x 3)";
-		RedOrbs.text    = red.ToString() + " (x 2)";
-		YellowOrbs.text = yellow.ToString() + " (x 1)";
 
 		if(totalOrbsCount < 0){
 			totalOrbsCount = 0;

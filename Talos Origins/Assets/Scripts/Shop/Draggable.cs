@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class Draggable : MonoBehaviour{
     [SerializeField]
@@ -17,6 +18,7 @@ public class Draggable : MonoBehaviour{
 	int mCost;
 
 	int cost;
+	Stack<int> lastCost;
 
 	int currentUpgradeLevel;
 	int originalLevel;
@@ -26,35 +28,38 @@ public class Draggable : MonoBehaviour{
 
 	void OnEnable()
 	{
+		lastCost = new Stack<int> ();
         if (resetStat)
         {
             PlayerPrefs.SetInt(gameObject.name, 0);
-            resetStat = false;
+			resetStat = false;
         }
-        originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);      
-        SetText();
-		cost = mCost + currentUpgradeLevel * (mCost/2);
-        //Instantiate(ButtonAudio, transform.position, Quaternion.identity);
+        originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);
+
+		SetText ();
+		SetCost ();
+		lastCost.Push(cost);
+		//Instantiate(ButtonAudio, transform.position, Quaternion.identity);
 
     }	
 
 	void OnDisable()
 	{
 		PlayerPrefs.SetInt( gameObject.name, currentUpgradeLevel);
-        //Instantiate(ButtonAudio, transform.position, Quaternion.identity);
+		//Instantiate(ButtonAudio, transform.position, Quaternion.identity);
     }
 	
 
 	public void LevelUpClick ()
 	{
-		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost && currentUpgradeLevel <= 10)
+		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost)
 		{
             Instantiate(ButtonAudio, transform.position, Quaternion.identity);
 			currentUpgradeLevel++;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= cost;
+			lastCost.Push(cost);
+			cost = cost + cost / 2;
 			SetText();
-			cost = mCost + currentUpgradeLevel * (mCost/2);
-
 		}
 	}
 
@@ -65,10 +70,29 @@ public class Draggable : MonoBehaviour{
             Instantiate(ButtonAudio, transform.position, Quaternion.identity);
             currentUpgradeLevel --;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += cost;
-			cost = mCost + currentUpgradeLevel * (mCost/2);
+			cost = cost - (lastCost.Peek()/ 2);
+			lastCost.Pop();
 			SetText();
 		}
 	
+	}
+
+	void SetCost(){
+
+		if (currentUpgradeLevel == 0) {
+			cost = mCost;
+		}
+		else 
+		{
+			cost = mCost;
+			Debug.Log(cost);
+			
+			for (int i = 1; i <= currentUpgradeLevel; i++) 
+			{
+				cost = cost + (cost / 2);
+				Debug.Log(cost);
+			}
+		}
 	}
 
 	void SetText()
