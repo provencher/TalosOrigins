@@ -151,7 +151,8 @@ public class Asteroid_Script : MonoBehaviour
 
         Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion    
 
-        GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
+        Destroy(gameObject);
+        //GameObject.Find("MapGenerator").SendMessage("DestroyAsteroid", index);
     }
     
 }

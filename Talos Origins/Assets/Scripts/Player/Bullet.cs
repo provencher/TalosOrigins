@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour {
 
 	int DamageLevel;
 	int FireRateLevel;
+    Vector2 mVelocity;
 	
     // Use this for initialization
     void Awake () {
@@ -30,7 +31,9 @@ public class Bullet : MonoBehaviour {
         mDestroyTime = Time.time + lifeTime;
 		DamageLevel = PlayerPrefs.GetInt ("Big Bullets");
 
-		if (DamageLevel == 0) {
+        mVelocity = mRigidbody2D.velocity;
+
+        if (DamageLevel == 0) {
 			mDamage = 2;
 		} else {
 			mDamage = 3 + DamageLevel;
@@ -41,10 +44,11 @@ public class Bullet : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         CheckDeath();
-		
-	}
+        mRigidbody2D.velocity = mVelocity;
+    }
+ 
 
     void CheckDeath()
     {
@@ -78,6 +82,7 @@ public class Bullet : MonoBehaviour {
 
 
         mRigidbody2D.velocity = (mSpeed * (Vector2)direction);
+        mVelocity = mRigidbody2D.velocity;
         transform.rotation = Quaternion.FromToRotation(Vector3.right, direction);
     }
 

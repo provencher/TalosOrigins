@@ -193,7 +193,7 @@ public class Enemy : MonoBehaviour
             mMoveSpeed *= 2;       
         }
 
-        mRigidBody2D.mass *= mScaleValue;
+        //mRigidBody2D.mass *= mScaleValue;
 
         distGround = mBoxCollider.size.y / 1.95f * transform.localScale.y;
         distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
@@ -286,7 +286,7 @@ public class Enemy : MonoBehaviour
         surfaceNormal = ChooseRandomDirection();
         mRigidBody2D.gravityScale = 0;
 
-        mRigidBody2D.mass *= mScaleValue;
+        //mRigidBody2D.mass *= mScaleValue;
 
         if (isBoss)
         {
@@ -740,8 +740,8 @@ public class Enemy : MonoBehaviour
         }
 
         // Notify Map Generator of index of enemy killed
-        GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
-
+        //GameObject.Find("MapGenerator").SendMessage("KilledEnemy", mapGenIndex);
+        Destroy(gameObject);
 
     }
 

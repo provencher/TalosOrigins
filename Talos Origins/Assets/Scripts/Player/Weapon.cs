@@ -17,10 +17,12 @@ public class Weapon : MonoBehaviour {
 
 	int FireRateLevel;
 
+
     [SerializeField]
     GameObject shotAudio1;
-
     int mGunDamage;
+
+    public int mNumberBullets = 1;
 
     // Use this for initialization
     void Start () {   
@@ -30,8 +32,8 @@ public class Weapon : MonoBehaviour {
         mTalos = transform.parent.GetComponent<Player>();
 
 		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
-		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel); 
-		
+		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
+        mNumberBullets = PlayerPrefs.GetInt("NumberBullets", 1);    
 	}
 	
 	// Update is called once per frame
@@ -68,13 +70,30 @@ public class Weapon : MonoBehaviour {
             if ((mousePosition - mTalos.transform.position).magnitude < talosHorizOffset/8)
             {
                 mousePosition.x += talosHorizOffset * mTalos.mFacingDirection.x;
-            }          
+            }
 
-            Vector3 mBulletDirection = mousePosition- mTalos.transform.position;
-            mBulletDirection.z = 0;        
 
-            GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, bulletPosition, Quaternion.identity);            
-            mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
+            Vector3 targetPos = mTalos.transform.position;
+            //mNumberBullets = 10;
+
+            for (int i = 0; i < mNumberBullets; i++)
+            {
+                Vector3 mBulletDirection = mousePosition - new Vector3(targetPos.x, targetPos.y + i * Mathf.Pow((-1), i)/mNumberBullets, 0);
+                mBulletDirection.z = 0;
+
+                GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, bulletPosition, Quaternion.identity);
+                if(i % 3 != 0)
+                {
+                    Destroy(mBullet.GetComponent<Light>());
+                }else
+                {
+                    Destroy(mBullet.GetComponent<ParticleSystem>());
+                }
+
+
+                mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
+            }
+            
             //mBullet.SendMessage("BulletDamage", mGunDamage);
 
             lastShootTime = Time.time;
@@ -90,6 +109,5 @@ public class Weapon : MonoBehaviour {
 	{
 		this.FireRateLevel = Level;
 		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel); 
-
 	}
 }

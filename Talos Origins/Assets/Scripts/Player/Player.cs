@@ -722,8 +722,11 @@ public class Player : MonoBehaviour
 
 			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
-			mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
-			jumpLevel = PlayerPrefs.GetInt("Jump");
+
+            mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
+            mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("NumberBullets", 1);
+
+            jumpLevel = PlayerPrefs.GetInt("Jump");
             jumpLevelIndex = 1f + (jumpLevel * 0.1f);
 
             healthPackLevel = PlayerPrefs.GetInt("Health Pack");
