@@ -34,7 +34,7 @@ public class Trail : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (trailActivated && trailLevel > 1)
+		if (trailActivated && trailLevel > 0)
 		{
 			BreadcrumbsHandler();
 			maxCrumbsWithLevel =  mMaxCrumbs + (trailLevel * 5);
