@@ -5,8 +5,11 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 public class Draggable : MonoBehaviour{
-    [SerializeField]
-    GameObject ButtonAudio;
+	[SerializeField]
+	GameObject AddAudio;
+
+	[SerializeField]
+	GameObject NothingAudio;
 
     [SerializeField]
 	Text Price;
@@ -22,6 +25,8 @@ public class Draggable : MonoBehaviour{
 
 	[SerializeField]
 	bool mHasCap;
+
+
 
 	int currentUpgradeLevel;
 	int originalLevel;
@@ -62,7 +67,7 @@ public class Draggable : MonoBehaviour{
 				return;
 			}
 
-			Instantiate(ButtonAudio, transform.position, Quaternion.identity);
+			Instantiate(AddAudio, transform.position, Quaternion.identity);
 			currentUpgradeLevel++;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= cost;
 			lastCost.Push(cost);
@@ -71,12 +76,16 @@ public class Draggable : MonoBehaviour{
 		}
 	}
 
-	public void CancelLevelUp ()
+	public void CancelLevelUp (bool audio)
 	{
 		if(currentUpgradeLevel != originalLevel)
 		{
-            Instantiate(ButtonAudio, transform.position, Quaternion.identity);
-            currentUpgradeLevel --;
+			if(audio)
+			{
+				Instantiate(NothingAudio, transform.position, Quaternion.identity);
+			}
+		
+			currentUpgradeLevel --;
 			cost = cost - (lastCost.Pop()/ 2);
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount += cost;
 			SetText();
@@ -86,9 +95,11 @@ public class Draggable : MonoBehaviour{
 
 	public void CancelShop(){
 
+		Instantiate(NothingAudio, transform.position, Quaternion.identity);
+
 		while(currentUpgradeLevel != originalLevel)
 		{
-			CancelLevelUp();
+			CancelLevelUp(false);
 		}
 		
 	}

@@ -6,6 +6,9 @@ public class PauseControl : MonoBehaviour {
     public GameObject pausePanel;
     public bool paused;
 
+	[SerializeField]
+	GameObject Audio;
+
 	// Use this for initialization
 	void Start () {
         paused = false;
@@ -45,12 +48,14 @@ public class PauseControl : MonoBehaviour {
 
     public void ResumeGame()
     {
+		Instantiate(Audio, transform.position, Quaternion.identity);
         paused = false;
         pausePanel.SetActive(false);
     }
 
     public void GoToMainMenu(int number)
     {
+		Instantiate(Audio, transform.position, Quaternion.identity);
         Cursor.visible = true;
         Application.LoadLevel(number);
         pausePanel.SetActive(false);

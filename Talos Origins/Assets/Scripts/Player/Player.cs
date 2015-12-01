@@ -21,6 +21,9 @@ public class Player : MonoBehaviour
     GameObject jumpAudio1;
     [SerializeField]
     GameObject jumpAudio2;
+	
+	[SerializeField]
+	GameObject ConfirmAudio;
 
     [SerializeField]
     GameObject ExplosionPrefab;
@@ -720,7 +723,8 @@ public class Player : MonoBehaviour
 	public void UpdatePlayer()
 	{
 		if(GameObject.Find ("Orbs").GetComponent<ShopOrbs>().totalOrbsCount >= 0){
-			
+
+			Instantiate(ConfirmAudio, transform.position, Quaternion.identity);
 			mCanvas.SetActive(true);
 			mShopCanvas.SetActive(false);
 			mShopOn = false;
