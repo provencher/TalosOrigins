@@ -14,8 +14,9 @@ public class PortalOpen : MonoBehaviour {
 
     GameObject portalInstance;
 
-    float portalCoolDown = 5.0f;
+    float portalCoolDown = 12.0f;
     float coolDownTime = 0;
+	int portalCoolDownLevel;
 
   
 
@@ -23,9 +24,8 @@ public class PortalOpen : MonoBehaviour {
     {
         Instantiate(portalOpenAudio, transform.position, Quaternion.identity);
         portalInstance = (GameObject)Instantiate(portal, transform.position, Quaternion.identity);
-        
 
-        Vector3 portalScale = new Vector3(0, 0, 0);
+		Vector3 portalScale = new Vector3(0, 0, 0);
 
         while(portalScale.x < 1.5f)
         {
@@ -75,7 +75,9 @@ public class PortalOpen : MonoBehaviour {
 	void Update () {
 	    if(Input.GetButtonDown("MapGeneration") && coolDownTime <= 0)
         {
-            coolDownTime = portalCoolDown;
+			portalCoolDownLevel = PlayerPrefs.GetInt ("Portal Cooldown", 0);
+            coolDownTime = portalCoolDown - (float)portalCoolDownLevel;
+			Debug.Log (coolDownTime);
             StartCoroutine(SpawnPortal(true));
         }
         else if (coolDownTime > 0)

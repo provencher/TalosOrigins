@@ -54,7 +54,12 @@ public class Draggable : MonoBehaviour{
 	{
 		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost)
 		{
-            Instantiate(ButtonAudio, transform.position, Quaternion.identity);
+			if((gameObject.name == "Breadcrumbs" || gameObject.name == "Portal Cooldown") && currentUpgradeLevel == 10)
+			{
+				return;
+			}
+
+			Instantiate(ButtonAudio, transform.position, Quaternion.identity);
 			currentUpgradeLevel++;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= cost;
 			lastCost.Push(cost);
@@ -93,12 +98,10 @@ public class Draggable : MonoBehaviour{
 		else 
 		{
 			cost = mCost;
-			Debug.Log(cost);
-			
+
 			for (int i = 1; i <= currentUpgradeLevel; i++) 
 			{
 				cost = cost + (cost / 2);
-				Debug.Log(cost);
 			}
 		}
 	}

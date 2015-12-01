@@ -152,10 +152,9 @@ public class Player : MonoBehaviour
 		jumpLevel 		   = PlayerPrefs.GetInt ("Jump");
 		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
 		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
-		jumpLevelIndex 	   = 1f + (Mathf.Log(jumpLevel)/ Mathf.Log (5));
-		shieldUpgradeIndex = 1f + (Mathf.Log(shieldUpgradeIndex)/ Mathf.Log (5));
-		mHealth 		   = 100 + (healthPackLevel * 10);
-//		mHealth 		   = (int)(100f + (Mathf.Log((float)healthPackLevel) * 10f));
+		jumpLevelIndex 	   = 1f + (Mathf.Log10(jumpLevel)/ Mathf.Log10(5));
+		shieldUpgradeIndex = 1f + (Mathf.Log10(shieldUpgradeIndex)/ Mathf.Log10(5));
+		mHealth 		   = 100;
 		UpdateHealthBar(mHealth);
 //
 //		jumpLevelIndex 	   = 1f + (Mathf.Log(jumpLevel)/ Mathf.Log (5));
@@ -705,7 +704,7 @@ public class Player : MonoBehaviour
 
     void UpdateHealthBar(int health)
 	{	
-		mHealthSlider.maxValue = 100 + (healthPackLevel * 10);
+		mHealthSlider.maxValue = Mathf.Round(100f + ( Mathf.Log10((float)healthPackLevel + 1f) * 10f));
 
         mHealthSlider.value = health;
         if (health < 60)
