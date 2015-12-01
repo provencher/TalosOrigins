@@ -82,14 +82,12 @@ public class Weapon : MonoBehaviour {
                 mBulletDirection.z = 0;
 
                 GameObject mBullet = (GameObject)Instantiate(mBulletPrefab, bulletPosition, Quaternion.identity);
-                if(i % 3 != 0)
+                if(false && i % 2 != 0)
                 {
                     Destroy(mBullet.GetComponent<Light>());
-                }else
-                {
                     Destroy(mBullet.GetComponent<ParticleSystem>());
                 }
-
+             
 
                 mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
             }
