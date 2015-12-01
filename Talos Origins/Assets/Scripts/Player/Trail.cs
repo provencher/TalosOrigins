@@ -56,6 +56,8 @@ public class Trail : MonoBehaviour {
 				//housekeeping
 				Destroy(crumb);
 			}
+			crumbCount = 0;
+			crumbNearBy = false;
 		}        
 	}
 	
