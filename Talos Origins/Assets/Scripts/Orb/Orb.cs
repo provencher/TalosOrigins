@@ -17,7 +17,7 @@ public class Orb : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        lifeTime = Random.Range(3f,4f);
+        lifeTime = Random.Range(5f,6f);
         timeToLive = lifeTime;
         player = GameObject.Find("Talos").transform;        
 	}

@@ -104,7 +104,7 @@ public class MapGenerator : MonoBehaviour
         {
             cycleLevel = false;
 			portalLevelUpgrade = PlayerPrefs.GetInt("Portal Distance", 0);
-            currentLevel = UnityEngine.Random.Range(currentLevel / 2 + 1, currentLevel + (portalLevelUpgrade * 10) + 5);
+            currentLevel = currentLevel + portalLevelUpgrade;//UnityEngine.Random.Range(currentLevel / 2 + 1, currentLevel + (portalLevelUpgrade * 10) + 5);
             GenerateMap();
         }
         //		if(resetLevel)

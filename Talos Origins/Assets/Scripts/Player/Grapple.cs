@@ -22,7 +22,7 @@ public class Grapple : MonoBehaviour {
     Vector3 targetDirection;
     public bool grapplehooked;
 
-    public int grappleDistance;
+    public float grappleDistance;
 	private int grappleLevel;
 
     GameObject hookedObject = null;
@@ -149,7 +149,7 @@ public class Grapple : MonoBehaviour {
     }
 	
 	void setGrappleDistance(){
-		grappleDistance = 4 + grappleLevel;
+		grappleDistance = grappleDistance + (grappleLevel * 1.35f);
 	}
 
 	public void setGrappleLevel(int level)
