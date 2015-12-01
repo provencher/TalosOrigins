@@ -9,7 +9,7 @@ public class LoadGameSCript : MonoBehaviour {
         
         if(reset == 1)
         {
-            PlayerPrefs.SetInt("Total Orbs", 0);
+            PlayerPrefs.SetInt("Total Orbs", 300);
             PlayerPrefs.SetInt("currentLevel", 1);
         }       
 
