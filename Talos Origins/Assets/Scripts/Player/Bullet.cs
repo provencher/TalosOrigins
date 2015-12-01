@@ -39,7 +39,7 @@ public class Bullet : MonoBehaviour {
 			mDamage = 3 + DamageLevel;
 		}
 
-        Debug.Log("bullet damage: " + mDamage.ToString());
+        //Debug.Log("bullet damage: " + mDamage.ToString());
 
 	}
 

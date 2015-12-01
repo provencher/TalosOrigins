@@ -733,7 +733,7 @@ public class Player : MonoBehaviour
 			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs", 1));
 
             mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire", 1));
-			mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 1);
+            mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1;
 
             jumpLevel = PlayerPrefs.GetInt("Jump");
             jumpLevelIndex = 1f + (jumpLevel * 0.1f);

@@ -94,12 +94,11 @@ public class Trail : MonoBehaviour {
 					crumbCount++;
 				} 
 				else
-				{
-					GameObject oldestCrumb = trail [0];
-				
+				{					
+                    Destroy(trail[0]);
 					trail.RemoveAt (0);
-					oldestCrumb.transform.position = lastCrumbPosition;
-					trail.Add (oldestCrumb);
+                    trail[0].transform.position = lastCrumbPosition;
+					trail.Add(trail[0]);
 
 				}
 			}
