@@ -734,6 +734,7 @@ public class Player : MonoBehaviour
 
             mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire", 0));
             mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1;
+            mWeapon.GetComponent<Weapon>().mDamageLevel = PlayerPrefs.GetInt("Big Bullets", 0);
 
             jumpLevel = PlayerPrefs.GetInt("Jump");
             jumpLevelIndex = 1f + (jumpLevel * 0.1f);

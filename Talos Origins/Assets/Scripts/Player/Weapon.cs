@@ -16,7 +16,7 @@ public class Weapon : MonoBehaviour {
 	float shootIntervalWithLevel;
 
 	int FireRateLevel;
-
+    public int mDamageLevel;
 
     [SerializeField]
     GameObject shotAudio1;
@@ -32,10 +32,12 @@ public class Weapon : MonoBehaviour {
         mTalos = transform.parent.GetComponent<Player>();
 
         //FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
+
         SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire",0));
         shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
-		mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1; 
-	}
+		mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1;
+        mDamageLevel = PlayerPrefs.GetInt("Big Bullets", 0);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -91,6 +93,8 @@ public class Weapon : MonoBehaviour {
              
 
                 mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
+                //mBullet.GetComponent<Bullet>().mNumBullets = mNumberBullets;
+                mBullet.GetComponent<Bullet>().SetDamage(mNumberBullets, mDamageLevel);
             }
             
             //mBullet.SendMessage("BulletDamage", mGunDamage);

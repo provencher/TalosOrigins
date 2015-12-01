@@ -18,6 +18,7 @@ public class Bullet : MonoBehaviour {
     public bool mAlive = true;
 
     public int mDamage;
+    public int mNumBullets;
 
 	int DamageLevel;
 	int FireRateLevel;
@@ -29,19 +30,15 @@ public class Bullet : MonoBehaviour {
         mRigidbody2D.velocity = (mSpeed * Vector2.right);
         mRigidbody2D.gravityScale = 0;
         mDestroyTime = Time.time + lifeTime;
-		DamageLevel = PlayerPrefs.GetInt ("Big Bullets");
+		
+        mNumBullets = 1;
 
         mVelocity = mRigidbody2D.velocity;
-
-        if (DamageLevel == 0) {
-			mDamage = 2;
-		} else {
-			mDamage = 3 + DamageLevel;
-		}
+        mDamage = 2;
 
         //Debug.Log("bullet damage: " + mDamage.ToString());
 
-	}
+    }
 
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -102,10 +99,7 @@ public class Bullet : MonoBehaviour {
         {
             Explode();
         }
-        else if (coll.gameObject.tag == "Enemy")
-        {
-
-        }
+        
 
         /*
         if (coll.gameObject.tag == "Enemy")
@@ -116,5 +110,18 @@ public class Bullet : MonoBehaviour {
           
         */
 
+    }
+
+    public void SetDamage(int numBullets, int damageLevel)
+    {
+        if (DamageLevel == 0)
+        {
+            mDamage = 2;
+        }    
+        else
+        {
+            mDamage = (mDamage + 1) * damageLevel;
+        }           
+        mDamage = Mathf.RoundToInt(mDamage * 1 / (1 - (numBullets/11)));       
     }
 }
