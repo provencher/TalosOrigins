@@ -31,8 +31,9 @@ public class Weapon : MonoBehaviour {
         lastShootTime = Time.time;
         mTalos = transform.parent.GetComponent<Player>();
 
-		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
-		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
+        //FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
+        SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire",0));
+        shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
 		mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1; 
 	}
 	
