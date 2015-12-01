@@ -701,8 +701,8 @@ public class Enemy : MonoBehaviour
 
     // Each level, enemies do an extra 5% damage
     public float CalculateDamage()
-    {
-        return mDamageModifier * (1 + mCurrentLevel / 20);
+    { 
+        return 3 * mScaleValue * mCurrentLevel;
     }
 
 

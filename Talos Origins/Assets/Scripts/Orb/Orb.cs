@@ -37,9 +37,10 @@ public class Orb : MonoBehaviour {
 
         Vector3 direction = player.position - transform.position;
 
-        if (direction.magnitude < 3.5f)
+        if (direction.magnitude < 6)
         {
-            transform.position += direction.normalized * 4 * Time.deltaTime;
+            lifeTime = 10;
+            transform.position += direction.normalized * 5.5f * Time.deltaTime;
         }
     }
 	
