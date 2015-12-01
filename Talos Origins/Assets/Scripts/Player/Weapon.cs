@@ -107,6 +107,14 @@ public class Weapon : MonoBehaviour {
 	public void SetRateOfFireLevel(int Level)
 	{
 		this.FireRateLevel = Level;
-		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel); 
+        
+        if(Level <= 1)
+        {
+            shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
+        }
+        else
+        {
+            shootIntervalWithLevel = mShootInterval - (0.033f + (0.033f * (this.FireRateLevel -1 )/1.3f));
+        }		
 	}
 }

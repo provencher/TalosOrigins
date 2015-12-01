@@ -71,7 +71,7 @@ public class Draggable : MonoBehaviour{
 			currentUpgradeLevel++;
 			GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount -= cost;
 			lastCost.Push(cost);
-			cost = cost + cost / 2;
+			cost = Mathf.CeilToInt(1.75f*cost);
 			SetText();
 		}
 	}
