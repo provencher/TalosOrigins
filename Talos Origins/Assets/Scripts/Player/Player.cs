@@ -725,11 +725,11 @@ public class Player : MonoBehaviour
 			mShopCanvas.SetActive(false);
 			mShopOn = false;
 
-			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple"));
-			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs"));
+			gameObject.GetComponent<Grapple>().setGrappleLevel(PlayerPrefs.GetInt("Grapple", 1));
+			gameObject.GetComponent<Trail>().SetTrailLevel(PlayerPrefs.GetInt("Breadcrumbs", 1));
 
-            mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire"));
-            mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("NumberBullets", 1);
+            mWeapon.GetComponent<Weapon>().SetRateOfFireLevel(PlayerPrefs.GetInt("Rate of Fire", 1));
+			mWeapon.GetComponent<Weapon>().mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 1);
 
             jumpLevel = PlayerPrefs.GetInt("Jump");
             jumpLevelIndex = 1f + (jumpLevel * 0.1f);

@@ -20,6 +20,9 @@ public class Draggable : MonoBehaviour{
 	int cost;
 	Stack<int> lastCost;
 
+	[SerializeField]
+	bool mHasCap;
+
 	int currentUpgradeLevel;
 	int originalLevel;
 
@@ -54,7 +57,7 @@ public class Draggable : MonoBehaviour{
 	{
 		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost)
 		{
-			if((gameObject.name == "Breadcrumbs" || gameObject.name == "Portal Cooldown") && currentUpgradeLevel == 10)
+			if(currentUpgradeLevel == 10 && mHasCap)
 			{
 				return;
 			}

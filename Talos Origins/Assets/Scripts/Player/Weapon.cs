@@ -33,7 +33,7 @@ public class Weapon : MonoBehaviour {
 
 		FireRateLevel = PlayerPrefs.GetInt ("Rate of Fire");
 		shootIntervalWithLevel = mShootInterval - (0.033f * this.FireRateLevel);
-        mNumberBullets = PlayerPrefs.GetInt("NumberBullets", 1);    
+		mNumberBullets = PlayerPrefs.GetInt("Spray Bullets", 0) + 1; 
 	}
 	
 	// Update is called once per frame
