@@ -14,7 +14,7 @@
 	in a sci-fi setting that focuses on increasing your character’s abilities to unravel
 	the mystery behind his journey.
 	
-#Project Description:
+#Project Description
 	With each level being an increasingly large and challenging procedurally generated maze,
 	players will never see the same stage twice. Traversing each maze involves using the
 	breadcrumb mechanic which lets players know where they’ve been, along with the grapple
