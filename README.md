@@ -48,12 +48,7 @@ https://www.youtube.com/watch?v=CB4YfCXkh94&feature=youtu.be 
 
 
 #What sets this project apart
-Reason #1
-	Procedurally generated mazes ensure that players will never see the same level twice    
-
-Reason #2
-	Engaging upgrade system entices players to try different strategies to complete levels
-
-Reason #3
-	Infinite progression means that players can keep improving their character and explore
-	increasingly large and challenging mazes.
+	- Procedurally generated mazes ensure that players will never see the same level twice   
+	- Engaging upgrade system entices players to try different strategies to complete levels
+	- Infinite progression means that players can keep improving their character and explore
+	  increasingly large and challenging mazes.
