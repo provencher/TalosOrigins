@@ -721,7 +721,7 @@ public class Player : MonoBehaviour
 
     void UpdateHealthBar(int health)
 	{	
-		mHealthSlider.maxValue = Mathf.CeilToInt(100 + ( Mathf.Log10(healthPackLevel + 1) * 30f));
+		mHealthSlider.maxValue = Mathf.CeilToInt(100 + healthPackLevel * 10);
 
         if(health > mHealthSlider.maxValue)
         {
