@@ -252,8 +252,7 @@ public class Player : MonoBehaviour
 
 
 
-        UpdateCameraVelocity();
-        UpdateUIText();
+        
     }
 
 	void UpdateUIText()
@@ -299,7 +298,9 @@ public class Player : MonoBehaviour
         CheckJump();     
         mRising = mRigidBody2D.velocity.y > 0.0f;
         UpdateAnimator();
-
+        UpdateCameraVelocity();
+        UpdateUIText();
+        UpdateHealthBar(mHealth);
         /*
         if (mInvincible)
         {
