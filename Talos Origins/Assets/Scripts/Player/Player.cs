@@ -221,6 +221,37 @@ public class Player : MonoBehaviour
     {
         StartCoroutine(CheckDead());
         NotifyEnemiesOfPosition();
+
+
+        FaceMouse();
+        CheckGround();
+        CheckInvicible();
+
+        TranslateInDirection(CheckMove());
+        //walkerScript.ApplyMovementDirection(CheckMove());
+
+        //TriggerMelee();
+        CheckJump();
+        //FaceMouse();
+        UpdateAnimator();
+
+        if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
+        {
+
+            if (mShopOn)
+            {
+                ShopCancelClick();
+            }
+            else
+            {
+                EnterShop();
+            }
+        }
+
+        /*
+
+
+
         UpdateCameraVelocity();
         UpdateUIText();
     }
@@ -247,31 +278,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
-        FaceMouse();
-        CheckGround();
-        CheckInvicible();
-
-        TranslateInDirection(CheckMove());
-        //walkerScript.ApplyMovementDirection(CheckMove());
-
-        TriggerMelee();
-        CheckJump();
-        //FaceMouse();
-        UpdateAnimator();
-
-		if((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused){
-
-			if(mShopOn)
-			{
-				ShopCancelClick();
-			}
-			else
-			{
-				EnterShop();
-			}
-		}
-
-        /*
+      
         bool grounded = CheckGrounded();
         if (!mGrounded && grounded)
         {
@@ -299,7 +306,7 @@ public class Player : MonoBehaviour
 
     }
 
-	public IEnumerator InflictDamage(int damage)
+    public IEnumerator InflictDamage(int damage)
     {        
 
         if (!mInvincible)
