@@ -696,18 +696,13 @@ public class Player : MonoBehaviour
                 {
                     //mHealth += 5;
                     //mHealthSlider.value = mHealth;
-                    if (mHealth + 5 < mHealthSlider.maxValue)
-                    {    
-                       UpdateHealthBar(Mathf.RoundToInt(mHealthSlider.maxValue));
-                    }
-                    else
-                    {
-                        UpdateHealthBar(mHealth += 5);
-                    }            
+                    UpdateHealthBar(mHealth + 5);                  
+                           
                 }
 
                 //Destroy orb
-                other.gameObject.GetComponent<Orb>().pickedUp = true;            }
+                other.gameObject.GetComponent<Orb>().pickedUp = true;
+            }
         }
     }
 
@@ -728,7 +723,14 @@ public class Player : MonoBehaviour
 	{	
 		mHealthSlider.maxValue = Mathf.CeilToInt(100 + ( Mathf.Log10(healthPackLevel + 1) * 30f));
 
+        if(health > mHealthSlider.maxValue)
+        {
+            health = Mathf.RoundToInt(mHealthSlider.maxValue);
+        }
         mHealthSlider.value = health;
+        mHealth = health;       
+
+
         if (health < 60)
         {
             mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 255, 0);
