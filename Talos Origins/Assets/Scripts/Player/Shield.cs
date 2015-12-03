@@ -8,13 +8,13 @@ public class Shield : MonoBehaviour {
 
     [SerializeField]
     public GameObject rechargeAudio;
-    bool rechargeDeployed = true;
+    public bool rechargeDeployed = false;
 
 
 
 	// Update is called once per frame
 	void FixedUpdate () {
-	    if (talos.GetComponent<Player>().mInvincibleTimer > 0)
+	    if (rechargeDeployed)
         {
             transform.localScale = 5 * Vector3.one;
             Instantiate(rechargeAudio, transform.position, Quaternion.identity);

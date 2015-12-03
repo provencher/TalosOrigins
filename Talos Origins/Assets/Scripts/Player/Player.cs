@@ -62,7 +62,7 @@ public class Player : MonoBehaviour
     bool mRising;
 
     // Invincibility timer
-    float kInvincibilityDuration = 0.5f;
+    float kInvincibilityDuration = 0.85f;
     public float mInvincibleTimer;
     bool mInvincible;
 
@@ -156,7 +156,7 @@ public class Player : MonoBehaviour
 		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
 		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
 		jumpLevelIndex 	   = 1f + (Mathf.Log10(jumpLevel)/ Mathf.Log10(5));
-		shieldUpgradeIndex = 1f + (Mathf.Log10(shieldLevel) / Mathf.Log10(5));
+		shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
 		mHealth 		   = 100;
 		UpdateHealthBar(mHealth);
 //
@@ -225,7 +225,7 @@ public class Player : MonoBehaviour
 
         FaceMouse();
         CheckGround();
-        CheckInvicible();
+        
 
         TranslateInDirection(CheckMove());
         //walkerScript.ApplyMovementDirection(CheckMove());
@@ -233,7 +233,7 @@ public class Player : MonoBehaviour
         //TriggerMelee();
        
         //FaceMouse();
-        UpdateAnimator();
+        
 
         if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
         {
@@ -294,10 +294,13 @@ public class Player : MonoBehaviour
 
 
          */
-        CheckJump();
+
+        CheckInvicible();
+        CheckJump();     
         mRising = mRigidBody2D.velocity.y > 0.0f;
         UpdateAnimator();
 
+        /*
         if (mInvincible)
         {
             mInvincibleTimer += Time.deltaTime;
@@ -308,30 +311,29 @@ public class Player : MonoBehaviour
             }
         }
         
-
+        */
     }
 
-    public IEnumerator InflictDamage(int damage)
+    public void InflictDamage(int damage)
     {        
 
         if (!mInvincible)
         {
             mInvincible = true;
-            mInvincibleTimer = kInvincibilityDuration * shieldUpgradeIndex;           
+            mInvincibleTimer = kInvincibilityDuration * shieldUpgradeIndex;   
+            gameObject.GetComponentInChildren<Shield>().rechargeDeployed = true;
 
             mHealth -= damage;
             UpdateHealthBar(mHealth);
 
             if (mHealth > 50)
             {
-                Instantiate(PainAudio1, transform.position, Quaternion.identity);
-                yield return new WaitForSeconds(Time.deltaTime);
+                Instantiate(PainAudio1, transform.position, Quaternion.identity);               
             }
 
             if (mHealth > 25 && mHealth < 50)
             {
-                Instantiate(PainAudio2, transform.position, Quaternion.identity);
-                yield return new WaitForSeconds(Time.deltaTime);
+                Instantiate(PainAudio2, transform.position, Quaternion.identity);               
             }
 
             if (mHealth > 0 && mHealth < 25)
@@ -339,14 +341,11 @@ public class Player : MonoBehaviour
                 Instantiate(PainAudio3, transform.position, Quaternion.identity);
             }
 
-        }
-        yield break;
+        }       
     }
 
     IEnumerator CheckDead()
-    {
-        
-
+    {      
         if (mHealth <= 0)
         {      
             Instantiate(PainAudio3, transform.position, Quaternion.identity);           
@@ -359,9 +358,7 @@ public class Player : MonoBehaviour
 			PlayerPrefs.SetInt("Blue Orbs", 0);
 			PlayerPrefs.SetInt("Yellow Orbs", 0);
 			PlayerPrefs.SetInt ("Total Orbs",0);
-
-            yield return new WaitForSeconds(0.3f);
-            PlayerPrefs.SetInt("Total Orbs", 0);
+            yield return new WaitForSeconds(0.5f);   
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
         yield break;
@@ -400,6 +397,7 @@ public class Player : MonoBehaviour
             {
                 mInvincibleTimer = 0;
                 mInvincible = false;
+                gameObject.GetComponentInChildren<Shield>().rechargeDeployed = false;
             }
             time = mInvincibleTimer;
         }    
@@ -631,7 +629,7 @@ public class Player : MonoBehaviour
     {
         if(!mInvincible)
         {
-            StartCoroutine(InflictDamage((int)shoveInfo.z));
+            InflictDamage((int)shoveInfo.z);
             // Get Shoved
             //mRigidBody2D.AddForce(new Vector3(5 * shoveInfo.x, 3, 0), ForceMode2D.Impulse);      
         }
@@ -675,7 +673,7 @@ public class Player : MonoBehaviour
 
     void HitByBullet(int damage)
     {
-        StartCoroutine(InflictDamage(damage));        
+        InflictDamage(damage);        
     }
 
     void PickupOrb(int type)
