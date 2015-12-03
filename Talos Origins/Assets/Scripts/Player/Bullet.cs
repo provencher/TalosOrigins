@@ -116,15 +116,15 @@ public class Bullet : MonoBehaviour {
     {
         if (DamageLevel == 0)
         {
-            mDamage = 1;
+            mDamage = 2;
         }    
         else if (mDamage == 1)
         {
-            mDamage = 2;
+            mDamage = 4;
         }    
         else
         {
-            mDamage =  (mDamage-1) * damageLevel;
+            mDamage =  mDamage * damageLevel;
         }       
         mDamage = Mathf.RoundToInt(mDamage * (1 / (1 - (numBullets/11))));       
     }
