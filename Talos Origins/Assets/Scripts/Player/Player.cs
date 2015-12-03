@@ -696,10 +696,14 @@ public class Player : MonoBehaviour
                 {
                     //mHealth += 5;
                     //mHealthSlider.value = mHealth;
-                    if(mHealth < mHealthSlider.maxValue)
+                    if (mHealth + 5 < mHealthSlider.maxValue)
+                    {    
+                       UpdateHealthBar(Mathf.RoundToInt(mHealthSlider.maxValue));
+                    }
+                    else
                     {
                         UpdateHealthBar(mHealth += 5);
-                    }                    
+                    }            
                 }
 
                 //Destroy orb
