@@ -826,7 +826,7 @@ public class Enemy : MonoBehaviour
                 if (mHealth <= 0)
                 {
                     Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                    DropOrbs(Random.Range(1, Mathf.CeilToInt(mCurrentLevel / 2 + mScaleValue)));
+                    DropOrbs(Mathf.CeilToInt(mCurrentLevel * mScaleValue));
                     NotifyOfDeath();
                     nbTimesDied++;
 
