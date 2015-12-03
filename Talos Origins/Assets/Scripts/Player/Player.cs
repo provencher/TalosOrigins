@@ -262,12 +262,14 @@ public class Player : MonoBehaviour
 			//GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
 			//GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
 			GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
-            if (mHealth > 0)
+            if (mHealth < 0)            
             {
-                GameObject.Find("health").GetComponent<Text>().text = mHealth.ToString() + "/" + mHealthSlider.maxValue.ToString();
+                mHealth = 0;
             }
-			//GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
-			//GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
+            GameObject.Find("health").GetComponent<Text>().text = mHealth.ToString() + "/" + mHealthSlider.maxValue.ToString();
+
+            //GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
+            //GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
             GameObject.Find("blueOrb").GetComponent<Text>().text = "" + orbTank[0];
             GameObject.Find("greenOrb").GetComponent<Text>().text = "" + orbTank[1];
             GameObject.Find("redOrb").GetComponent<Text>().text = "" + orbTank[2];
