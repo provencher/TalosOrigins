@@ -27,7 +27,7 @@
 
 
 #Gameplay Walkthrough
-https://www.youtube.com/watch?v=CB4YfCXkh94&feature=youtu.be 
+https://youtu.be/4Shf_nvfwJ8
 
 #Theme / Setting / Genre
 	The story a work of Science Fiction that takes place in the middle of a rebellion attempting to destroy
