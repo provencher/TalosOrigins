@@ -156,7 +156,7 @@ public class Player : MonoBehaviour
 		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
 		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
 		jumpLevelIndex 	   = 1f + (Mathf.Log10(jumpLevel)/ Mathf.Log10(5));
-		shieldUpgradeIndex = 1f + (Mathf.Log10(shieldUpgradeIndex)/ Mathf.Log10(5));
+		shieldUpgradeIndex = 1f + (Mathf.Log10(shieldLevel) / Mathf.Log10(5));
 		mHealth 		   = 100;
 		UpdateHealthBar(mHealth);
 //
