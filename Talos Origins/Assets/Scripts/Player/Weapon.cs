@@ -94,7 +94,7 @@ public class Weapon : MonoBehaviour {
 
                 mBullet.GetComponent<Bullet>().SetDirection(mBulletDirection.normalized, mTalos.PlayerVelocity());
                 //mBullet.GetComponent<Bullet>().mNumBullets = mNumberBullets;
-                mBullet.GetComponent<Bullet>().SetDamage(mNumberBullets, mDamageLevel);
+                mBullet.GetComponent<Bullet>().SetDamage(mNumberBullets, PlayerPrefs.GetInt("Big Bullets", 0));
             }
             
             //mBullet.SendMessage("BulletDamage", mGunDamage);
