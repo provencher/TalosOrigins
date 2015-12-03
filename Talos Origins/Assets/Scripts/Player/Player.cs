@@ -231,7 +231,7 @@ public class Player : MonoBehaviour
         //walkerScript.ApplyMovementDirection(CheckMove());
 
         //TriggerMelee();
-        CheckJump();
+       
         //FaceMouse();
         UpdateAnimator();
 
@@ -248,7 +248,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        /*
+        
 
 
 
@@ -262,7 +262,10 @@ public class Player : MonoBehaviour
 			//GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
 			//GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
 			GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
-			//GameObject.Find("health").GetComponent<Text>().text = "Health: " + mHealth.ToString();
+            if (mHealth > 0)
+            {
+                GameObject.Find("health").GetComponent<Text>().text = mHealth.ToString() + "/" + mHealthSlider.maxValue.ToString();
+            }
 			//GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
 			//GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
             GameObject.Find("blueOrb").GetComponent<Text>().text = "" + orbTank[0];
@@ -278,18 +281,18 @@ public class Player : MonoBehaviour
     void Update()
     {
         //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
-      
-        bool grounded = CheckGrounded();
-        if (!mGrounded && grounded)
-        {
-            mLandingSound.Play();
-        }
-        mGrounded = grounded;
-        */
-
-
         /*
+         bool grounded = CheckGrounded();
+         if (!mGrounded && grounded)
+         {
+             mLandingSound.Play();
+         }
+         mGrounded = grounded;
 
+
+
+         */
+        CheckJump();
         mRising = mRigidBody2D.velocity.y > 0.0f;
         UpdateAnimator();
 
@@ -302,7 +305,7 @@ public class Player : MonoBehaviour
                 mInvincibleTimer = 0.0f;
             }
         }
-        */
+        
 
     }
 
@@ -446,7 +449,7 @@ public class Player : MonoBehaviour
         {
             //Vector3 direction = target - transform.position;
             direction.z = 0;            
-            mRigidBody2D.AddForce(10*direction);
+            mRigidBody2D.AddForce(13*direction);
             //transform.position += direction.normalized * mMoveSpeed * Time.deltaTime;
         }
     }
@@ -714,7 +717,7 @@ public class Player : MonoBehaviour
 
     void UpdateHealthBar(int health)
 	{	
-		mHealthSlider.maxValue = Mathf.Round(100f + ( Mathf.Log10((float)healthPackLevel + 1f) * 10f));
+		mHealthSlider.maxValue = Mathf.CeilToInt(100 + ( Mathf.Log10(healthPackLevel + 1) * 30f));
 
         mHealthSlider.value = health;
         if (health < 60)
