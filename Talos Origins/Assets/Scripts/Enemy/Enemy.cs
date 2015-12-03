@@ -170,6 +170,7 @@ public class Enemy : MonoBehaviour
         gameObject.GetComponent<EnemyHealthBar>().curHealth = mHealth;
         if (mHealth <= 0)
         {
+            mHealth = 0;
             NotifyOfDeath();
         }
     }
@@ -826,7 +827,7 @@ public class Enemy : MonoBehaviour
                 if (mHealth <= 0)
                 {
                     Instantiate(Explosion, transform.position, Quaternion.identity);       //Instantiate Explosion   
-                    DropOrbs(Mathf.RoundToInt(Random.Range(mCurrentLevel/2 + mScaleValue, mCurrentLevel * mScaleValue))/2);
+                    DropOrbs(Mathf.CeilToInt(Random.Range(mCurrentLevel/2 * mScaleValue + 1, mCurrentLevel * mScaleValue))/2);
                     NotifyOfDeath();
                     nbTimesDied++;
 
