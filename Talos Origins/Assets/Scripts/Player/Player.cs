@@ -760,7 +760,7 @@ public class Player : MonoBehaviour
             jumpLevel = PlayerPrefs.GetInt("Jump");
             jumpLevelIndex = 1f + (jumpLevel * 0.1f);
 
-            healthPackLevel = PlayerPrefs.GetInt("Health Pack");
+            healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
 			shieldLevel = PlayerPrefs.GetInt("Shield");
 			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
 			UpdateHealthBar(mHealth);        
