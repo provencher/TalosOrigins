@@ -245,7 +245,8 @@ public class Player : MonoBehaviour
         UpdateAnimator();
         UpdateCameraVelocity();
         UpdateUIText();
-        UpdateHealthBar(mHealth);
+        rechargeHealth();
+
 
 
 
@@ -626,15 +627,7 @@ public class Player : MonoBehaviour
             if (other.gameObject.tag == "Orb")
             {
                 //Pickup orb                
-                PickupOrb(other.gameObject.GetComponent<Orb>().type);
-                if(other.gameObject.GetComponent<Orb>().type == 3)
-                {
-                    //mHealth += 5;
-                    //mHealthSlider.value = mHealth;
-                    //UpdateHealthBar(mHealth + 5);                  
-                           
-                }
-
+                PickupOrb(other.gameObject.GetComponent<Orb>().type);      
                 //Destroy orb
                 other.gameObject.GetComponent<Orb>().pickedUp = true;
             }
@@ -654,15 +647,35 @@ public class Player : MonoBehaviour
         }
     }
 
+
+    void rechargeHealth()
+    {
+        int healthUp = mHealth;
+        // if not invincible, recharge health
+        if (!mInvincible)
+        {
+            //restore health based on healthpack level
+            healthUp = mHealth +  Mathf.CeilToInt(healthPackLevel * Time.deltaTime/128 * shieldLevel);
+            UpdateHealthBar(healthUp);
+        }
+        UpdateHealthBar(healthUp);
+    }
+
+
     void UpdateHealthBar(int health)
 	{	
 		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(100 + Mathf.Pow(2, healthPackLevel));
+        
 
-        if(health > maxVal)
+        if (health > maxVal)
         {
             health = Mathf.RoundToInt(mHealthSlider.maxValue);
         }
 
+        if (mHealth / maxVal * 100 > 60)
+        {
+            mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(0, 255, 0);
+        }
         if (mHealth/maxVal * 100 < 60)
         {
             mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 255, 0);
