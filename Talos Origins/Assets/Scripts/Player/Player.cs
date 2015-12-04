@@ -157,53 +157,11 @@ public class Player : MonoBehaviour
 		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
 		jumpLevelIndex 	   = 1f + (Mathf.Log10(jumpLevel)/ Mathf.Log10(5));
 		shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-		mHealth 		   = 100;
-		UpdateHealthBar(mHealth);
-//
-//		jumpLevelIndex 	   = 1f + (Mathf.Log(jumpLevel)/ Mathf.Log (5));
-//		shieldUpgradeIndex = 1f + (Mathf.Log(shieldUpgradeIndex)/ Mathf.Log (5));
-//		mHealth 		   = (int)(100f + (Mathf.Log((float)healthPackLevel) * 10f));
-
-
-
-        //walkerScript = GetComponent<Attachment_WallWalker>();
-        //walkerScript.USERINPUT = true;
-
-
-        // UI Text
-        /*exitDistance = GameObject.Find("DistanceExit").GetComponent<Text>();
-        enemiesLeft = GameObject.Find("EnemiesRemaining").GetComponent<Text>();
-        curLevel = GameObject.Find("CurrentLevel").GetComponent<Text>();
-        talosHealth = GameObject.Find("TalosHealth").GetComponent<Text>();
-        experience = GameObject.Find("Experience").GetComponent<Text>();
-        actionPts = GameObject.Find("ActionPoints").GetComponent<Text>();
-        invicibleTime = GameObject.Find("Invicible").GetComponent<Text>();*/
-
-
-        /*
-        // Obtain ground check components and store in list
-        mGroundCheckList = new List<GroundCheck>();
-        GroundCheck[] groundChecksArray = transform.GetComponentsInChildren<GroundCheck>();
-        foreach (GroundCheck g in groundChecksArray)
-        {
-            mGroundCheckList.Add(g);
-        }
-
-        // Get audio references
-        AudioSource[] audioSources = GetComponents<AudioSource>();
-        mLandingSound = audioSources[0];
-        mWallKickSound = audioSources[1];
-        mTakeDamageSound = audioSources[2];
-        */        
+		mHealth 		   = Mathf.CeilToInt(100 + Mathf.Pow(2, healthPackLevel));
+		UpdateHealthBar(mHealth);  
 
     }
 
-    /*
-    void Update()
-    {
-        velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized * 5;
-    }
-    */
 
     void InitOrbTank()
     {
@@ -281,19 +239,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        //rigidbody.MovePosition(rigidbody.position + velocity * Time.fixedDeltaTime);       
-        /*
-         bool grounded = CheckGrounded();
-         if (!mGrounded && grounded)
-         {
-             mLandingSound.Play();
-         }
-         mGrounded = grounded;
-
-
-
-         */
-
         CheckInvicible();
         CheckJump();     
         mRising = mRigidBody2D.velocity.y > 0.0f;
@@ -301,18 +246,9 @@ public class Player : MonoBehaviour
         UpdateCameraVelocity();
         UpdateUIText();
         UpdateHealthBar(mHealth);
-        /*
-        if (mInvincible)
-        {
-            mInvincibleTimer += Time.deltaTime;
-            if (mInvincibleTimer >= kInvincibilityDuration)
-            {
-                mInvincible = false;
-                mInvincibleTimer = 0.0f;
-            }
-        }
-        
-        */
+
+
+
     }
 
     public void InflictDamage(int damage)
@@ -695,7 +631,7 @@ public class Player : MonoBehaviour
                 {
                     //mHealth += 5;
                     //mHealthSlider.value = mHealth;
-                    UpdateHealthBar(mHealth + 5);                  
+                    //UpdateHealthBar(mHealth + 5);                  
                            
                 }
 
@@ -720,24 +656,24 @@ public class Player : MonoBehaviour
 
     void UpdateHealthBar(int health)
 	{	
-		mHealthSlider.maxValue = Mathf.CeilToInt(100 + healthPackLevel * 10);
+		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(100 + Mathf.Pow(2, healthPackLevel));
 
-        if(health > mHealthSlider.maxValue)
+        if(health > maxVal)
         {
             health = Mathf.RoundToInt(mHealthSlider.maxValue);
         }
-        mHealthSlider.value = health;
-        mHealth = health;       
 
-
-        if (health < 60)
+        if (mHealth/maxVal * 100 < 60)
         {
             mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 255, 0);
         }
-        if (health < 30)
+        if (mHealth / maxVal * 100 < 30)
         {
             mHealthSlider.transform.FindChild("Fill Area").FindChild("Fill").GetComponent<Image>().color = new Color(255, 0, 0);
         }
+
+        mHealthSlider.value = health;
+        mHealth = health;
     }
 
 	public void UpdatePlayer()
