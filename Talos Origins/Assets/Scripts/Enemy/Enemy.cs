@@ -703,7 +703,7 @@ public class Enemy : MonoBehaviour
     // Each level, enemies do an extra 5% damage
     public float CalculateDamage()
     { 
-        return 3 * mScaleValue * mCurrentLevel;
+        return Mathf.Pow(2, mCurrentLevel) * mScaleValue;
     }
 
 

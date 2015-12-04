@@ -120,12 +120,14 @@ public class Player : MonoBehaviour
     List<GroundCheck> mGroundCheckList;
     */
 
-    void Awake()
-	{
+    void Start()
+    {
+        bool reset = false;
         //Removes all upgrades
         if (PlayerPrefs.GetInt("resetGame") == 1)
         {
-            Draggable[] upgrades = GameObject.FindObjectsOfType<Draggable>();
+            reset = true;
+            Draggable[] upgrades = FindObjectsOfType<Draggable>();
             foreach (Draggable upgrade in upgrades)
             {
                 upgrade.resetStat = true;
@@ -134,10 +136,7 @@ public class Player : MonoBehaviour
             // Disable so upgrades persist on death
             PlayerPrefs.SetInt("resetGame", 0);
         }
-    }
 
-    void Start()
-    {
         // Get references to other components and game objects
         mRigidBody2D 	 = GetComponent<Rigidbody2D>();
         mAnimator 		 = GetComponent<Animator>();
@@ -151,15 +150,25 @@ public class Player : MonoBehaviour
 		mShopOn = false;
 		mShopCanvas.SetActive (false);
 
-		// Set the Upgrades
-		jumpLevel 		   = PlayerPrefs.GetInt ("Jump");
-		healthPackLevel    = PlayerPrefs.GetInt ("Health Pack");
-		shieldLevel 	   = PlayerPrefs.GetInt ("Shield");
-		jumpLevelIndex 	   = 1f + (Mathf.Log10(jumpLevel)/ Mathf.Log10(5));
-		shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-		mHealth 		   = Mathf.CeilToInt(100 + Mathf.Pow(2, healthPackLevel));
-		UpdateHealthBar(mHealth);  
+        if (reset)
+        {
+            // Set the Upgrades manually to zero
+            jumpLevel = 0;
+            healthPackLevel = 0;
+            shieldLevel = 0;
+        }
+        else
+        {
+            // Set the Upgrades to their saved values
+            jumpLevel = PlayerPrefs.GetInt("Jump", 0);
+            healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
+            shieldLevel = PlayerPrefs.GetInt("Shield", 0);           
+        }
+        jumpLevelIndex = 1f + (Mathf.Log10(jumpLevel) / Mathf.Log10(5));
+        shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
+        mHealth = Mathf.CeilToInt(10 + Mathf.Pow(2, healthPackLevel) - 1);
 
+        UpdateHealthBar(mHealth);
     }
 
 
@@ -648,23 +657,32 @@ public class Player : MonoBehaviour
     }
 
 
+    float heartbeat = 0;
     void rechargeHealth()
     {
         int healthUp = mHealth;
+        
         // if not invincible, recharge health
         if (!mInvincible)
         {
-            //restore health based on healthpack level
-            healthUp = mHealth +  Mathf.CeilToInt(healthPackLevel * Time.deltaTime/128 * shieldLevel);
-            UpdateHealthBar(healthUp);
+            if(heartbeat < 0.5f * 1/healthPackLevel)
+            {
+                heartbeat += Time.deltaTime;
+            }
+            else
+            {
+                healthUp = mHealth + 1;
+                heartbeat = 0;
+            }             
+        
         }
-        UpdateHealthBar(healthUp);
+        UpdateHealthBar(healthUp);    
     }
 
 
     void UpdateHealthBar(int health)
 	{	
-		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(100 + Mathf.Pow(2, healthPackLevel));
+		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(10 + Mathf.Pow(2, healthPackLevel) - 1);
         
 
         if (health > maxVal)
