@@ -3,10 +3,13 @@ using System.Collections;
 
 public class EnemyHealthBar : MonoBehaviour
 {
+    [SerializeField]
+    public Font ArcadeFont;
 
     public int maxHealth = 100;
     public int curHealth = 100;
     public float healthBarLength;
+    GUIStyle myCustomStyle;
 
     int healthBarScreenRatio = 10;
 
@@ -21,9 +24,13 @@ public class EnemyHealthBar : MonoBehaviour
         Vector3 boxSize = gameObject.GetComponent<BoxCollider2D>().size;
         Vector3 scale = transform.localScale;        
 
-        offset = new Vector3(-boxSize.x * scale.x / 2, boxSize.y * scale.y / 1.15f, 0);
+        offset = new Vector3(0,  boxSize.y * scale.y / 1.4f, 0);
         healthBarLength = Screen.width / healthBarScreenRatio;
         isBoss = gameObject.GetComponent<Enemy>().isBoss;
+        myCustomStyle = new GUIStyle();
+        myCustomStyle.font = ArcadeFont;
+        myCustomStyle.normal.textColor = Color.white;
+
     }    
 
     // Update is called once per frame
@@ -40,7 +47,8 @@ public class EnemyHealthBar : MonoBehaviour
         if (!isBoss && curHealth < maxHealth)
         {
             Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
-            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), curHealth + "/" + maxHealth);
+            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), curHealth + "/" + maxHealth, myCustomStyle);
+            //GUI.Box.
         }        
     }
 
