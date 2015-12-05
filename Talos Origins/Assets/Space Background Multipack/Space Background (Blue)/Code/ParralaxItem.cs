@@ -15,6 +15,8 @@ class ParralaxItem : MonoBehaviour
     float timeCounter = 0;
 
     int[] primes = { 53, 97, 193, 389};
+    public bool alive = true;
+    public bool destroyed = false;
 
     void Start()
     {
@@ -31,8 +33,27 @@ class ParralaxItem : MonoBehaviour
         return dir;
     }
 
+    public IEnumerator destroy()
+    {
+       while (transform.localScale.x > 0)
+        {
+            transform.localScale -= new Vector3(0.0005f*Time.deltaTime, 0.0005f*Time.deltaTime, 0.001f);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        destroyed = false;
+        yield break;
+    }
+
+
+
     void Update()
     {
+        if(!alive)
+        {
+            StartCoroutine(destroy());
+        }
+
+
         transform.position += direction * Time.deltaTime;
         transform.Rotate(rotationAxis, rotationSpeed * Time.deltaTime);
         timeCounter += Time.deltaTime;

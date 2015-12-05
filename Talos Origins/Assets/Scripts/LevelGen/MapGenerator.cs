@@ -80,6 +80,8 @@ public class MapGenerator : MonoBehaviour
 
     int[,] map;
 
+    public bool victory = false;
+
     void Awake()
     {
         currentLevel = PlayerPrefs.GetInt("currentLevel", 1);
@@ -116,8 +118,13 @@ public class MapGenerator : MonoBehaviour
     }
 
     void NextLevel()
-    {
+    {        
+        if(currentLevel < 0)
+        {
+            currentLevel = 0;
+        }
         currentLevel++;
+
         GenerateMap();
     }
 
@@ -129,60 +136,83 @@ public class MapGenerator : MonoBehaviour
 
     void SetLevelParameters()
     {
-        if (currentLevel == 0)
+        if (currentLevel <= 0)
         {
             currentLevel = 1;
         }
 
+        if(victory || currentLevel == -1)
+        {
+            currentLevel = -1;
+        }
+    
+
         // Save Current Level
         PlayerPrefs.SetInt("currentLevel", currentLevel);
 
-        levelScale = UnityEngine.Random.Range(1, 3);
+        if (!victory)
+        {
+            levelScale = UnityEngine.Random.Range(1, 3);
 
-        width = ++startWidth;
-        height = ++startHeight;
+            width = ++startWidth;
+            height = ++startHeight;
 
-        int densityModifer = 3;// UnityEngine.Random.Range((currentLevel / levelScale) + 1, 2*(currentLevel / levelScale) + 1);
+            int densityModifer = 3;// UnityEngine.Random.Range((currentLevel / levelScale) + 1, 2*(currentLevel / levelScale) + 1);
 
-        width = (int) Mathf.Round((startWidth + levelScale * currentLevel / densityModifer)*0.65f);
+            width = (int)Mathf.Round((startWidth + levelScale * currentLevel / densityModifer) * 0.65f);
+
+
+            randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
+
+            if (randomFillPercent < 48)
+            {
+                width = Mathf.CeilToInt(width * 0.85f);
+            }
+            // set max values for map size
+            width = Math.Min(250, width);
+            height = width / 2;
+
+
+            //Reset Level Parameters
+            mapPointOccupied = new Dictionary<Coord, int>();
+            GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
+            GameObject.Find("Talos").GetComponent<Trail>().ResetTrail();
+
+            //enemies = new List<GameObject>();
+            //asteroids = new List<GameObject>();
+
+            numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
+            numEnemiesToSpawn = (densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel))) / 3;
+            bossRound = false;
+
+            numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
+            numEnemiesToSpawn = Mathf.Clamp(numEnemiesToSpawn, 1, 300);
+
+
+            //DISABLED BOSSES
+            if (false && currentLevel % 10 == 0)
+            {
+                bossRound = true;
+                randomFillPercent = bossFillPercent;
+                numEnemiesToSpawn = currentLevel / 10;
+                width = 5 * levelScale * densityModifer;
+                height = 25;
+            }
+        }
+        else
+        {
+            width = 300;
+            height = 50;
+            numAsteroidsToSpawn = 0;
+            numEnemiesToSpawn = 0;
+            randomFillPercent = 10;
+        }
+
+        
+        
+
+
        
-
-        randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
-
-        if (randomFillPercent < 48)
-        {
-            width = Mathf.CeilToInt(width * 0.85f);            
-        }
-        // set max values for map size
-        width = Math.Min(250, width);
-        height = width / 2;
-
-
-        //Reset Level Parameters
-        mapPointOccupied = new Dictionary<Coord, int>();    
-        GameObject.Find("Talos").GetComponent<Grapple>().grapplehooked = false;
-        GameObject.Find("Talos").GetComponent<Trail>().ResetTrail();
-
-        //enemies = new List<GameObject>();
-        //asteroids = new List<GameObject>();
-
-        numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
-        numEnemiesToSpawn = (densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)))/3;
-        bossRound = false;
-
-        numAsteroidsToSpawn =  Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
-        numEnemiesToSpawn = Mathf.Clamp(numEnemiesToSpawn, 1, 300);
-
-
-        //DISABLED BOSSES
-        if (false && currentLevel % 10 == 0)
-        {
-            bossRound = true;
-            randomFillPercent = bossFillPercent;
-            numEnemiesToSpawn = currentLevel / 10;
-            width = 5 * levelScale * densityModifer;
-            height = 25;
-        }
 
 
        

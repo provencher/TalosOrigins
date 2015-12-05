@@ -115,13 +115,42 @@ public class Player : MonoBehaviour
 
 
     public Attachment_WallWalker walkerScript;
-	
+
     /*
     [SerializeField]
     LifeMeter life;
 
     List<GroundCheck> mGroundCheckList;
     */
+    float loadTime = 0;
+    void CheckWin()
+    {      
+        if(transform.position.y < -120)
+        {
+            ParralaxItem[] backgroundelements = FindObjectsOfType<ParralaxItem>();
+            foreach (ParralaxItem elem in backgroundelements)
+            {
+                if (elem.alive)
+                {
+                    elem.alive = false;
+                }                
+            }
+            loadTime += Time.deltaTime;
+
+            if (loadTime > 2)
+            {               
+                Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+            }
+            if(loadTime > 3)
+            {
+                loadTime = 0;                
+                MapGenerator instance = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+                instance.victory = true;
+                instance.cycleLevel = true;                
+            }            
+        }
+    }
+    
 
     void Start()
     {
@@ -245,6 +274,7 @@ public class Player : MonoBehaviour
         UpdateUIText();
         rechargeHealth();
         CalculateTotalOrbs();
+        CheckWin();
 
         if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
         {

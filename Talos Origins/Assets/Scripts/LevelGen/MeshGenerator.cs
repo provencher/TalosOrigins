@@ -28,6 +28,9 @@ public class MeshGenerator : MonoBehaviour
     [SerializeField]
     public Material mat8;
 
+    [SerializeField]
+    public Material god;
+
 
     public SquareGrid squareGrid;
     public MeshFilter walls;
@@ -77,6 +80,12 @@ public class MeshGenerator : MonoBehaviour
 
         }
 
+        if (PlayerPrefs.GetInt("currentLevel") == -1)
+        {
+
+            cave.GetComponent<MeshRenderer>().material = god;
+        }
+
 
 
     }
@@ -105,7 +114,7 @@ public class MeshGenerator : MonoBehaviour
         cave.mesh = mesh;
 
         SelectMaterial();
-
+  
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();

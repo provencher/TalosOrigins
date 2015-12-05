@@ -17,7 +17,7 @@ public class PortalOpen : MonoBehaviour {
     float portalCoolDown = 12.0f;
     float coolDownTime = 0;
 	int portalCoolDownLevel;
-
+    public bool portalOpen = false;
   
 
     public IEnumerator SpawnPortal(bool leaving)
@@ -73,11 +73,11 @@ public class PortalOpen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if(Input.GetButtonDown("MapGeneration") && coolDownTime <= 0)
+	    if(Input.GetButtonDown("MapGeneration") && coolDownTime <= 0 || portalOpen)
         {
 			portalCoolDownLevel = PlayerPrefs.GetInt ("Portal Cooldown", 0);
             coolDownTime = portalCoolDown - (float)portalCoolDownLevel;
-			Debug.Log (coolDownTime);
+			//Debug.Log (coolDownTime);
             StartCoroutine(SpawnPortal(true));
         }
         else if (coolDownTime > 0)
