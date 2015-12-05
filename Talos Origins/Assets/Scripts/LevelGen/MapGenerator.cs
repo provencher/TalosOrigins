@@ -145,15 +145,15 @@ public class MapGenerator : MonoBehaviour
         {
             currentLevel = -1;
         }
-    
 
+        
         // Save Current Level
         PlayerPrefs.SetInt("currentLevel", currentLevel);
 
         if (!victory)
         {
             levelScale = UnityEngine.Random.Range(1, 3);
-
+            mTalos.GetComponentInChildren<Shield>().rechargeDeployed = true;
             width = ++startWidth;
             height = ++startHeight;
 
