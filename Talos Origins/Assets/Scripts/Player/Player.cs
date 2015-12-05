@@ -85,6 +85,8 @@ public class Player : MonoBehaviour
     AudioSource mWallKickSound;
     AudioSource mTakeDamageSound;
 
+    GameObject mOrbMachine;
+
 //    [SerializeField]
 //    GameObject mDeathParticleEmitter;
 
@@ -105,6 +107,7 @@ public class Player : MonoBehaviour
 	int healthPackLevel;
 	int shieldLevel;
 	float shieldUpgradeIndex;
+    int totalOrbs = 0;
 
 	Vector3 lastInGamePosition;
 
@@ -136,7 +139,8 @@ public class Player : MonoBehaviour
             // Disable so upgrades persist on death
             PlayerPrefs.SetInt("resetGame", 0);
         }
-
+        mOrbMachine = GameObject.Find("Orbs");
+        totalOrbs = mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount;
         // Get references to other components and game objects
         mRigidBody2D 	 = GetComponent<Rigidbody2D>();
         mAnimator 		 = GetComponent<Animator>();
@@ -146,7 +150,7 @@ public class Player : MonoBehaviour
         mMeleeTimer 	 = 0;
         mShoveDirection  = Vector2.zero;
         mInvincibleTimer = 0;
-        InitOrbTank();
+        InitOrbTank(PlayerPrefs.GetInt("Total Orbs"));
 		mShopOn = false;
 		mShopCanvas.SetActive (false);
 
@@ -172,7 +176,7 @@ public class Player : MonoBehaviour
     }
 
 
-    void InitOrbTank()
+    void InitOrbTank(int orbs)
     {
 		//Blue Orb 	 = 0
 		//Green Orb  = 1
@@ -182,6 +186,13 @@ public class Player : MonoBehaviour
 		for (int i=0; i < orbTank.Length; i++) {
 			orbTank[i] = 0;
 		}
+        orbTank[0] = orbs;
+    }
+
+    void CalculateTotalOrbs()
+    {        
+        totalOrbs = (5 * orbTank[3] + 3 * orbTank[2] + 2 * orbTank[1] + orbTank[0]);
+        PlayerPrefs.SetInt("Total Orbs", totalOrbs);
     }
 
     void FixedUpdate()
@@ -199,26 +210,7 @@ public class Player : MonoBehaviour
 
         //TriggerMelee();
        
-        //FaceMouse();
-        
-
-        if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
-        {
-
-            if (mShopOn)
-            {
-                ShopCancelClick();
-            }
-            else
-            {
-                EnterShop();
-            }
-        }
-
-        
-
-
-
+        //FaceMouse();        
         
     }
 
@@ -236,10 +228,7 @@ public class Player : MonoBehaviour
 
             //GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
             //GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
-            GameObject.Find("blueOrb").GetComponent<Text>().text = "" + orbTank[0];
-            GameObject.Find("greenOrb").GetComponent<Text>().text = "" + orbTank[1];
-            GameObject.Find("redOrb").GetComponent<Text>().text = "" + orbTank[2];
-            GameObject.Find("yellowOrb").GetComponent<Text>().text = "" + orbTank[3];
+            GameObject.Find("orbs").GetComponent<Text>().text = totalOrbs.ToString();           
         }
         catch(Exception e){
 			//Do Nothing
@@ -255,6 +244,20 @@ public class Player : MonoBehaviour
         UpdateCameraVelocity();
         UpdateUIText();
         rechargeHealth();
+        CalculateTotalOrbs();
+
+        if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
+        {
+
+            if (mShopOn)
+            {
+                ShopCancelClick();
+            }
+            else
+            {
+                EnterShop();
+            }
+        }
 
 
 
@@ -708,8 +711,8 @@ public class Player : MonoBehaviour
     }
 
 	public void UpdatePlayer()
-	{
-		if(GameObject.Find ("Orbs").GetComponent<ShopOrbs>().totalOrbsCount >= 0){
+	{        
+        if (mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount >= 0){
 
 			Instantiate(ConfirmAudio, transform.position, Quaternion.identity);
 			mCanvas.SetActive(true);
@@ -729,10 +732,9 @@ public class Player : MonoBehaviour
             healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
 			shieldLevel = PlayerPrefs.GetInt("Shield");
 			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-			UpdateHealthBar(mHealth);        
-          
-
+			UpdateHealthBar(mHealth);    
         }
+        InitOrbTank(PlayerPrefs.GetInt("Total Orbs",0));      
 	}
 
 	 public void ShopCancelClick()

@@ -14,7 +14,7 @@ public class ShopOrbs : MonoBehaviour {
 	int redDiff, blueDiff, greenDiff, yellowDiff;
 	
 
-	public int totalOrbsCount;
+	public int totalOrbsCount = 0;
 
 	void Start(){
 		red = blue = green = yellow = 0;
@@ -24,7 +24,8 @@ public class ShopOrbs : MonoBehaviour {
 	void OnEnable () {
 	
 		Cursor.visible = true;
-
+        UpdateTotalOrbsFrame();
+        /*
 		redDiff = PlayerPrefs.GetInt ("Red Orbs") - red;
 		greenDiff = PlayerPrefs.GetInt ("Green Orbs") - green;
 		blueDiff = PlayerPrefs.GetInt ("Blue Orbs") - blue;
@@ -38,9 +39,9 @@ public class ShopOrbs : MonoBehaviour {
 		if(totalOrbsCount < 0){
 			totalOrbsCount = 0;
 		}
-
-		totalOrbsCount = PlayerPrefs.GetInt ("Total Orbs");
-		totalOrbsCount += (5 * blueDiff + 3 * redDiff + 2 * greenDiff +  1 * yellowDiff);
+        */
+        totalOrbsCount = PlayerPrefs.GetInt ("Total Orbs",0);
+		//totalOrbsCount += (5 * blueDiff + 3 * redDiff + 2 * greenDiff +  1 * yellowDiff);
 	}
 	
 	// Update is called once per frame
