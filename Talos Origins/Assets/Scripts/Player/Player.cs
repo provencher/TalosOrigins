@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
         }
         jumpLevelIndex = 1f + (Mathf.Log10(jumpLevel) / Mathf.Log10(5));
         shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-        mHealth = Mathf.CeilToInt(10 + Mathf.Pow(2, healthPackLevel) - 1);
+        mHealth = Mathf.CeilToInt(5 * Mathf.Pow(2, healthPackLevel));
 
         UpdateHealthBar(mHealth);
     }
@@ -305,7 +305,7 @@ public class Player : MonoBehaviour
 			PlayerPrefs.SetInt("Blue Orbs", 0);
 			PlayerPrefs.SetInt("Yellow Orbs", 0);
 			PlayerPrefs.SetInt ("Total Orbs",0);
-            yield return new WaitForSeconds(0.5f);   
+            yield return new WaitForSeconds(0.2f);   
             GameObject.Find("MapGenerator").SendMessage("ResetGame");            
         }
         yield break;
@@ -665,7 +665,7 @@ public class Player : MonoBehaviour
         // if not invincible, recharge health
         if (!mInvincible)
         {
-            if(heartbeat < 0.5f * 1/healthPackLevel)
+            if(heartbeat < 0.25f * 1/healthPackLevel)
             {
                 heartbeat += Time.deltaTime;
             }
@@ -682,7 +682,7 @@ public class Player : MonoBehaviour
 
     void UpdateHealthBar(int health)
 	{	
-		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(10 + Mathf.Pow(2, healthPackLevel) - 1);
+		float maxVal = mHealthSlider.maxValue = Mathf.CeilToInt(5 * Mathf.Pow(2, healthPackLevel));
         
 
         if (health > maxVal)
