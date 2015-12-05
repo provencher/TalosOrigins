@@ -182,7 +182,7 @@ public class Enemy : MonoBehaviour
         mDamageModifier = 5;
         //mHealth = Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(1, 15));
 
-        mHealth =Mathf.CeilToInt( Mathf.Pow(2, mCurrentLevel) * mScaleValue);
+        mHealth = Mathf.CeilToInt(mScaleValue * Mathf.Pow(2, mCurrentLevel));
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
@@ -265,7 +265,7 @@ public class Enemy : MonoBehaviour
     {
         gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
         mDamageModifier = 5;
-        mHealth = Mathf.CeilToInt(mScaleValue * Random.Range(mCurrentLevel, mCurrentLevel * Random.Range(3,5)));
+        mHealth = Mathf.CeilToInt(mScaleValue*Mathf.Pow(2, mCurrentLevel));
 
         gameObject.GetComponent<EnemyHealthBar>().maxHealth = mHealth;
 
