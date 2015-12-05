@@ -228,6 +228,7 @@ public class Player : MonoBehaviour
         myCustomStyle.normal.textColor = Color.white;
         GetComponent<BoxCollider2D>();       
         offset = new Vector3(0,  GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
+        UpdatePlayer();
     }
 
 
