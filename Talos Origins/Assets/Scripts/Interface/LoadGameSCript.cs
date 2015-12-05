@@ -12,6 +12,7 @@ public class LoadGameSCript : MonoBehaviour {
             PlayerPrefs.SetInt("Total Orbs", 200);
             //PlayerPrefs.SetInt("resetGame", 0);
             PlayerPrefs.SetInt("Grapple", 0);
+            PlayerPrefs.SetInt("Big Bullets", 0);
             PlayerPrefs.SetInt("Rate of Fire", 0);
             PlayerPrefs.SetInt("Spray Bullets", 0);
             PlayerPrefs.SetInt("Jump", 0);
