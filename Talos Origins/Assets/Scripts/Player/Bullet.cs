@@ -114,18 +114,9 @@ public class Bullet : MonoBehaviour {
 
     public void SetDamage(int numBullets, int damageLevel)
     {
-        if (damageLevel == 0)
-        {
-            mDamage = 2;
-        }    
-        else if (damageLevel == 1)
-        {
-            mDamage = 4;
-        }    
-        else
-        {
-            mDamage = mDamage * damageLevel;
-        }       
+     
+        mDamage =Mathf.CeilToInt( Mathf.Pow(2, damageLevel * damageLevel));
+           
         if(numBullets > 1)
         {
             float bulletScale = 1 - (numBullets / 10f);
