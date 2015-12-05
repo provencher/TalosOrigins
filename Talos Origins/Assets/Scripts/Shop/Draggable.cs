@@ -30,6 +30,7 @@ public class Draggable : MonoBehaviour{
 
 	int currentUpgradeLevel;
 	int originalLevel;
+    int currentCost;
 
     public bool resetStat = false;
 
@@ -43,6 +44,14 @@ public class Draggable : MonoBehaviour{
 			resetStat = false;
         }
         originalLevel = currentUpgradeLevel = PlayerPrefs.GetInt (gameObject.name);
+        /*
+        currentCost = PlayerPrefs.GetInt(gameObject.name + "-cost", mCost);
+        if(currentCost == 0)
+        {
+            PlayerPrefs.SetInt(gameObject.name + "-cost", mCost);
+            currentCost = mCost;
+        }
+        */
 
 		SetText ();
 		SetCost ();
@@ -60,7 +69,7 @@ public class Draggable : MonoBehaviour{
 
 	public void LevelUpClick ()
 	{
-		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount > cost)
+		if (GameObject.Find ("Orbs").GetComponent<ShopOrbs> ().totalOrbsCount >= cost)
 		{
 			if(currentUpgradeLevel == 10 && mHasCap)
 			{
@@ -106,6 +115,9 @@ public class Draggable : MonoBehaviour{
 
 	void SetCost(){
 
+        //cost = PlayerPrefs.GetInt(gameObject.name + "-cost", mCost);
+
+        
 		if (currentUpgradeLevel == 0) {
 			cost = mCost;
 		}
@@ -115,10 +127,10 @@ public class Draggable : MonoBehaviour{
 
 			for (int i = 1; i <= currentUpgradeLevel; i++) 
 			{
-				cost = cost + (cost / 2);
+				cost = Mathf.CeilToInt( cost * 2 * Mathf.Pow(1.05f, i));
 			}
-		}
-	}
+		}        
+    }
 
 	void SetText()
 	{
