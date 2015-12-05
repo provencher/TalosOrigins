@@ -23,6 +23,10 @@ public class LoadGameSCript : MonoBehaviour {
             PlayerPrefs.SetInt("Portal Cooldown", 0);            
             PlayerPrefs.SetInt("currentLevel", 1);            
         }       
+        else
+        {
+            PlayerPrefs.SetInt("Total Orbs", 0);
+        }
 
         Application.LoadLevel(1);
     }
