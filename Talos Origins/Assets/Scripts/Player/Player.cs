@@ -665,7 +665,7 @@ public class Player : MonoBehaviour
         // if not invincible, recharge health
         if (!mInvincible)
         {
-            if(heartbeat < 0.25f * 1/healthPackLevel)
+            if(heartbeat < 0.33f * 1/(healthPackLevel+1))
             {
                 heartbeat += Time.deltaTime;
             }
