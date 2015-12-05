@@ -115,7 +115,7 @@ public class Bullet : MonoBehaviour {
     public void SetDamage(int numBullets, int damageLevel)
     {
      
-        mDamage =Mathf.CeilToInt( Mathf.Pow(2, damageLevel));
+        mDamage =Mathf.CeilToInt( Mathf.Pow(1.8f, damageLevel));
            
         if(numBullets > 1)
         {
