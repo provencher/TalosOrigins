@@ -681,7 +681,7 @@ public class Player : MonoBehaviour
     void PickupOrb(int type)
     {
         //Debug.Log("Picked Orb of type " + type.ToString());
-        orbTank[type] += Mathf.CeilToInt(mCurrentLevel/1.5f * Mathf.Pow(1.05f, mCurrentLevel));
+        orbTank[type] += Mathf.CeilToInt(mCurrentLevel/2 + 0.5f);
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -776,8 +776,17 @@ public class Enemy : MonoBehaviour
         {
             if (i < numOrbs)
             {
-                gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(0, 2));
-            }else
+                if(Random.Range(0,6) ==1)
+                {
+                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(0);
+
+                }
+                else
+                {
+                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(1);
+                }
+            }
+            else
             {
                 gameObject.GetComponentInParent<OrbController>().SpawnOrb(collectedOrbs[i - numOrbs]);
             }
