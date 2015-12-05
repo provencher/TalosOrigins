@@ -179,83 +179,49 @@ public class Player : MonoBehaviour
     bool init = false;
     void Start()
     {
-        init = true;        
-    }
-
-    void Init()
-    {
-        if(init)
-        {
-            bool reset = false;
-            //Removes all upgrades
-            if (PlayerPrefs.GetInt("resetGame") == 1)
-            {
-                // Disable so upgrades persist on death
-                PlayerPrefs.SetInt("resetGame", 0);
-                PlayerPrefs.SetInt("Grapple", 0);
-                PlayerPrefs.SetInt("Rate of Fire", 0);
-                PlayerPrefs.SetInt("Spray Bullets", 0);
-                PlayerPrefs.SetInt("Jump", 0);
-                PlayerPrefs.SetInt("Breadcrumbs", 0);
-                PlayerPrefs.SetInt("Health Pack", 0);
-                PlayerPrefs.SetInt("Shield", 0);
-
-                StartCoroutine(ResetCoolDown());
-
-                Draggable[] upgrades = FindObjectsOfType<Draggable>();
-                
-                foreach (Draggable upgrade in upgrades)
-                {
-                    upgrade.resetStat = true;
-                }
-
-                StartCoroutine(ResetCoolDown());
-                reset = true;
-            }
-            //UpdatePlayer();
-            mOrbMachine = GameObject.Find("Orbs");
-            totalOrbs = mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount;
-            // Get references to other components and game objects
-            mRigidBody2D = GetComponent<Rigidbody2D>();
-            mAnimator = GetComponent<Animator>();
-            mWeapon = transform.FindChild("Weapon").GetComponent<Weapon>();
-            mFacingDirection = Vector2.right;
-            mTotalExp = 0;
-            mMeleeTimer = 0;
-            mShoveDirection = Vector2.zero;
-            mInvincibleTimer = 0;
-            InitOrbTank(PlayerPrefs.GetInt("Total Orbs"));
-            mShopOn = false;
-            mShopCanvas.SetActive(false);
+        //UpdatePlayer();
+        mOrbMachine = GameObject.Find("Orbs");
+        totalOrbs = mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount;
+        // Get references to other components and game objects
+        mRigidBody2D = GetComponent<Rigidbody2D>();
+        mAnimator = GetComponent<Animator>();
+        mWeapon = transform.FindChild("Weapon").GetComponent<Weapon>();
+        mFacingDirection = Vector2.right;
+        mTotalExp = 0;
+        mMeleeTimer = 0;
+        mShoveDirection = Vector2.zero;
+        mInvincibleTimer = 0;
+        InitOrbTank(PlayerPrefs.GetInt("Total Orbs"));
+        mShopOn = false;
+        mShopCanvas.SetActive(false);
 
 
 
-            // Set the Upgrades to their saved values
-            jumpLevel = PlayerPrefs.GetInt("Jump", 0);
-            healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
-            shieldLevel = PlayerPrefs.GetInt("Shield", 0);
+        // Set the Upgrades to their saved values
+        jumpLevel = PlayerPrefs.GetInt("Jump", 0);
+        healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
+        shieldLevel = PlayerPrefs.GetInt("Shield", 0);
 
 
 
 
-            jumpLevelIndex = 1f + (Mathf.Log10(jumpLevel) / Mathf.Log10(5));
-            shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-            mHealth = Mathf.CeilToInt(5 * Mathf.Pow(2, healthPackLevel));
+        jumpLevelIndex = 1f + (Mathf.Log10(jumpLevel) / Mathf.Log10(5));
+        shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
+        mHealth = Mathf.CeilToInt(5 * Mathf.Pow(2, healthPackLevel));
 
 
-            UpdateHealthBar(mHealth);
+        UpdateHealthBar(mHealth);
 
 
-            //WIN
-            myCustomStyle = new GUIStyle();
-            myCustomStyle.font = ArcadeFont;
-            myCustomStyle.normal.textColor = Color.white;
-            GetComponent<BoxCollider2D>();
-            offset = new Vector3(0, GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
+        //WIN
+        myCustomStyle = new GUIStyle();
+        myCustomStyle.font = ArcadeFont;
+        myCustomStyle.normal.textColor = Color.white;
+        GetComponent<BoxCollider2D>();
+        offset = new Vector3(0, GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
 
-            UpdatePlayer();
-            init = false;
-        }
+        UpdatePlayer();
+        init = false;
     }
 
 
@@ -279,8 +245,7 @@ public class Player : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
-        Init();
+    {      
         StartCoroutine(CheckDead());
         NotifyEnemiesOfPosition();
 
@@ -320,8 +285,7 @@ public class Player : MonoBehaviour
 	}
 
     void Update()
-    {
-        Init();
+    {  
         CheckInvicible();
         CheckJump();     
         mRising = mRigidBody2D.velocity.y > 0.0f;
