@@ -6,9 +6,14 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField]
+    public Font ArcadeFont;
+    GUIStyle myCustomStyle;
+    Vector3 offset;
+
     //Vector2 velocity;
 
-	//Pain Audio
+    //Pain Audio
     [SerializeField]
     GameObject PainAudio1;
     [SerializeField]
@@ -123,34 +128,47 @@ public class Player : MonoBehaviour
     List<GroundCheck> mGroundCheckList;
     */
     float loadTime = 0;
+    bool win = false;
     void CheckWin()
-    {      
-        if(transform.position.y < -120)
+    {
+        if (!win)
         {
-            ParralaxItem[] backgroundelements = FindObjectsOfType<ParralaxItem>();
-            foreach (ParralaxItem elem in backgroundelements)
+            if (transform.position.y < -120)
             {
-                if (elem.alive)
+                ParralaxItem[] backgroundelements = FindObjectsOfType<ParralaxItem>();
+                foreach (ParralaxItem elem in backgroundelements)
                 {
-                    elem.alive = false;
-                }                
-            }
-            loadTime += Time.deltaTime;
+                    if (elem.alive)
+                    {
+                        elem.alive = false;
+                    }
+                }
+                loadTime += Time.deltaTime;
 
-            if (loadTime > 2)
-            {               
-                Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+                if (loadTime > 2)
+                {
+                    Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+                }
+                if (loadTime > 3)
+                {
+                    loadTime = 0;
+                    MapGenerator instance = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+                    instance.victory = true;
+                    instance.cycleLevel = true;
+                    win = true;
+                }
             }
-            if(loadTime > 3)
-            {
-                loadTime = 0;                
-                MapGenerator instance = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-                instance.victory = true;
-                instance.cycleLevel = true;                
-            }            
-        }
+        }              
     }
     
+    void OnGUI()
+    {
+        if(win)
+        {
+            Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
+            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), "YOU WIN!!!", myCustomStyle);
+        }
+    }
 
     void Start()
     {
@@ -202,6 +220,14 @@ public class Player : MonoBehaviour
         mHealth = Mathf.CeilToInt(5 * Mathf.Pow(2, healthPackLevel));
 
         UpdateHealthBar(mHealth);
+
+
+        //WIN
+        myCustomStyle = new GUIStyle();
+        myCustomStyle.font = ArcadeFont;
+        myCustomStyle.normal.textColor = Color.white;
+        GetComponent<BoxCollider2D>();       
+        offset = new Vector3(0,  GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
     }
 
 
@@ -275,6 +301,8 @@ public class Player : MonoBehaviour
         rechargeHealth();
         CalculateTotalOrbs();
         CheckWin();
+
+    
 
         if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
         {
