@@ -219,7 +219,7 @@ public class Player : MonoBehaviour
 		try{
 			//GameObject.Find("distance").GetComponent<Text>().text = "Exit Dist: " + ((int)(mExitLocation - transform.position).magnitude).ToString();
 			//GameObject.Find("enemiesLeft").GetComponent<Text>().text = "Enemies:  " + mEnemiesRemaining.ToString();
-			GameObject.Find("curLevel").GetComponent<Text>().text = "Current Level: " + mCurrentLevel.ToString();
+			GameObject.Find("curLevel").GetComponent<Text>().text = "Stage: " + mCurrentLevel.ToString();
             if (mHealth < 0)            
             {
                 mHealth = 0;
