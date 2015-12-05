@@ -18,7 +18,9 @@ public class LoadGameSCript : MonoBehaviour {
             PlayerPrefs.SetInt("Breadcrumbs", 0);
             PlayerPrefs.SetInt("Health Pack", 0);
             PlayerPrefs.SetInt("Shield", 0);
-            PlayerPrefs.SetInt("currentLevel", 1);
+            PlayerPrefs.SetInt("Portal Distance", 0);
+            PlayerPrefs.SetInt("Portal Cooldown", 0);            
+            PlayerPrefs.SetInt("currentLevel", 1);            
         }       
 
         Application.LoadLevel(1);
