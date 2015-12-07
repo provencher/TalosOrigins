@@ -215,7 +215,7 @@ public class MapGenerator : MonoBehaviour
 
             numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
 
-            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/2);
+            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/2.5f);
             bossRound = false;
 
             numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
