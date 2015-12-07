@@ -260,7 +260,8 @@ public class Player : MonoBehaviour
         PlayerPrefs.SetInt("Health Pack", upgrade[6]);
         PlayerPrefs.SetInt("Shield", upgrade[7]);
         PlayerPrefs.SetInt("Portal Distance", upgrade[8]);
-        PlayerPrefs.SetInt("Portal Cooldown", upgrade[9]);        
+        PlayerPrefs.SetInt("Portal Cooldown", upgrade[9]);
+        UpdatePlayer();
     }
     bool init = false;
     void Start()
@@ -856,7 +857,8 @@ public class Player : MonoBehaviour
 
 	public void UpdatePlayer()
 	{
-        updateUpgrades();
+        //updateUpgrades();
+        //fillUpgrades();
         if (mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount >= 0){
 
 			Instantiate(ConfirmAudio, transform.position, Quaternion.identity);
@@ -879,6 +881,7 @@ public class Player : MonoBehaviour
 			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
 			UpdateHealthBar(mHealth);
             fillUpgrades();
+            //updateUpgrades();
         }
         InitOrbTank(PlayerPrefs.GetInt("Total Orbs",0));      
 	}
