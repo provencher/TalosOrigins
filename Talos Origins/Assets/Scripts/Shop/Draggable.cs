@@ -24,11 +24,11 @@ public class Draggable : MonoBehaviour{
 	Stack<int> lastCost;
 
 	[SerializeField]
-	bool mHasCap;
+	public bool mHasCap;
 
 
 
-	int currentUpgradeLevel;
+	public int currentUpgradeLevel;
 	int originalLevel;
     int currentCost;
 

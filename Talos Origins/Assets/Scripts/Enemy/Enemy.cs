@@ -78,6 +78,7 @@ public class Enemy : MonoBehaviour
 
     public bool isBoss = false;
 
+    public int upgradeNumber = -1;
 
     void Start()
     {
@@ -795,17 +796,19 @@ public class Enemy : MonoBehaviour
             {
                 if(Random.Range(0,6) ==1)
                 {
-                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(0);
+                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(0, upgradeNumber);
 
                 }
                 else
                 {
-                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(1);
+                    gameObject.GetComponentInParent<OrbController>().SpawnOrb(1, upgradeNumber);
                 }
+                upgradeNumber = -1;
             }
             else
             {
-                gameObject.GetComponentInParent<OrbController>().SpawnOrb(collectedOrbs[i - numOrbs]);
+                gameObject.GetComponentInParent<OrbController>().SpawnOrb(collectedOrbs[i - numOrbs], upgradeNumber);
+                upgradeNumber = -1;
             }
         }
 

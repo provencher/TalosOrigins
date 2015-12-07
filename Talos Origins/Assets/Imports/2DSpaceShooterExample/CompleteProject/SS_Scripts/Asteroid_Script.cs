@@ -37,10 +37,12 @@ public class Asteroid_Script : MonoBehaviour
 
     public float mScaleValue = 1;
     bool init = false;
-   
 
-	// Use this for initialization
-	void Start () 
+    public int upgradeNumber = -1;
+
+
+    // Use this for initialization
+    void Start () 
 	{        
         // rigidBody = GetComponent<Rigidbody2D>();
         //RandomVelocity(Vector3.right);
@@ -130,7 +132,7 @@ public class Asteroid_Script : MonoBehaviour
     {
         for (int i = 0; i < numOrbs; i++)
         {
-            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 4));
+            gameObject.GetComponentInParent<OrbController>().SpawnOrb(Random.Range(2, 4), upgradeNumber);
         }
 
     }
@@ -146,8 +148,8 @@ public class Asteroid_Script : MonoBehaviour
         {
             GameObject.Find("Talos").GetComponent<Grapple>().unHook();
         }
-
-        DropOrbs(Mathf.CeilToInt(Random.Range(1, mScaleValue + 1)));
+        int numToDrop = (upgradeNumber > -1) ? 1 : Mathf.CeilToInt(Random.Range(1, mScaleValue + 1));
+        DropOrbs(numToDrop);
 
         Instantiate(Explosion, transform.position, transform.rotation);       //Instantiate Explosion    
 

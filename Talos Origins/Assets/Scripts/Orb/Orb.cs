@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Orb : MonoBehaviour {
 
-    float timeToLive;
+    public float timeToLive;
     float lifeTime;
     Transform player;
 
@@ -14,6 +14,8 @@ public class Orb : MonoBehaviour {
 
     [SerializeField]
     public GameObject audioController;
+
+    public int upgrade = -1;
 
 	// Use this for initialization
 	void Start () {
@@ -37,10 +39,15 @@ public class Orb : MonoBehaviour {
 
         Vector3 direction = player.position - transform.position;
 
-        if (direction.magnitude < 6)
+        if (direction.magnitude < 6 && upgrade < 0) 
         {
             lifeTime = 10;
             transform.position += direction.normalized * 5.5f * Time.deltaTime;
+        }
+        else if (upgrade >= 0)
+        {
+            lifeTime = 999;
+            transform.position += direction.normalized * Time.deltaTime;
         }
     }
 	

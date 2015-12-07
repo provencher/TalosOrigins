@@ -16,8 +16,9 @@ public class OrbController : MonoBehaviour {
     [SerializeField]
     public GameObject yellowOrbPrefab;
 
+    
 
-    public void SpawnOrb(int colorNum)
+    public void SpawnOrb(int colorNum, int upgrade)
     {
         Vector2 offSet = new Vector2(Random.Range(-1.2f, 1.2f), Random.Range(0, 1.2f));
         GameObject orbInstance = null;
@@ -38,6 +39,18 @@ public class OrbController : MonoBehaviour {
 
         }        
         orbInstance.GetComponent<Orb>().type = colorNum;      
+
+        if(upgrade > -1)
+        {
+
+            orbInstance.GetComponent<Orb>().timeToLive = 120;
+            orbInstance.GetComponent<Orb>().upgrade = upgrade;
+            orbInstance.GetComponent<Orb>().transform.localScale *= 4;
+            orbInstance.GetComponent<Light>().range *= 4;
+            orbInstance.GetComponent<Light>().color = Color.yellow;
+        }
+        
+
     }   
           
     

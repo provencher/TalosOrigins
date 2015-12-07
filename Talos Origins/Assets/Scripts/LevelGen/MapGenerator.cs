@@ -83,6 +83,7 @@ public class MapGenerator : MonoBehaviour
     int[,] map;
 
     public bool victory = false;
+    public int upgradeNumber = 0;
 
     void Awake()
     {
@@ -147,8 +148,8 @@ public class MapGenerator : MonoBehaviour
         {
             currentLevel = -1;
         }
+        upgradeNumber = 1;
 
-        
         // Save Current Level
         PlayerPrefs.SetInt("currentLevel", currentLevel);
 
@@ -159,8 +160,8 @@ public class MapGenerator : MonoBehaviour
             mTalos.GetComponentInChildren<Shield>().rechargeDeployed = true;
 
             
-            width = currentLevel * (startWidth);
-            height = currentLevel * (startHeight);
+            width = currentLevel + (startWidth);
+            height = currentLevel + (startHeight);
 
             int rand = UnityEngine.Random.Range(1, 3);
             if (rand == 2)
@@ -287,6 +288,7 @@ public class MapGenerator : MonoBehaviour
 
         SpawnEverything();
         MessageHandling();
+
     }
 
     void PlaceTalosInRoom()
@@ -354,7 +356,8 @@ public class MapGenerator : MonoBehaviour
             mExitCoord = exit;
         }
     }
-
+    int enemiesSpawned = 0;
+    int asteroidsSpawned = 0;
     void SpawnEverything()
     {
         PlaceTalosInRoom();
@@ -363,8 +366,8 @@ public class MapGenerator : MonoBehaviour
         //SpawnAllAsteroids(numAsteroidsToSpawn);      
 
 
-        int enemiesSpawned = 0;
-        int asteroidsSpawned = 0;
+        enemiesSpawned = 0;
+        asteroidsSpawned = 0;
 
         ClearAllEnemies();
         ClearAllAsteroids();
@@ -447,6 +450,8 @@ public class MapGenerator : MonoBehaviour
             enemies[enemies.Count - 1].GetComponent<Enemy>().isBoss = true;
         }
         enemies[enemies.Count - 1].GetComponent<Enemy>().mScaleValue = scale;
+        enemies[enemies.Count - 1].GetComponent<Enemy>().upgradeNumber = -1;//UnityEngine.Random.Range(0, 10);
+
         enemies[enemies.Count - 1].SendMessage("UpdateEnemyIndex", enemies.Count - 1);
         //enemies[index].SendMessage("UpdateLevel", currentLevel);
     }   
@@ -485,7 +490,17 @@ public class MapGenerator : MonoBehaviour
         asteroids[asteroids.Count - 1].GetComponent<Asteroid_Script>().mScaleValue = scale;
         asteroids[asteroids.Count - 1].transform.localScale *= scale;
         asteroids[asteroids.Count - 1].SendMessage("UpdateAsteroidIndex", asteroids.Count - 1);
-        asteroids[asteroids.Count - 1].SendMessage("UpdateLevel", currentLevel);
+        asteroids[asteroids.Count - 1].SendMessage("UpdateLevel", currentLevel);        
+
+        if (upgradeNumber > 0 && asteroids.Count > numAsteroidsToSpawn/2)
+        {
+            upgradeNumber = 0;
+            asteroids[asteroids.Count - 1].GetComponent<Asteroid_Script>().upgradeNumber = UnityEngine.Random.Range(0, 10);
+            asteroids[asteroids.Count - 1].AddComponent<Light>();
+            asteroids[asteroids.Count - 1].GetComponent<Light>().range = 20;
+            asteroids[asteroids.Count - 1].GetComponent<Light>().color = Color.yellow;
+            Debug.Log("UPGRADES INDEX" + (asteroids.Count - 1).ToString());
+        }
     }
 
 

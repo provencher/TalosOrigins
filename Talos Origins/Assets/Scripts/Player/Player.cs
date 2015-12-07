@@ -11,6 +11,9 @@ public class Player : MonoBehaviour
     GUIStyle myCustomStyle;
     Vector3 offset;
 
+    string[] upgradeName = { "Grapple", "Big Bullets", "Rate of Fire", "Spray Bullets", "Jump", "Breadcrumbs", "Health Pack", "Shield", "Portal Distance", "Portal Cooldown" };
+    string announcement;
+         
     //Vector2 velocity;
 
     //Pain Audio
@@ -92,6 +95,8 @@ public class Player : MonoBehaviour
 
     GameObject mOrbMachine;
 
+    int[] upgrade;
+
 //    [SerializeField]
 //    GameObject mDeathParticleEmitter;
 
@@ -160,13 +165,36 @@ public class Player : MonoBehaviour
             }
         }              
     }
-    
+    float upgradeAnnouncementTimer = 0;
     void OnGUI()
     {
-        if(win)
+        if (mCurrentLevel == -1)
         {
+            upgradeAnnouncementTimer = 999;
+        }
+
+        bool messageSet = false;
+        if (upgradeAnnouncementTimer > 0)
+        {
+            
+            if (win)
+            {
+                announcement = "YOU WIN!!!";
+                messageSet = true;
+            }
+         
+            if (!messageSet)
+            {          
+                messageSet = true;
+            }
+            upgradeAnnouncementTimer -= Time.deltaTime;
             Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
-            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), "YOU WIN!!!", myCustomStyle);
+            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), announcement, myCustomStyle);
+        }
+        else
+        {
+            //upgradeAnnouncementTimer = 0;
+            announcement = "";
         }
     }
     IEnumerator ResetCoolDown()
@@ -174,11 +202,70 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(Time.deltaTime);
     }
 
+    public void AddUpgrade(int type)
+    {
+        if(type > -1)
+        {
+            //!GameObject.Find(upgradeName[type]).GetComponent<Draggable>().mHasCap || GameObject.Find(upgradeName[type]).GetComponent<Draggable>().currentUpgradeLevel < 10)
+            //CAPPED UPGRADES
+            /*
+            - RATE OF FIRE
+            - SPRAY BULLETS
+            - JUMP
+            - BREADCRUMBS
+            - PORTALCOOLDOWN            
+            */
+            type = Mathf.CeilToInt(Mathf.Clamp(type, 0, 9));
+            if (upgrade[type] < 10 ||           
+                ((type != 2 && type != 3 && type != 4 && type != 5 && type != 9)))
+            {
+                upgradeAnnouncementTimer = 3;
+                announcement = upgradeName[type] + " UP";
+                upgrade[type]++;
+                updateUpgrades();                
+            }
+            else
+            {
+                upgradeAnnouncementTimer = 3;
+                announcement = upgradeName[type] + " MAXED OUT";
+            }
 
+        }        
+    }
 
+    
+
+    void fillUpgrades()
+    {
+        upgrade[0] = PlayerPrefs.GetInt("Grapple", 0);
+        upgrade[1] = PlayerPrefs.GetInt("Big Bullets", 0);
+        upgrade[2] = PlayerPrefs.GetInt("Rate of Fire", 0);
+        upgrade[3] = PlayerPrefs.GetInt("Spray Bullets", 0);
+        upgrade[4] = PlayerPrefs.GetInt("Jump", 0);
+        upgrade[5] = PlayerPrefs.GetInt("Breadcrumbs", 0);
+        upgrade[6] = PlayerPrefs.GetInt("Health Pack", 0);
+        upgrade[7] = PlayerPrefs.GetInt("Shield", 0);
+        upgrade[8] = PlayerPrefs.GetInt("Portal Distance", 0);
+        upgrade[9] = PlayerPrefs.GetInt("Portal Cooldown", 0);
+    }
+
+    void updateUpgrades()
+    {
+        PlayerPrefs.SetInt("Grapple", upgrade[0]);
+        PlayerPrefs.SetInt("Big Bullets", upgrade[1]);
+        PlayerPrefs.SetInt("Rate of Fire", upgrade[2]);
+        PlayerPrefs.SetInt("Spray Bullets", upgrade[3]);
+        PlayerPrefs.SetInt("Jump", upgrade[4]);
+        PlayerPrefs.SetInt("Breadcrumbs", upgrade[5]);
+        PlayerPrefs.SetInt("Health Pack", upgrade[6]);
+        PlayerPrefs.SetInt("Shield", upgrade[7]);
+        PlayerPrefs.SetInt("Portal Distance", upgrade[8]);
+        PlayerPrefs.SetInt("Portal Cooldown", upgrade[9]);        
+    }
     bool init = false;
     void Start()
     {
+        upgrade = new int[10];
         //UpdatePlayer();
         mOrbMachine = GameObject.Find("Orbs");
         totalOrbs = mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount;
@@ -218,10 +305,11 @@ public class Player : MonoBehaviour
         myCustomStyle.font = ArcadeFont;
         myCustomStyle.normal.textColor = Color.white;
         GetComponent<BoxCollider2D>();
-        offset = new Vector3(0, GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
+        offset = new Vector3(-GetComponent<BoxCollider2D>().size.x * transform.localScale.x / 4, GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
 
         UpdatePlayer();
         init = false;
+        fillUpgrades();
     }
 
 
@@ -296,7 +384,8 @@ public class Player : MonoBehaviour
         CalculateTotalOrbs();
         CheckWin();
 
-    
+        //fillUpgrades();
+        //updateUpgrades();
 
         if ((Input.GetButtonDown("Shop")) && !GameObject.Find("PauseController").GetComponent<PauseControl>().paused)
         {
@@ -691,7 +780,10 @@ public class Player : MonoBehaviour
             if (other.gameObject.tag == "Orb")
             {
                 //Pickup orb                
-                PickupOrb(other.gameObject.GetComponent<Orb>().type);      
+                PickupOrb(other.gameObject.GetComponent<Orb>().type);
+                //checkupgrade
+                AddUpgrade(other.gameObject.GetComponent<Orb>().upgrade);
+
                 //Destroy orb
                 other.gameObject.GetComponent<Orb>().pickedUp = true;
             }
@@ -763,7 +855,8 @@ public class Player : MonoBehaviour
     }
 
 	public void UpdatePlayer()
-	{        
+	{
+        updateUpgrades();
         if (mOrbMachine.GetComponent<ShopOrbs>().totalOrbsCount >= 0){
 
 			Instantiate(ConfirmAudio, transform.position, Quaternion.identity);
@@ -784,7 +877,8 @@ public class Player : MonoBehaviour
             healthPackLevel = PlayerPrefs.GetInt("Health Pack", 0);
 			shieldLevel = PlayerPrefs.GetInt("Shield");
 			shieldUpgradeIndex = 1f + (shieldLevel * 0.1f);
-			UpdateHealthBar(mHealth);    
+			UpdateHealthBar(mHealth);
+            fillUpgrades();
         }
         InitOrbTank(PlayerPrefs.GetInt("Total Orbs",0));      
 	}
