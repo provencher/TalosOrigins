@@ -5,6 +5,8 @@ using System;
 
 public class MapGenerator : MonoBehaviour
 {
+    
+
     [SerializeField]
     GameObject mTalos;
 
@@ -152,25 +154,53 @@ public class MapGenerator : MonoBehaviour
 
         if (!victory)
         {
+            victory = false;
             levelScale = UnityEngine.Random.Range(1, 3);
             mTalos.GetComponentInChildren<Shield>().rechargeDeployed = true;
-            width = ++startWidth;
-            height = ++startHeight;
+
+            
+            width = currentLevel * (startWidth);
+            height = currentLevel * (startHeight);
+
+            int rand = UnityEngine.Random.Range(1, 3);
+            if (rand == 2)
+            {               
+                height = height / 2;
+            }
+            else
+            {
+                width = width / 2;
+            }
+           
 
             int densityModifer = 3;// UnityEngine.Random.Range((currentLevel / levelScale) + 1, 2*(currentLevel / levelScale) + 1);
 
-            width = (int)Mathf.Round((startWidth + levelScale * currentLevel / densityModifer) * 0.65f);
+            //width = (int)Mathf.Round((startWidth + levelScale * currentLevel / densityModifer) * 0.65f);
 
 
             randomFillPercent = Mathf.CeilToInt(UnityEngine.Random.Range(42, 52)); //* //Mathf.Clamp(UnityEngine.Random.Range(1, levelScale / densityModifer) + 1
 
+          
             if (randomFillPercent < 48)
             {
                 width = Mathf.CeilToInt(width * 0.85f);
+                height = Mathf.CeilToInt(height * 0.85f);
             }
+
+            /*
             // set max values for map size
-            width = Math.Min(250, width);
-            height = width / 2;
+            if (Math.Min(height, width) == height)
+            {
+                
+                
+            }
+            else
+            {
+                height *= 2;
+                height  = Math.Min(250, height);
+                width   = height / 2;                
+            }
+          */
 
 
             //Reset Level Parameters
@@ -181,8 +211,10 @@ public class MapGenerator : MonoBehaviour
             //enemies = new List<GameObject>();
             //asteroids = new List<GameObject>();
 
+
             numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
-            numEnemiesToSpawn = (densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel))) / 3;
+
+            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/2);
             bossRound = false;
 
             numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);

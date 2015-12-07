@@ -78,7 +78,7 @@ public class Enemy : MonoBehaviour
 
     public bool isBoss = false;
 
-    
+
     void Start()
     {
         //Write Code for Modifying stats based on currentLevel
@@ -110,7 +110,10 @@ public class Enemy : MonoBehaviour
         distEdge = mBoxCollider.size.x / 1.95f * transform.localScale.x;//(box.yMin + (box.yMin - box.yMax)) / 2;
 
         //distEdge = mBoxCollider.bounds.extents.x - mBoxCollider.bounds.center.x + 1;
-        mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;     
+        mCurrentLevel = GameObject.Find("MapGenerator").GetComponent<MapGenerator>().currentLevel;
+
+
+        
     }
 
 
@@ -202,6 +205,11 @@ public class Enemy : MonoBehaviour
         AnimatorFlyer = GetComponent<Animator>();
         flyerIsMovingUp = false;
         flyerIsMovingDown = false;
+
+        Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, possibleDirections[Random.Range(0, possibleDirections.Length)]);
+        Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 270);
+        transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
+        surfaceNormal = -transform.up;
     }
 
 
@@ -284,8 +292,17 @@ public class Enemy : MonoBehaviour
         curNormal = transform.up;
         mRigidBody2D.freezeRotation = true;
 
-        surfaceNormal = ChooseRandomDirection();
+
+
+        Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, Mathf.Pow(-1, Random.Range(1,3))*Vector3.up);
+        Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 180);
+        transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
+        surfaceNormal = -transform.up;
+
         mRigidBody2D.gravityScale = 0;
+        surfaceNormal = -transform.up;
+
+
 
         //mRigidBody2D.mass *= mScaleValue;
 

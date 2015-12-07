@@ -84,8 +84,9 @@ public class MeshGenerator : MonoBehaviour
         {
 
             cave.GetComponent<MeshRenderer>().material = god;
+            GameObject.Find("Directional light").GetComponent<Light>().color = Color.white;
         }
-
+        GameObject.Find("Directional light").GetComponent<Light>().color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
 
 
     }
