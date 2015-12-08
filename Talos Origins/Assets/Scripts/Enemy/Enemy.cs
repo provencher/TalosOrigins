@@ -206,10 +206,11 @@ public class Enemy : MonoBehaviour
         AnimatorFlyer = GetComponent<Animator>();
         flyerIsMovingUp = false;
         flyerIsMovingDown = false;
-
+        /*
         Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, possibleDirections[Random.Range(0, possibleDirections.Length)]);
         Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 270);
         transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
+        */
         surfaceNormal = -transform.up;
     }
 
