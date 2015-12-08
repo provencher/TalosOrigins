@@ -139,7 +139,7 @@ public class MapGenerator : MonoBehaviour
 
     void SetLevelParameters()
     {
-        if (currentLevel <= 0)
+        if (currentLevel <= 1)
         {
             currentLevel = 1;
         }
@@ -215,9 +215,9 @@ public class MapGenerator : MonoBehaviour
             //asteroids = new List<GameObject>();
 
 
-            numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
+            numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / Mathf.CeilToInt(densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)));
 
-            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/ (levelScale+1));
+            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / Mathf.CeilToInt(densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/ (levelScale+1)));
             bossRound = false;
 
             numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
