@@ -108,8 +108,8 @@ public class MapGenerator : MonoBehaviour
         if (cycleLevel)
         {
             cycleLevel = false;
-			portalLevelUpgrade = PlayerPrefs.GetInt("Portal Distance", 0);
-            currentLevel = currentLevel + portalLevelUpgrade;//UnityEngine.Random.Range(currentLevel / 2 + 1, currentLevel + (portalLevelUpgrade * 10) + 5);
+			//portalLevelUpgrade = PlayerPrefs.GetInt("Portal Distance", 0);
+            //currentLevel = currentLevel + portalLevelUpgrade;//UnityEngine.Random.Range(currentLevel / 2 + 1, currentLevel + (portalLevelUpgrade * 10) + 5);
             GenerateMap();
         }
         //		if(resetLevel)
@@ -121,12 +121,12 @@ public class MapGenerator : MonoBehaviour
     }
 
     void NextLevel()
-    {        
-        if(currentLevel < 0)
-        {
-            currentLevel = 0;
-        }
+    {
         currentLevel++;
+        if (currentLevel <= 0)
+        {
+            currentLevel = 1;
+        }       
 
         GenerateMap();
     }
