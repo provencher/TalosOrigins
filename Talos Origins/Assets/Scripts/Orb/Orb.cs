@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Orb : MonoBehaviour {
 
-    public float timeToLive;
-    float lifeTime;
+    public float timeToLive = 120;
+    float lifeTime = 0;
     Transform player;
 
     public int type;
@@ -19,8 +19,8 @@ public class Orb : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        lifeTime = Random.Range(5f,6f);
-        timeToLive = lifeTime;
+        //lifeTime = Random.Range(5f,6f);
+        //timeToLive = 120;
         player = GameObject.Find("Talos").transform;        
 	}
 
@@ -48,7 +48,7 @@ public class Orb : MonoBehaviour {
         {
             lifeTime = 999;
             transform.position += direction.normalized * Time.deltaTime;
-        }
+        }       
     }
 	
 	// Update is called once per frame

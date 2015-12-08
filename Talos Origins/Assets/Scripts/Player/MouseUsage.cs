@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MouseUsage : MonoBehaviour {
 
-	Vector3 mousePosition;
+	public Vector3 mousePosition;
 	// Use this for initialization
 	void Start () {
 		Cursor.visible = false;

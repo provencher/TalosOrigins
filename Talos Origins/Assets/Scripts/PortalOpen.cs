@@ -15,9 +15,12 @@ public class PortalOpen : MonoBehaviour {
     GameObject portalInstance;
 
     float portalCoolDown = 12.0f;
-    float coolDownTime = 0;
+    public float coolDownTime = 0;
 	int portalCoolDownLevel;
     public bool portalOpen = false;
+
+    public bool useNewPosition = false;
+    public Vector3 newPosition = Vector3.zero;
   
 
     public IEnumerator SpawnPortal(bool leaving)
@@ -45,6 +48,13 @@ public class PortalOpen : MonoBehaviour {
 
     public IEnumerator DestroyPortal(bool leaving)
     {
+        if(useNewPosition)
+        {
+            useNewPosition = false;
+            transform.position = newPosition;
+        }
+        portalInstance.transform.position = transform.position;
+
         Instantiate(portalCloseAudio, transform.position, Quaternion.identity);
         if (leaving)
         {
@@ -52,7 +62,7 @@ public class PortalOpen : MonoBehaviour {
             yield return new WaitForSeconds(Time.deltaTime);
         
         }
-        portalInstance.transform.position = transform.position;
+        
         Vector3 portalScale = portalInstance.transform.localScale;
 
         while (portalScale.x > 0)
@@ -73,12 +83,13 @@ public class PortalOpen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if(Input.GetButtonDown("MapGeneration") && coolDownTime <= 0 || portalOpen)
+	    if((Input.GetButtonDown("MapGeneration") || portalOpen) /*|| Input.GetKeyDown(KeyCode.Mouse3)*/ && coolDownTime <= 0 )
         {
 			portalCoolDownLevel = PlayerPrefs.GetInt ("Portal Cooldown", 0);
             coolDownTime = portalCoolDown - (float)portalCoolDownLevel;
 			//Debug.Log (coolDownTime);
-            StartCoroutine(SpawnPortal(true));
+            StartCoroutine(SpawnPortal(!portalOpen));
+            portalOpen = false;
         }
         else if (coolDownTime > 0)
         {

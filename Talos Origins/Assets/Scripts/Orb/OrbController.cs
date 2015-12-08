@@ -42,12 +42,15 @@ public class OrbController : MonoBehaviour {
 
         if(upgrade > -1)
         {
-
             orbInstance.GetComponent<Orb>().timeToLive = 120;
             orbInstance.GetComponent<Orb>().upgrade = upgrade;
             orbInstance.GetComponent<Orb>().transform.localScale *= 4;
             orbInstance.GetComponent<Light>().range *= 4;
-            orbInstance.GetComponent<Light>().color = Color.yellow;
+            orbInstance.GetComponent<Light>().color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        }
+        else
+        {
+            orbInstance.GetComponent<Orb>().timeToLive = 10;
         }
         
 

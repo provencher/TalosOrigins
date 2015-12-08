@@ -82,6 +82,11 @@ public class Grapple : MonoBehaviour {
                     hookedObject = null;                    
                 }
 			}
+            else
+            {
+                mTalos.announcement = "GRAPPLE MISS";
+                mTalos.announcementTimer = 1.5f;
+            }
 		}
 
         UpdateAnchor();

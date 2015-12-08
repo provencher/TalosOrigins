@@ -12,8 +12,9 @@ public class Player : MonoBehaviour
     Vector3 offset;
 
     string[] upgradeName = { "Grapple", "Big Bullets", "Rate of Fire", "Spray Bullets", "Jump", "Breadcrumbs", "Health Pack", "Shield", "Portal Distance", "Portal Cooldown" };
-    string announcement;
-         
+    public string announcement;
+    public float announcementTimer = 0;
+
     //Vector2 velocity;
 
     //Pain Audio
@@ -126,144 +127,6 @@ public class Player : MonoBehaviour
 
     public Attachment_WallWalker walkerScript;
 
-    /*
-    [SerializeField]
-    LifeMeter life;
-
-    List<GroundCheck> mGroundCheckList;
-    */
-    float loadTime = 0;
-    bool win = false;
-    void CheckWin()
-    {
-        if (!win)
-        {
-            if (transform.position.y < -120)
-            {
-                ParralaxItem[] backgroundelements = FindObjectsOfType<ParralaxItem>();
-                foreach (ParralaxItem elem in backgroundelements)
-                {
-                    if (elem.alive)
-                    {
-                        elem.alive = false;
-                    }
-                }
-                loadTime += Time.deltaTime;
-
-                if (loadTime > 2)
-                {
-                    Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-                }
-                if (loadTime > 3)
-                {
-                    loadTime = 0;
-                    MapGenerator instance = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-                    instance.victory = true;
-                    instance.cycleLevel = true;
-                    win = true;
-                }
-            }
-        }              
-    }
-    float upgradeAnnouncementTimer = 0;
-    void OnGUI()
-    {
-        if (mCurrentLevel == -1)
-        {
-            upgradeAnnouncementTimer = 999;
-        }
-
-        bool messageSet = false;
-        if (upgradeAnnouncementTimer > 0)
-        {
-            
-            if (win)
-            {
-                announcement = "YOU WIN!!!";
-                messageSet = true;
-            }
-         
-            if (!messageSet)
-            {          
-                messageSet = true;
-            }
-            upgradeAnnouncementTimer -= Time.deltaTime;
-            Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
-            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), announcement, myCustomStyle);
-        }
-        else
-        {
-            //upgradeAnnouncementTimer = 0;
-            announcement = "";
-        }
-    }
-    IEnumerator ResetCoolDown()
-    {
-        yield return new WaitForSeconds(Time.deltaTime);
-    }
-
-    public void AddUpgrade(int type)
-    {
-        if(type > -1)
-        {
-            //!GameObject.Find(upgradeName[type]).GetComponent<Draggable>().mHasCap || GameObject.Find(upgradeName[type]).GetComponent<Draggable>().currentUpgradeLevel < 10)
-            //CAPPED UPGRADES
-            /*
-            - RATE OF FIRE
-            - SPRAY BULLETS
-            - JUMP
-            - BREADCRUMBS
-            - PORTALCOOLDOWN            
-            */
-            type = Mathf.CeilToInt(Mathf.Clamp(type, 0, 9));
-            if (upgrade[type] < 10 ||           
-                ((type != 2 && type != 3 && type != 4 && type != 5 && type != 9)))
-            {
-                upgradeAnnouncementTimer = 3;
-                announcement = upgradeName[type] + " UP";
-                upgrade[type]++;
-                updateUpgrades();                
-            }
-            else
-            {
-                upgradeAnnouncementTimer = 3;
-                announcement = upgradeName[type] + " MAXED OUT";
-            }
-
-        }        
-    }
-
-    
-
-    void fillUpgrades()
-    {
-        upgrade[0] = PlayerPrefs.GetInt("Grapple", 0);
-        upgrade[1] = PlayerPrefs.GetInt("Big Bullets", 0);
-        upgrade[2] = PlayerPrefs.GetInt("Rate of Fire", 0);
-        upgrade[3] = PlayerPrefs.GetInt("Spray Bullets", 0);
-        upgrade[4] = PlayerPrefs.GetInt("Jump", 0);
-        upgrade[5] = PlayerPrefs.GetInt("Breadcrumbs", 0);
-        upgrade[6] = PlayerPrefs.GetInt("Health Pack", 0);
-        upgrade[7] = PlayerPrefs.GetInt("Shield", 0);
-        upgrade[8] = PlayerPrefs.GetInt("Portal Distance", 0);
-        upgrade[9] = PlayerPrefs.GetInt("Portal Cooldown", 0);
-    }
-
-    void updateUpgrades()
-    {
-        PlayerPrefs.SetInt("Grapple", upgrade[0]);
-        PlayerPrefs.SetInt("Big Bullets", upgrade[1]);
-        PlayerPrefs.SetInt("Rate of Fire", upgrade[2]);
-        PlayerPrefs.SetInt("Spray Bullets", upgrade[3]);
-        PlayerPrefs.SetInt("Jump", upgrade[4]);
-        PlayerPrefs.SetInt("Breadcrumbs", upgrade[5]);
-        PlayerPrefs.SetInt("Health Pack", upgrade[6]);
-        PlayerPrefs.SetInt("Shield", upgrade[7]);
-        PlayerPrefs.SetInt("Portal Distance", upgrade[8]);
-        PlayerPrefs.SetInt("Portal Cooldown", upgrade[9]);
-        UpdatePlayer();
-    }
-    bool init = false;
     void Start()
     {
         upgrade = new int[10];
@@ -309,9 +172,139 @@ public class Player : MonoBehaviour
         offset = new Vector3(-GetComponent<BoxCollider2D>().size.x * transform.localScale.x / 4, GetComponent<BoxCollider2D>().size.y * transform.localScale.y / 1.4f, 0);
 
         UpdatePlayer();
-        init = false;
         fillUpgrades();
     }
+
+
+    float loadTime = 0;
+    bool win = false;
+    void CheckWin()
+    {
+        if (!win)
+        {
+            if (transform.position.y < -120)
+            {
+                ParralaxItem[] backgroundelements = FindObjectsOfType<ParralaxItem>();
+                foreach (ParralaxItem elem in backgroundelements)
+                {
+                    if (elem.alive)
+                    {
+                        elem.alive = false;
+                    }
+                }
+                loadTime += Time.deltaTime;
+
+                if (loadTime > 2)
+                {
+                    Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+                }
+                if (loadTime > 3)
+                {
+                    loadTime = 0;
+                    MapGenerator instance = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+                    instance.victory = true;
+                    instance.cycleLevel = true;
+                    win = true;
+                }
+            }
+        }              
+    }
+    
+    void OnGUI()
+    {
+        if (mCurrentLevel == -1)
+        {
+            announcementTimer = 999;
+        }
+
+        bool messageSet = false;
+        if (announcementTimer > 0)
+        {
+            
+            if (win)
+            {
+                announcement = "YOU WIN!!!";
+                messageSet = true;
+            }
+            
+            //display message in announcement variable
+            if (!messageSet)
+            {          
+                messageSet = true;
+            }
+            announcementTimer -= Time.deltaTime;
+            Vector2 targetPos = Camera.main.WorldToScreenPoint(transform.position + offset);
+            GUI.Box(new Rect(targetPos.x, Screen.height - targetPos.y, 60, 20), announcement, myCustomStyle);
+        }
+        else
+        {
+            //upgradeAnnouncementTimer = 0;
+            announcement = "";
+        }
+    }
+
+    public void AddUpgrade(int type)
+    {
+        if(type > -1)
+        {          
+            //CAPPED UPGRADES
+            /*
+            - RATE OF FIRE
+            - SPRAY BULLETS
+            - JUMP
+            - BREADCRUMBS
+            - PORTALCOOLDOWN            
+            */
+            type = Mathf.CeilToInt(Mathf.Clamp(type, 0, 9));
+            if (upgrade[type] < 10 ||           
+                ((type != 2 && type != 3 && type != 4 && type != 5 && type != 9)))
+            {
+                announcementTimer = 3;
+                announcement = upgradeName[type] + " UP";
+                upgrade[type]++;
+                updateUpgrades();                
+            }
+            else
+            {
+                announcementTimer = 3;
+                announcement = upgradeName[type] + " MAXED OUT";
+            }
+
+        }        
+    }
+
+    
+
+    void fillUpgrades()
+    {
+        upgrade[0] = PlayerPrefs.GetInt("Grapple", 0);
+        upgrade[1] = PlayerPrefs.GetInt("Big Bullets", 0);
+        upgrade[2] = PlayerPrefs.GetInt("Rate of Fire", 0);
+        upgrade[3] = PlayerPrefs.GetInt("Spray Bullets", 0);
+        upgrade[4] = PlayerPrefs.GetInt("Jump", 0);
+        upgrade[5] = PlayerPrefs.GetInt("Breadcrumbs", 0);
+        upgrade[6] = PlayerPrefs.GetInt("Health Pack", 0);
+        upgrade[7] = PlayerPrefs.GetInt("Shield", 0);
+        upgrade[8] = PlayerPrefs.GetInt("Portal Distance", 0);
+        upgrade[9] = PlayerPrefs.GetInt("Portal Cooldown", 0);
+    }
+
+    void updateUpgrades()
+    {
+        PlayerPrefs.SetInt("Grapple", upgrade[0]);
+        PlayerPrefs.SetInt("Big Bullets", upgrade[1]);
+        PlayerPrefs.SetInt("Rate of Fire", upgrade[2]);
+        PlayerPrefs.SetInt("Spray Bullets", upgrade[3]);
+        PlayerPrefs.SetInt("Jump", upgrade[4]);
+        PlayerPrefs.SetInt("Breadcrumbs", upgrade[5]);
+        PlayerPrefs.SetInt("Health Pack", upgrade[6]);
+        PlayerPrefs.SetInt("Shield", upgrade[7]);
+        PlayerPrefs.SetInt("Portal Distance", upgrade[8]);
+        PlayerPrefs.SetInt("Portal Cooldown", upgrade[9]);
+        UpdatePlayer();
+    }
+ 
+   
 
 
     void InitOrbTank(int orbs)
@@ -374,16 +367,18 @@ public class Player : MonoBehaviour
 	}
 
     void Update()
-    {  
+    {
+        CheckWin();
         CheckInvicible();
-        CheckJump();     
+        CheckJump();
+        CheckPortalJump();
         mRising = mRigidBody2D.velocity.y > 0.0f;
         UpdateAnimator();
         UpdateCameraVelocity();
         UpdateUIText();
         rechargeHealth();
-        CalculateTotalOrbs();
-        CheckWin();
+        CalculateTotalOrbs();        
+        
 
         //fillUpgrades();
         //updateUpgrades();
@@ -399,11 +394,54 @@ public class Player : MonoBehaviour
             {
                 EnterShop();
             }
+        }    
+
+    }
+
+    void CheckPortalJump()
+    {
+        PortalOpen warp = GetComponentInChildren<PortalOpen>();
+        if (Input.GetButtonDown("PortalJump") && warp.coolDownTime <= 0)
+        {
+            announcementTimer = 3;
+            Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 StartPosition = transform.position;
+
+            float distance = (newPosition - StartPosition).magnitude;
+            Debug.Log("Jump distance " + distance.ToString());
+            //Check portal distance upgrade
+            if ((20 + upgrade[8]) > distance)
+            {
+                
+                //StartPosition.y += offset;
+
+                //Check if clear
+                RaycastHit2D hit = Physics2D.Linecast(StartPosition, newPosition);
+                //Debug.DrawLine(StartPosition, newPosition, Color.red, 2, false);
+
+                //Check if cave in the way
+                if (!(hit.collider != null && hit.collider.tag == "Cave"))
+                {                 
+                    
+                    warp.portalOpen = true;
+                    warp.useNewPosition = true;
+
+                    warp.newPosition = newPosition;
+                    warp.newPosition.z = 0;
+
+                    GetComponentInChildren<Grapple>().unHook();
+                    mRigidBody2D.velocity = Vector2.zero;
+                } 
+                else
+                {
+                    announcement = "PORTAL JUMP FAILED";
+                }               
+            }     
+            else
+            {
+                announcement = "PORTAL DISTANCE TOO GREAT";
+            }      
         }
-
-
-
-
     }
 
     public void InflictDamage(int damage)
@@ -529,6 +567,8 @@ public class Player : MonoBehaviour
            mRunning = true;
            return Vector3.right;
        } 
+
+       
        
 
         return Vector3.zero;

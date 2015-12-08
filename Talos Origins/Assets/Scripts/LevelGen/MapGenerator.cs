@@ -144,10 +144,11 @@ public class MapGenerator : MonoBehaviour
             currentLevel = 1;
         }
 
-        if(victory || currentLevel == -1)
+        if(victory)
         {
             currentLevel = -1;
         }
+        //Define Number of upgrades to distribut in map -> ONLY 1 working right now
         upgradeNumber = 1;
 
         // Save Current Level
@@ -186,6 +187,7 @@ public class MapGenerator : MonoBehaviour
             {
                 width = Mathf.CeilToInt(width * 0.85f);
                 height = Mathf.CeilToInt(height * 0.85f);
+                levelScale /= 2;
             }
 
             /*
@@ -215,7 +217,7 @@ public class MapGenerator : MonoBehaviour
 
             numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel));
 
-            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/2.5f);
+            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/ (levelScale+1));
             bossRound = false;
 
             numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
