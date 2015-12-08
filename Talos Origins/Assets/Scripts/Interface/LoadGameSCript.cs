@@ -20,12 +20,16 @@ public class LoadGameSCript : MonoBehaviour {
             PlayerPrefs.SetInt("Health Pack", 0);
             PlayerPrefs.SetInt("Shield", 0);
             PlayerPrefs.SetInt("Portal Distance", 0);
-            PlayerPrefs.SetInt("Portal Cooldown", 0);            
-            PlayerPrefs.SetInt("currentLevel", 1);            
+            PlayerPrefs.SetInt("Portal Cooldown", 0);
+            PlayerPrefs.SetInt("currentLevel", 1);
         }       
         else
         {
             PlayerPrefs.SetInt("Total Orbs", 0);
+            if (PlayerPrefs.GetInt("currentLevel") <= 0)
+            {
+                PlayerPrefs.SetInt("currentLevel", 1);
+            }
         }
 
         Application.LoadLevel(1);
