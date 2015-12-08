@@ -676,7 +676,7 @@ public class Enemy : MonoBehaviour
         StartPosition = transform.position;
         //StartPosition.y += offset;
 
-        EndPosition = StartPosition + direction * transform.localScale.magnitude * mBoxCollider.size.y / 1.65f;
+        EndPosition = StartPosition + direction * transform.localScale.magnitude * mBoxCollider.size.y / 1.85f;
 
 
         //Check if clear

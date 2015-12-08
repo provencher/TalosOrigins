@@ -76,7 +76,7 @@ public class MapGenerator : MonoBehaviour
 
     public bool bossRound = false;
 
-    public int levelScale = 1;
+    public float levelScale = 1;
 
 	int portalLevelUpgrade;
 
@@ -215,9 +215,9 @@ public class MapGenerator : MonoBehaviour
             //asteroids = new List<GameObject>();
 
 
-            numAsteroidsToSpawn = densityModifer * (width / levelScale + currentLevel / Mathf.CeilToInt(densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)));
+            numAsteroidsToSpawn = Mathf.CeilToInt(densityModifer * (width / levelScale + currentLevel / Mathf.Max((densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)), 1)));
 
-            numEnemiesToSpawn = Mathf.CeilToInt((densityModifer * (width / levelScale + currentLevel / Mathf.CeilToInt(densityModifer * UnityEngine.Random.Range(0.5f, densityModifer + currentLevel)))/ (levelScale+1)));
+            numEnemiesToSpawn = Mathf.CeilToInt(densityModifer * (width / levelScale + currentLevel / Mathf.Max((densityModifer * UnityEngine.Random.Range(1, densityModifer + currentLevel)), 1)) / 3);
             bossRound = false;
 
             numAsteroidsToSpawn = Mathf.Clamp(numAsteroidsToSpawn, 1, 300);
@@ -230,7 +230,7 @@ public class MapGenerator : MonoBehaviour
                 bossRound = true;
                 randomFillPercent = bossFillPercent;
                 numEnemiesToSpawn = currentLevel / 10;
-                width = 5 * levelScale * densityModifer;
+                width = Mathf.CeilToInt(5 * levelScale * densityModifer);
                 height = 25;
             }
         }

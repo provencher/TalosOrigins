@@ -408,39 +408,42 @@ public class Player : MonoBehaviour
             Vector3 StartPosition = transform.position;
 
             float distance = (newPosition - StartPosition).magnitude;
-            Debug.Log("Jump distance " + distance.ToString());
+            //Debug.Log("Jump distance " + distance.ToString());
             //Check portal distance upgrade
-            if ((20f + upgrade[8]/4f) > distance)
+            //Reduce distance to match upgrade     
+            Vector3 newPositionOffset = new Vector3(newPosition.x - transform.position.x, newPosition.y - transform.position.y, 0);
+
+            
+
+            while ((upgrade[8]+1) < ((StartPosition+ newPositionOffset) - StartPosition).magnitude)
             {
-                
-                //StartPosition.y += offset;
+                Debug.Log(((StartPosition + newPositionOffset) - StartPosition).magnitude);
+                newPositionOffset.x *= 0.95f;
+                newPositionOffset.y *= 0.95f;
+                                      
+            }           
 
-                //Check if clear
-                RaycastHit2D hit = Physics2D.Linecast(StartPosition, newPosition);
-                //Debug.DrawLine(StartPosition, newPosition, Color.red, 2, false);
 
-                //Check if cave in the way
-                if (!(hit.collider != null && hit.collider.tag == "Cave"))
-                {                 
-                    
-                    warp.portalOpen = true;
-                    warp.useNewPosition = true;
+            //Check if clear
+            RaycastHit2D hit = Physics2D.Linecast(StartPosition, newPosition);
+            //Debug.DrawLine(StartPosition, newPosition, Color.red, 2, false);
 
-                    warp.newPosition = newPosition;
-                    warp.newPosition.z = 0;
+            //Check if cave in the way
+            if (!(hit.collider != null && hit.collider.tag == "Cave"))
+            {
 
-                    GetComponentInChildren<Grapple>().unHook();
-                    mRigidBody2D.velocity = Vector2.zero;
-                } 
-                else
-                {
-                    announcement = "PORTAL JUMP FAILED";
-                }               
-            }     
+                warp.portalOpen = true;          
+
+                warp.newPositionOffset = newPositionOffset;     
+
+                GetComponentInChildren<Grapple>().unHook();
+                mRigidBody2D.velocity = Vector2.zero;
+            }
             else
             {
-                announcement = "PORTAL DISTANCE TOO GREAT";
-            }      
+                announcement = "PORTAL JUMP FAILED";
+            }
+
         }
     }
 

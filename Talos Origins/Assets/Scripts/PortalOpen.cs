@@ -19,8 +19,8 @@ public class PortalOpen : MonoBehaviour {
 	int portalCoolDownLevel;
     public bool portalOpen = false;
 
-    public bool useNewPosition = false;
-    public Vector3 newPosition = Vector3.zero;
+    //public bool useNewPosition = false;
+    public Vector3 newPositionOffset = Vector3.zero;
   
 
     public IEnumerator SpawnPortal(bool leaving)
@@ -47,12 +47,10 @@ public class PortalOpen : MonoBehaviour {
     }
 
     public IEnumerator DestroyPortal(bool leaving)
-    {
-        if(useNewPosition)
-        {
-            useNewPosition = false;
-            transform.position = newPosition;
-        }
+    {       
+        transform.position += newPositionOffset;
+        newPositionOffset = Vector3.zero;
+      
         portalInstance.transform.position = transform.position;
 
         Instantiate(portalCloseAudio, transform.position, Quaternion.identity);
