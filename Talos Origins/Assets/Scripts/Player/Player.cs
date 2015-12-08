@@ -410,7 +410,7 @@ public class Player : MonoBehaviour
             float distance = (newPosition - StartPosition).magnitude;
             Debug.Log("Jump distance " + distance.ToString());
             //Check portal distance upgrade
-            if ((20 + upgrade[8]) > distance)
+            if ((20f + upgrade[8]/4f) > distance)
             {
                 
                 //StartPosition.y += offset;
