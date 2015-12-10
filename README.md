@@ -17,24 +17,15 @@
 #Controls	 
 	Input				| In-Game Result
 	--------------------|-----------------------
-	A/D Move 			| Left / Right 
-	--------------------|-----------------------
-	SPAC     			| Jump /Release Grapple 
-	--------------------|-----------------------
-	LEFT MOUSE BUTTON 	| Shoot 
-	--------------------|-----------------------
-	RIGHT MOUSE BUTTON 	| Deploy Grapple 	
-	--------------------|-----------------------
-	W 					| Reel grapple up 
-	--------------------|-----------------------	
-	E 					| Deploy Portal (Blink)
-	--------------------|-----------------------
-	T 					| Reset Level
-	--------------------|-----------------------
+	A/D Move 			| Left / Right 	
+	SPAC     			| Jump /Release Grapple 	
+	LEFT MOUSE BUTTON 	| Shoot 	
+	RIGHT MOUSE BUTTON 	| Deploy Grapple 		
+	W 					| Reel grapple up 	
+	E 					| Deploy Portal (Blink)	
+	T 					| Reset Level	
 	TAB 				| Open Shop 
-	--------------------|-----------------------
 	P/Escape			| Pause 
-	--------------------|-----------------------
 	R Reset 			| Breadcrumbs 
 
 #Executive summary
