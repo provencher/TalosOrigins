@@ -26,7 +26,7 @@
 	T 					| Reset Level	
 	TAB 				| Open Shop 
 	P/Escape			| Pause 
-	R Reset 			| Breadcrumbs 
+	R 					| Reset Breadcrumbs 
 
 #Executive summary
 	Talos Origins is a two-dimensional procedurally generated action-exploration RPG
