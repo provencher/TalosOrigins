@@ -8,6 +8,11 @@
  	- Navigate to Assets/Scenes
  	- Select the Scene you would like to work on
 
+#Latest Compiled WIN32 Build
+	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_WIN32.zip
+	
+#Gameplay Walkthrough
+	https://youtu.be/4Shf_nvfwJ8
 
 #Executive summary
 	Talos Origins is a two-dimensional procedurally generated action-exploration RPG
@@ -25,9 +30,6 @@
 	to better serve him on his quest to find his creator, and aid him in conquering the increasingly 
 	difficult enemies that stand in his path.
 
-
-#Gameplay Walkthrough
-https://youtu.be/4Shf_nvfwJ8
 
 #Theme / Setting / Genre
 	The story a work of Science Fiction that takes place in the middle of a rebellion attempting to destroy
