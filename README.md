@@ -4,7 +4,7 @@
 #Executive summary
 	- Procedurally generated mazes ensure that players will never see the same level twice   
 	- Engaging upgrade system entices players to try different strategies to complete levels
-	- Infinite progression
+	- Progressive difficulty means more challenging mazes and enemies
 
 #BUILD INSTRUCTIONS
 	To setup the dev environment required to modify Talos Origins, 
@@ -15,8 +15,15 @@
  	- Navigate to Assets/Scenes
  	- Select the Scene you would like to work on
 
-#Latest Compiled WIN32 Build
-	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_WIN32.zip
+#Latest Compiled Builds
+	WIN32
+	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_WIN32.zip	
+	
+	OSX (Untested)
+	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_OSX.zip
+	
+	LINUX (Untested)
+	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_LINUX.tar.gz
 	
 #Controls	 
 	Input				| In-Game Result
