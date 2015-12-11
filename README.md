@@ -1,5 +1,4 @@
 # TalosOrigins
-
 ![](https://github.com/provencher/TalosOrigins/blob/master/Talos.PNG)
 
 #Executive summary
@@ -19,9 +18,6 @@
 #Latest Compiled WIN32 Build
 	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_WIN32.zip
 	
-#Gameplay Walkthrough
-	https://youtu.be/4Shf_nvfwJ8
-	
 #Controls	 
 	Input				| In-Game Result
 	--------------------|-----------------------
@@ -35,12 +31,6 @@
 	TAB 				| Open Shop 
 	P/Escape			| Pause 
 	R 					| Reset Breadcrumbs 
-
-#Core Gameplay Mechanics Brief
-	- Procedurally generated mazes
-	- Grapple assisted platforming for maze navigation
-	- Upgradable weapons
-	- Breadcrumb system to track traversed path
 
 #Targeted platforms
 	- PC
