@@ -18,7 +18,7 @@
 	Input				| In-Game Result
 	--------------------|-----------------------
 	A/D Move 			| Left / Right 	
-	SPAC     			| Jump /Release Grapple 	
+	SPACE     			| Jump /Release Grapple 	
 	LEFT MOUSE BUTTON 	| Shoot 	
 	RIGHT MOUSE BUTTON 	| Deploy Grapple 		
 	W 					| Reel grapple up 	
