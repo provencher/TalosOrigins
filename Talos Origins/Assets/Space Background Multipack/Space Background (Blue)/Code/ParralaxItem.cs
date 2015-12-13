@@ -6,6 +6,7 @@ class ParralaxItem : MonoBehaviour
 {
     public Vector3 minDirection;
     public Vector3 maxDirection;
+    Vector3 offset;
 
     public Vector3 rotationAxis;
     public float rotationSpeed;
@@ -14,22 +15,33 @@ class ParralaxItem : MonoBehaviour
 
     float timeCounter = 0;
 
-    int[] primes = { 53, 97, 193, 389};
+    float[] primes = { 53f, 97f};
     public bool alive = true;
     public bool destroyed = false;
 
+    float distance;
+    float currentLevel;
+    Vector3 StartPos;
+
+    public void ResetPos()
+    {
+        Vector3 newPos = StartPos + new Vector3(Random.Range(0.1f, primes[Random.Range(0, primes.Length - 1)]) / 15f, Random.Range(0.1f, primes[Random.Range(0, primes.Length - 1)]) / 15f, 0);
+        newPos.z = 0;
+        transform.position = newPos;        
+    }
+
     void Start()
     {
-        //Talos = GameObject.Find("Talos");
+        //Talos = GameObject.Find("Talos");  
         direction = GenerateDirection();
-        direction.z = 0;
+        direction.z = 0;   
+        //ResetPos();        
     }
 
     Vector3 GenerateDirection()
     {
-        Vector3 dir = (Talos.transform.position - transform.position).normalized * 0.1f * minDirection.magnitude / 300;
-        dir.x *= Random.Range(-primes[Random.Range(0, primes.Length - 1)]/2, primes[Random.Range(0, primes.Length - 1)]/2);
-        dir.y *= Random.Range(-primes[Random.Range(0, primes.Length - 1)]/2, primes[Random.Range(0, primes.Length - 1)]/2);
+        Vector3 dir = (Talos.transform.position - transform.position).normalized * Random.Range(0.1f, primes[Random.Range(0, primes.Length - 1)] / 100f) * 0.2f * minDirection.magnitude;
+        dir.z = 0;
         return dir;
     }
 
@@ -53,18 +65,15 @@ class ParralaxItem : MonoBehaviour
             StartCoroutine(destroy());
         }
 
-
         transform.position += direction * Time.deltaTime;
         transform.Rotate(rotationAxis, rotationSpeed * Time.deltaTime);
         timeCounter += Time.deltaTime;
 
-        if (timeCounter % 31 == 0)
-        {
-            if (Time.time % primes[Random.Range(0, primes.Length - 1) ] == 0)
-            {
-                direction = GenerateDirection();
-                direction.z = 0;
-            }
+        if (Vector3.Distance(Talos.transform.position, transform.position) > 35)
+        {      
+            direction = GenerateDirection();
+            direction.z = 0;
+            timeCounter = 0;
         }
     }
 }

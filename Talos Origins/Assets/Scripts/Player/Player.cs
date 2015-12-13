@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
     Vector2 mShoveDirection;
 
     Vector3 mExitLocation;
-    int mCurrentLevel;
+    public int mCurrentLevel;
     int mEnemiesRemaining;
 	
     Text exitDistance, enemiesLeft, curLevel, talosHealth, experience, actionPts, invicibleTime;
