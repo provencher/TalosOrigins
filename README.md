@@ -34,10 +34,12 @@
 	RIGHT MOUSE BUTTON 	| Deploy Grapple 		
 	W 					| Reel grapple up 	
 	E 					| Deploy Portal (Blink)	
+	F 					| Deploy Shield	
 	T 					| Reset Level	
+	R 					| Reset Breadcrumbs 
 	TAB 				| Open Shop 
 	P/Escape			| Pause 
-	R 					| Reset Breadcrumbs 
+	
 
 #Targeted platforms
 	- PC
