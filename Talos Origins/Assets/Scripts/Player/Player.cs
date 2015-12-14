@@ -359,7 +359,16 @@ public class Player : MonoBehaviour
 
             //GameObject.Find("experience").GetComponent<Text>().text = "Orb T0: " + orbTank[0].ToString() + " T1: " + orbTank[1].ToString() + " T2: " + orbTank[2].ToString() + " T3: " + orbTank[3].ToString();
             //GameObject.Find("invincibleTime").GetComponent<Text>().text = "Invincible Timer: " + mInvincibleTimer.ToString("F2");
-            GameObject.Find("orbs").GetComponent<Text>().text = totalOrbs.ToString();           
+            GameObject.Find("orbs").GetComponent<Text>().text = totalOrbs.ToString();   
+
+            if (!triggeredShield)
+            {
+                GameObject.Find("Shield").GetComponent<Image>().color = Color.yellow;
+            }
+            else
+            {
+                GameObject.Find("Shield").GetComponent<Image>().color = Color.grey;
+            }
         }
         catch(Exception e){
 			//Do Nothing
@@ -465,6 +474,7 @@ public class Player : MonoBehaviour
 
         if (!mInvincible)
         {
+            triggeredShield = false;
             mInvincible = true;
             mInvincibleTimer = kInvincibilityDuration * shieldUpgradeIndex;   
             gameObject.GetComponentInChildren<Shield>().rechargeDeployed = true;
@@ -543,8 +553,7 @@ public class Player : MonoBehaviour
             {
                 mInvincibleTimer = 0;
                 mInvincible = false;
-                gameObject.GetComponentInChildren<Shield>().rechargeDeployed = false;
-                triggeredShield = false;
+                gameObject.GetComponentInChildren<Shield>().rechargeDeployed = false;                
             }
             time = mInvincibleTimer;
         }    
