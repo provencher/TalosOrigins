@@ -382,6 +382,7 @@ public class Player : MonoBehaviour
     {
         CheckWin();
         CheckInvicible();
+        CheckShield();
         CheckJump();
         CheckPortalJump();
         mRising = mRigidBody2D.velocity.y > 0.0f;
