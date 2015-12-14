@@ -366,6 +366,18 @@ public class Player : MonoBehaviour
 		}
 	}
 
+    bool triggeredShield = false;
+    void CheckShield()
+    {
+        if(!triggeredShield && Input.GetButtonDown("Shield"))
+        {
+            triggeredShield = true;
+            mInvincible = true;
+            mInvincibleTimer = kInvincibilityDuration * shieldUpgradeIndex;
+            gameObject.GetComponentInChildren<Shield>().rechargeDeployed = true;
+        }
+    }
+
     void Update()
     {
         CheckWin();
@@ -531,6 +543,7 @@ public class Player : MonoBehaviour
                 mInvincibleTimer = 0;
                 mInvincible = false;
                 gameObject.GetComponentInChildren<Shield>().rechargeDeployed = false;
+                triggeredShield = false;
             }
             time = mInvincibleTimer;
         }    
