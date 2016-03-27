@@ -791,6 +791,8 @@ public class Enemy : MonoBehaviour
             numOrbs *= mCurrentLevel;
         }
 
+        numOrbs *= 2;
+
         for (int i = 0; i < numOrbs + collectedOrbs.Count; i++)
         {
             if (i < numOrbs)
