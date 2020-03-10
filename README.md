@@ -1,12 +1,12 @@
 # TalosOrigins
 ![](https://github.com/provencher/TalosOrigins/blob/master/Talos.PNG)
 
-#Executive summary
+# Executive summary
 	- Procedurally generated mazes ensure that players will never see the same level twice   
 	- Engaging upgrade system entices players to try different strategies to complete levels
 	- Progressive difficulty means more challenging mazes and enemies
 
-#BUILD INSTRUCTIONS
+# BUILD INSTRUCTIONS
 	To setup the dev environment required to modify Talos Origins, 
 	you will need to install Unity3D on your operating system of choice
  	- Select OPEN
@@ -15,7 +15,7 @@
  	- Navigate to Assets/Scenes
  	- Select the Scene you would like to work on
 
-#Latest Compiled Builds
+# Latest Compiled Builds
 	WIN32
 	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_WIN32.zip	
 	
@@ -25,7 +25,7 @@
 	LINUX (Untested)
 	https://dl.dropboxusercontent.com/u/18001783/Talos/DEMO/TalosOrigins_BUILD_LINUX.tar.gz
 	
-#Controls	 
+# Controls	 
 	Input				| In-Game Result
 	--------------------|-----------------------
 	A/D Move 			| Left / Right 	
@@ -40,10 +40,6 @@
 	TAB 				| Open Shop 
 	P/Escape			| Pause 
 	
-
-#Targeted platforms
-	- PC
-	- Android/iOS (In Progress)	
 
 
 
